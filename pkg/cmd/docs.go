@@ -33,8 +33,8 @@ func serveDocs(host string, port int) error {
 		return err
 	}
 
-	fmt.Println("Serving documentation at http://" + host + ":" + fmt.Sprint(port))
+	fmt.Println("Serving documentation at http://" + host + ":" + fmt.Sprint(port) + "/anemos/docs")
 
-	http.Handle("/", http.FileServer(http.FS(docsFs)))
+	http.Handle("/anemos/docs/", http.StripPrefix("/anemos/docs/", http.FileServer(http.FS(docsFs))))
 	return http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), nil)
 }
