@@ -89,3 +89,27 @@ Run following command to install the package and generate the manifests:
 anemos package add @ohayocorp/anemos-hello-world
 anemos build index.js
 ```
+
+## Contributing
+
+We welcome contributions to Anemos! If you have an idea for a new feature, a bug fix, or an improvement, please
+open an issue or a pull request on our [GitHub repository](https://github.com/ohayocorp/anemos).
+
+To build Anemos from source, clone the repository and run the following commands:
+
+```bash
+./download-bun.sh
+go build ./cmd/anemos
+```
+
+If you wish to contribute to the documentation, you should build the docs-code and then
+run the development server:
+
+```bash
+# This command requires anemos binary to be in your PATH
+./build-docs-project.sh
+cd docs
+# Ensure you have NodeJS installed.
+npm install
+npm run start
+```
