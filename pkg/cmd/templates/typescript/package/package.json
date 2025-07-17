@@ -1,0 +1,15 @@
+{
+  "name": "PACKAGE_NAME",
+  "version": "1.0.0",
+  "files": [
+    "dist/lib"
+  ],
+  "main": "dist/lib/index.js",
+  "workspaces": [
+    ".anemos/types"
+  ],
+  "devDependencies": {
+    "@ohayocorp/anemos": "workspace:.anemos/types",
+    "typescript": "^5.8.3"
+  }
+}

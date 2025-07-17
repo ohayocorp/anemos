@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "lib": [
+            "ES2017"
+        ],
+        "moduleResolution": "nodenext",
+        "module": "NodeNext",
+        "allowJs": true,
+        "strict": true,
+        "declaration": true,
+        "outDir": "dist",
+        "inlineSourceMap": true
+    },
+    "include": [
+        "**/*.ts"
+    ]
+}

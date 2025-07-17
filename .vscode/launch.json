@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Project",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "output": "${workspaceFolder}/bin/anemos",
+            "program": "${workspaceFolder}/cmd/anemos",
+            "args": [
+                "build",
+                "--verbose",
+                "${input:jsFile}",
+            ]
+        },
+        {
+            "name": "Start Docs Server",
+            "type": "node-terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/docs",
+            "command": "npm run start"
+        },
+    ],
+    "inputs": [
+        {
+            "id": "jsFile",
+            "type": "promptString",
+            "description": "JS file to build",
+        },
+    ]
+}

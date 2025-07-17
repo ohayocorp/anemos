@@ -1,0 +1,170 @@
+---
+sidebar_position: 7
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import LibIndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/generating-package/lib/index.js';
+import LibIndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/generating-package/lib/index.ts';
+import TestIndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/generating-package/index.js';
+import TestIndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/generating-package/index.ts';
+import BasicIndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/generating-package/test/basic/index.js';
+import BasicIndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/generating-package/test/basic/index.ts';
+
+# Generating a Package
+
+:::tip
+If you don't want to use the structure of the package template or you find it too complex,
+the [Generating a Package in Its Simplest Form](/examples/simple-package) page provides
+a simpler way to create a package with just two files.
+:::
+
+Now that we can create manifests for our application in a reusable way, let's package our library so that
+others can use it in their own projects.
+
+Instead of modifying the existing application project, we will create a new package project. It will
+have the necessary structure and files to be published as a package.
+
+To create a package project, run the following command:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos new example-package --language typescript --project-type package
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    anemos new example-package --project-type package
+    ```
+  </TabItem>
+</Tabs>
+
+Structure of the package project is a bit different from the application project. The main difference is that
+the package project is designed to be reusable and shareable, while the application project is meant to be
+used for generating output files for a specific use case.
+
+Package projects also have slightly different values in the `package.json` and `tsconfig.json` (if you use TypeScript)
+files to match the package project structure. We will not go into details about these files as the changes are minimal.
+
+## Library Code (`lib` directory)
+
+The `lib` directory contains the code that will be shared with the package. It consists of the necessary classes
+and functions to generate the output files. It will also contain the public API definition for the package.
+
+The files under the `lib` directory are very similar to the ones that we had created in the application project.
+The main difference in manifest generation is that the package project template creates a pod instead of a
+deployment and a service. The index file, on the other hand, serves a different purpose, so it will be structured differently.
+
+Index file in the `lib` directory acts as the public API for the package. It exports the `Options` class and
+an `add` function that takes a `Builder` and `Options`, creates a new `Component` using the given options and adds it to the
+given `Builder`. The `Component` class will not be exported, as it is not part of the public API and is only used internally
+by the package.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="lib/index.ts" showLineNumbers>
+        {LibIndexTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="lib/index.js" showLineNumbers>
+        {LibIndexJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+## Test Code (`test` directory)
+
+Package project template includes a `test` directory that contains the code to
+generate output files with the package. The test cases act like small applications
+that use the package to generate output files, allowing us to verify its behavior.
+
+Inside the `test` directory, you will find the index file that serves as the entry point for
+the test cases. It imports all the test cases and runs them one by one.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="test/index.ts" showLineNumbers>
+        {TestIndexTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="test/index.js" showLineNumbers>
+        {TestIndexJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Each test case is defined as a separate module inside its own directory. Anemos
+creates a simple test case under the `basic` directory.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="test/basic/index.ts" showLineNumbers>
+        {BasicIndexTs}
+    </CodeBlock>
+
+    Contents of the `test/basic/index.ts` file is be similar to the `index.ts` file in the application project.
+    The only notable difference is the `require` statements at the top of the file. Instead of importing
+    the `Component` and `Options` classes from the `component.ts` and `options.ts` files, the package's public
+    API is imported from the `lib` directory.
+
+    When you run the build command, it will compile the TypeScript files in the `lib` directory
+    and generate the corresponding JavaScript files in the `dist` directory. The `test/index.ts` file
+    will also be compiled and executed. The output files will be generated in the `dist/test/output/basic` directory.
+    You can check them to verify that the package works as expected.
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="test/basic/index.js" showLineNumbers>
+        {BasicIndexJs}
+    </CodeBlock>
+
+    Contents of the `test/basic/index.js` file is similar to the `index.js` file in the application project.
+    The only notable difference is the `require` statements at the top of the file. Instead of importing
+    the `Component` and `Options` classes from the `component.js` and `options.js` files, the package's public
+    API is imported from the `lib` directory.
+
+    When you run the build command, the tests that are defined inside the `test/index.js` will be executed.
+    The output files will be generated in the `test/basic` directory. You can check them to verify that the
+    package works as expected.
+  </TabItem>
+</Tabs>
+
+## Publishing the Package
+
+Run the following command to directly publish the package to the official NPM registry:
+
+```bash
+anemos package publish
+```
+
+You can also use the following command to build the package as a tarball file, which you can then
+publish manually or share with others:
+
+```bash
+anemos package pack
+```
+
+This command requires you to have an NPM account and be logged in. If you haven't done this yet,
+you can create an account on the [NPM website](https://www.npmjs.com/signup) and log in using the command:
+
+```bash
+anemos package login
+```
+
+:::tip
+If you want to publish the package to a private registry, you can use the `--registry` option
+with the `anemos package publish` command. For example:
+
+```bash
+anemos package login --registry https://my-private-registry.com
+anemos package publish --registry https://my-private-registry.com
+```
+:::

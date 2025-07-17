@@ -1,0 +1,86 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+import Mermaid from '@theme/Mermaid';
+
+import Diagram from '!!raw-loader!/docs/steps-mermaid.txt';
+import ExecutionOrderJs from '!!raw-loader!{{CODE_PATH}}/js/execution-order/index.js';
+import ExecutionOrderTs from '!!raw-loader!{{CODE_PATH}}/ts/execution-order/index.ts';
+
+# Execution Order
+
+## Steps
+
+Anemos uses a class called `Step` to sort actions flexibly. The `Step` class has a description
+(for logging) and a list of numbers.
+
+When comparing two `Step` objects, the numbers in their respective lists are compared index by index.
+If one list is shorter than the other, missing numbers at higher indices are treated as 0 for comparison.
+
+For example, comparing `[1, 2]` with `[1]`:
+1.  Index 0: Both have `1`. They are equal.
+1.  Index 1: The first step has `2`, the second has no number (treated as `0`). Since `2 > 0`,
+the first step `[1, 2]` is considered *greater than* the second step `[1]`.
+
+This system allows for fine-grained control over execution sequence. Consider these standard steps
+provided by Anemos:
+
+-   `generateResources`: `[5]`
+-   `generateResourcesBasedOnOtherResources`: `[5, 1]`
+-   `modify`: `[6]`
+
+Comparing these:
+-   `generateResources` [5] is less than `modify` [6] because `5 < 6`.
+-   `generateResourcesBasedOnOtherResources` [5, 1] is greater than `generateResources` [5] because at index 1, `1 > 0`.
+-   `generateResourcesBasedOnOtherResources` [5, 1] is less than `modify` [6] because at index 0, `5 < 6`.
+
+This structure allows inserting custom steps between existing ones. For instance, a step like
+`[5, 1, 1]` would execute *after* `[5, 1]` but *before* `[5, 2]`. Similarly, `[5, 0, 1]` would run *after* `[5]` but *before* `[5, 1]`.
+
+## Executing Actions
+
+The `Builder` orchestrates the execution of actions. When you call the `build()` method:
+1.  It collects all actions from all added components.
+2.  It sorts these actions based on their assigned `Step`.
+3.  It executes the actions sequentially in the sorted order.
+
+<Mermaid value={Diagram} />
+
+### Example: Execution Order in Practice
+
+Consider the following example components:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="index.ts" showLineNumbers>
+        {ExecutionOrderTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="index.js" showLineNumbers>
+        {ExecutionOrderJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+In this example:
+-   `App1Component` adds an action with step `generateResources`.
+-   `App2Component` adds an action with step `generateResources`.
+-   `SetNodeNameComponent` adds an action with step `modify`.
+
+When `builder.build()` is called:
+1.  The actions are collected.
+2.  They are ordered by their steps: `generateResources` `[5]` comes before `modify` `[6]`.
+3.  Execution proceeds:
+    -   The `generateResources` action from `App1Component` runs.
+    -   The `generateResources` action from `App2Component` runs.
+    -   The `modify` action from `SetNodeNameComponent` runs.
+
+Even if `SetNodeNameComponent` was added to the builder *before* `App1Component` or `App2Component`,
+its `modify` action runs *after* their `generateResources` actions due to the defined `Step` ordering.
+
+For actions that run during the *same* `Step` (like the two `generateResources` actions), their relative
+execution sequence is determined by the order in which their parent components were added to the
+`Builder`. Since `App1Component` was added first, its `generateResources` action runs before the one
+from `App2Component`.

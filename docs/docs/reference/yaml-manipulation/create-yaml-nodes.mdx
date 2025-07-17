@@ -1,0 +1,63 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import MappingJs from '!!raw-loader!{{CODE_PATH}}/js/yaml-manipulation/basics/create-yaml-nodes/mapping.js';
+import MappingTs from '!!raw-loader!{{CODE_PATH}}/ts/yaml-manipulation/basics/create-yaml-nodes/mapping.ts';
+import SequenceJs from '!!raw-loader!{{CODE_PATH}}/js/yaml-manipulation/basics/create-yaml-nodes/sequence.js';
+import SequenceTs from '!!raw-loader!{{CODE_PATH}}/ts/yaml-manipulation/basics/create-yaml-nodes/sequence.ts';
+import ScalarJs from '!!raw-loader!{{CODE_PATH}}/js/yaml-manipulation/basics/create-yaml-nodes/scalar.js';
+import ScalarTs from '!!raw-loader!{{CODE_PATH}}/ts/yaml-manipulation/basics/create-yaml-nodes/scalar.ts';
+
+# Create YAML Nodes
+
+Anemos provides various ways to create YAML nodes. It is possible to create all nodes using constructors.
+It is also possible to create [Mapping](./yaml-basics#mapping) and [Sequence](./yaml-basics#sequence)
+using the `parseMapping` and `parseSequence` methods. These methods are useful when you want to create a node
+from a YAML string.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="mapping.ts" showLineNumbers>
+        {MappingTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="mapping.js" showLineNumbers>
+        {MappingJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="sequence.ts" showLineNumbers>
+        {SequenceTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="sequence.js" showLineNumbers>
+        {SequenceJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="scalar.ts" showLineNumbers>
+        {ScalarTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="scalar.js" showLineNumbers>
+        {ScalarJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>

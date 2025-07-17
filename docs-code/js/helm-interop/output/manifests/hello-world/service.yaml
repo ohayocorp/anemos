@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-helloworld
+  labels:
+    app.kubernetes.io/name: helloworld
+    app.kubernetes.io/instance: hello-world
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+    example: value
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5678
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: helloworld
+    app.kubernetes.io/instance: hello-world

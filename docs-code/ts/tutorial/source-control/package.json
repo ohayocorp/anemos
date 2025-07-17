@@ -1,0 +1,11 @@
+{
+  "name": "source-control",
+  "version": "1.0.0",
+  "workspaces": [
+    ".anemos/types"
+  ],
+  "devDependencies": {
+    "@ohayocorp/anemos": "workspace:.anemos/types",
+    "typescript": "^5.8.3"
+  }
+}

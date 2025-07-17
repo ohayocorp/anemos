@@ -1,0 +1,76 @@
+name: build
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      create_artifacts:
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # For documentation.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          check-latest: true
+
+      - name: Build
+        run: |
+          LD_FLAGS="-X github.com/ohayocorp/anemos/pkg/cmd.AppVersion=${{ inputs.version }}"
+          LD_FLAGS="${LD_FLAGS} -s -w"
+
+          bash download-bun.sh
+
+          # Build anemos binary to be able to build the documentation code.
+          go build -o /usr/local/bin/anemos ./cmd/anemos
+
+          bash build-docs-project.sh
+          
+          npm install --prefix docs
+          npm run --prefix docs build
+
+          OS_LIST=("linux" "windows" "darwin")
+          ARCH_LIST=("amd64" "arm64")
+
+          for os in "${OS_LIST[@]}"; do
+            for arch in "${ARCH_LIST[@]}"; do
+              if [[ "$os" == "windows" && "$arch" == "arm64" ]]
+              then
+                # Skip unsupported combination
+                continue
+              fi
+
+              echo "Building for ${os}-${arch}"
+
+              CGO_ENABLED=0 GOOS="${os}" GOARCH="${arch}" go build -tags -trimpath -ldflags="${LD_FLAGS}" -o "bin/anemos-${os}-${arch}" ./cmd/anemos
+            done
+          done
+
+      - name: Upload artifacts
+        if: ${{ inputs.create_artifacts }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: anemos-binaries
+          path: bin/

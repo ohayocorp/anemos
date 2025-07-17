@@ -1,0 +1,193 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Getting Started
+
+In this tutorial, we will create an Anemos project that generates Kubernetes manifests for
+an example application. We will start simple and generate the manifests in the main script. Then,
+gradually we will refactor the code into a more modular structure. Lastly, we will generate a package
+that can be reused by other projects.
+
+## Creating a New Project
+
+To create a new Anemos project, you can use the `anemos new` command. This command will create a new directory
+with the necessary files for an Anemos project. You can specify the language you want to use for the project
+by using the `--language` flag. The available languages are `typescript` and `javascript`. This tutorial has
+both TypeScript and JavaScript examples. You can choose either one based on your preference.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos new example --language typescript
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    # JavaScript is the default language, so you can omit the --language flag.
+    anemos new example
+    ```
+  </TabItem>
+</Tabs>
+
+This will create a new directory called `example` with the following structure:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    example
+    ├── .anemos
+    ├── .vscode
+    ├── node_modules
+    ├── .gitignore
+    ├── bun.lock
+    ├── index.ts
+    ├── package.json
+    ├── tsconfig.json
+    ```
+
+    - `.vscode` directory contains the configuration files for Visual Studio Code for a better
+      development experience.
+    - `.anemos/types` directory contain the type declarations for Anemos standard
+      library. These files are not used by Anemos, but they are useful for IDEs to provide type hints
+      and autocompletion.
+    - `package.json` and `bun.lock` files and `node_modules` directory are used to manage the dependencies
+      of the project. Anemos uses the JavaScript package management system so that you can use any JavaScript
+      library in your project. We will see package management in later sections.
+    - `.gitignore` file is used to ignore files and directories that should not be included in the version
+      control system.
+    - `tsconfig.json` file is used to configure the TypeScript compiler. Anemos creates this file with some
+      default values, but you can modify it to fit your needs.
+    - `index.ts` is the main script of the project. This is where we will write our code to generate the
+      Kubernetes manifests.
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    example
+    ├── .anemos
+    ├── .vscode
+    ├── node_modules
+    ├── .gitignore
+    ├── bun.lock
+    ├── index.js
+    ├── package.json
+    ```
+
+    - `.vscode` directory contains the configuration files for Visual Studio Code for a better
+      development experience.
+    - `.anemos/types` directory contain the type declarations for Anemos standard
+      library. These files are not used by Anemos, but they are useful for IDEs to provide type hints
+      and autocompletion.
+    - `package.json` and `bun.lock` files and `node_modules` directory are used to manage the dependencies
+      of the project. Anemos uses the JavaScript package management system so that you can use any JavaScript
+      library in your project. We will see package management in later sections.
+    - `.gitignore` file is used to ignore files and directories that should not be included in the version
+      control system.
+    - `index.js` is the main script of the project. This is where we will write our code to generate the
+      Kubernetes manifests.
+  </TabItem>
+</Tabs>
+
+## Building the Project
+
+To generate the Kubernetes manifests from your Anemos project, use the `anemos build`
+command:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos build --tsc . dist/index.js
+    ```
+    
+    This command instructs Anemos to perform the build process. Let's break down the arguments:
+    - `--tsc .`: This argument tells Anemos to use the TypeScript compiler (tsc) to compile the
+      TypeScript code. The `.` indicates that the current directory is the source directory for
+      the TypeScript files.
+    - `dist/index.js`: This is the path where the compiled JavaScript output will be placed
+      and subsequently executed by Anemos.
+
+    Executing this command will:
+    1.  Compile the TypeScript code found in the current directory (`.`) into JavaScript.
+    1.  Place the compiled output into `dist/index.js`.
+    1.  Run the compiled JavaScript file (`dist/index.js`) to generate the Kubernetes resources.
+    
+    The generated resources will be placed in the `dist/output` directory. For the default template, this
+    will initially contain a single Pod manifest.
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    anemos build index.js
+    ```
+
+    This command instructs Anemos to perform the build process that effectively runs the `index.js` file.
+    
+    The generated resources will be placed in the `output` directory. For the default template, this
+    will initially contain a single Pod manifest.
+  </TabItem>
+</Tabs>
+
+:::note
+By default, the `output` folder will be created in the directory where your main script is located.
+For TypeScript projects, this is the directory that contains the compiled JavaScript code, typically `dist`.
+For JavaScript projects, it is the same directory as your main script.
+
+If you want to specify a different output directory, you can set it in the builder options or you can use
+`ANEMOS_OUTPUT_PATH` environment variable to specify the output directory relative to the main script.
+
+Output directory must be inside the directory where your main script is located.
+:::
+
+:::warning
+The `output` directory is managed by Anemos and its contents are deleted
+before each build. Do not store any manually created files in this directory.
+:::
+
+## Visual Studio Code
+
+If you are using Visual Studio Code, you can use the built-in task runner to build your project. Anemos
+configures the build task for the project when you run `anemos new`. You can add the following keybinding
+to your `keybindings.json` file to run that task with a shortcut.
+
+Bring up the command palette with `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS) and select
+`Preferences: Open Keyboard Shortcuts (JSON)`. Then, add the following keybinding to the file:
+
+```json
+[
+  // Your other keybindings...
+  {
+      "key": "ctrl+f5", // Or your preferred shortcut
+      "command": "workbench.action.tasks.runTask",
+      "args": "build",
+      "when": "config.anemos.enabled"
+  }
+]
+```
+
+This allows you to quickly rebuild your Anemos project using the configured task directly from VS Code.
+
+## TypeScript
+
+Here's a brief overview of TypeScript options Anemos sets up for you with the `tsconfig.json` file when you create a new project:
+
+:::note
+Anemos uses [Bun](https://bun.sh/) to run the TypeScript compiler (`tsc`) since it is much faster
+(like 10x) than running the TypeScript compiler with Goja runtime.
+:::
+
+- Target is set to `ES2017`. Anemos uses a JavaScript runtime called [Sobek](https://github.com/grafana/sobek/),
+  which is a fork of [Goja](https://github.com/dop251/goja), that supports ES2017 features. It may also have support for
+  features on later standards. You can check the supported features on [Goja's GitHub page](https://github.com/dop251/goja).
+- Module is set to `NodeNext` so that TypeScript compiler generates JavaScript code with CommonJS modules. Anemos doesn't
+  support ES modules yet, so you need to use CommonJS modules in your projects.
+- The `strict` option is set to `true` so that TypeScript compiler will enable a wide range of type checking behaviors. This helps
+  catching type errors early in the development process.
+- The `declaration` option is set to `true` so that TypeScript compiler generates type declarations for the package.
+- The `outDir` option is set to `./dist`. This is where the compiled JavaScript code will be written.
+- The `inlineSourceMap` option is set to `true` so that the source maps are generated for the compiled code. This will provide
+  better stack traces in case of errors.

@@ -1,0 +1,156 @@
+---
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import OptionsJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/component-options/options.js';
+import OptionsTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/component-options/options.ts';
+import ComponentConstructorJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/component-options/componentConstructor.js';
+import ComponentConstructorTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/component-options/componentConstructor.ts';
+import ComponentJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/component-options/component.js';
+import ComponentTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/component-options/component.ts';
+import IndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/component-options/index.js';
+import IndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/component-options/index.ts';
+
+# Component Options
+
+In the previous section, we moved all the generation code under the `generateResources` function of our new component.
+This code includes the constants that are used to generate the resources, such as `name`, `namespace`, and `image`.
+
+```typescript
+const name = "example-app";
+const namespace = "default";
+const image = "nginx";
+const replicas = 1;
+```
+
+But, the users of our package may want to change these values. For example, they may want to use a different image
+or a different number of replicas. To allow this, we need to add options to our component. First, let's create a new
+file and define our `Options` class:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="options.ts" showLineNumbers>
+        {OptionsTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="options.js" showLineNumbers>
+        {OptionsJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Note that, in TypeScript declaration, all the options are optional (they have `?` suffixes). This means that
+the user does not have to provide values for these options, therefore we should provide default values for them in our component.
+
+Now, we need to take the options from the user in the constructor of the component. To do this, we will modify the
+component class to accept an instance of `Options` as a parameter.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="component.ts" showLineNumbers>
+        {ComponentConstructorTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="component.js" showLineNumbers>
+        {ComponentConstructorJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Options itself is also optional, so we assign an empty object to `this.options` if the user does not
+provide anything.
+
+Now, we can access the options in the `generateResources` function using `this.options`. However, we need a way
+to ensure that default values are used if the user doesn't provide specific options. Anemos provides a dedicated
+step for this purpose called `sanitize`. This step runs very early, making it the ideal
+place to initialize options before they are used in later steps like `generateResources`.
+
+Let's update the component class to add an action to be run during the `sanitize` step. Then use
+the options in the `generateResources` step instead of the constants we defined earlier.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="component.ts" showLineNumbers>
+        {ComponentTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="component.js" showLineNumbers>
+        {ComponentJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+In the `sanitize` function, we use the nullish coalescing assignment operator (`??=`) to set the default value for
+each option only if it hasn't already been provided by the user.
+
+With the options and default values handled, we can now instantiate the component and pass specific options. For
+example, to set the image to `nginx:1.27` and the replicas to `3`, while keeping the default values for `name`
+and `namespace`, we would modify our main script as follows:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="index.ts" showLineNumbers>
+        {IndexTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="index.js" showLineNumbers>
+        {IndexJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Now, when you build the application, replicas will be set to `3`, the image will be `nginx:1.27`,
+and the name and namespace will remain as `example-app` and `default`, respectively.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos build --tsc . dist/index.js
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    anemos build index.js
+    ```
+  </TabItem>
+</Tabs>
+
+Diff of the `deployment.yaml` file:
+
+```diff title="deployment.yaml" showLineNumbers
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app
+  namespace: default
+spec:
+- replicas: 1
++ replicas: 3
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+        - name: app
+-         image: nginx
++         image: nginx:1.27
+          ports:
+            - containerPort: 80
+```

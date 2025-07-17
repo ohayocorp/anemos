@@ -1,0 +1,162 @@
+---
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+import Mermaid from '@theme/Mermaid';
+
+import Diagram from '!!raw-loader!/docs/steps-mermaid.txt';
+import ComponentEmptyJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/components-and-actions/componentEmpty/index.js';
+import ComponentEmptyTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/components-and-actions/componentEmpty/index.ts';
+import ComponentJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/components-and-actions/component.js';
+import ComponentTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/components-and-actions/component.ts';
+import IndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/components-and-actions/index.js';
+import IndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/components-and-actions/index.ts';
+
+# Components and Actions
+
+In Anemos, the generation process is orchestrated by a `Builder`. `Builder` consists of
+multiple `Component` objects. Each `Component` represents a logical unit of work,
+often corresponding to a specific application or a configuration task. `Component` objects
+themselves are composed of multiple `Action`s. `Action`s are functions that are
+responsible for performing specific tasks in a defined sequence.
+
+When `Builder.build()` is called, all actions from all components are collected, sorted by their steps,
+and executed sequentially. Following diagram illustrates the execution flow of a `Builder`.
+More detailed information about the execution of steps can be found in [Execution Order](../reference/execution-order.mdx).
+
+<Mermaid value={Diagram} />
+
+## Components
+
+A `Component` encapsulates a set of operations needed for a specific application or task.
+For example, you might have a component for generating backend service manifests, or a component
+that modifies ingress resources to add some specific annotations. Each component can be thought
+of as a plugin that can be added to the `Builder` to extend its functionality.
+
+Components are generally defined by extending the `Component` class. It is also possible to
+create a component using the constructor directly, but extending the
+`Component` class encapsulates the logic and provides a cleaner interface.
+
+The `Component` class provides methods to manage actions. It is designed to be flexible and
+extensible, allowing you to create custom components that fit your specific needs.
+
+### Creating a Custom Component
+
+To create a custom component, you extend the `Component` class and add the necessary
+actions within its constructor. The `Component` class provides the `addAction` method to register
+these actions along with their steps. Let's create a new file and define a custom component:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="component.ts" showLineNumbers>
+        {ComponentEmptyTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="component.js" showLineNumbers>
+        {ComponentEmptyJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+## Actions
+
+Components themselves don't perform tasks; they serve as containers for actions. Actions do the actual work,
+such as generating documents, modifying existing ones, or performing other operations.
+
+Actions are executed in a specific order, defined when adding them to a component using the `addAction` method.
+This sequence is important, as dependencies might exist between tasks (e.g. generating resources
+before modifying them). Anemos provides predefined steps like `steps.generateResources`
+and `steps.modify` to help manage common sequences.
+
+Actions are simple functions that accept a `BuildContext` object as an argument. The `BuildContext`
+provides access to shared state, builder options, existing documents generated during previous steps,
+and other utilities necessary for the action's execution.
+
+Let's add an action to our custom component. We will move the code from the previous section that generates
+the Kubernetes manifests into the action. This will allow us to generate the documents when the action is executed.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="component.ts" showLineNumbers>
+        {ComponentTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="component.js" showLineNumbers>
+        {ComponentJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+:::note
+Instead of using `builder.addDocument`, we are now using `context.addDocument` to add documents to the context.
+
+The `builder.addDocument` method that was used in the previous sections is a shorthand for creating a component
+that adds the given document to the context during the `steps.generateResources` step. It is similar to the following code block:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```typescript showLineNumbers
+    const component = new anemos.Component();
+
+    component.addAction(anemos.steps.generateResources, (context: anemos.BuildContext) => {
+        context.addDocument(document);
+    });
+
+    builder.addComponent(component);
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```javascript showLineNumbers
+    const component = new anemos.Component();
+
+    component.addAction(anemos.steps.generateResources, (context) => {
+        context.addDocument(document);
+    });
+
+    builder.addComponent(component);
+    ```
+  </TabItem>
+</Tabs>
+:::
+
+Now that we have defined our custom component, we can use it in our main script. Replace the previous code that generates
+the Kubernetes manifests in the main script with the following code that creates an instance of our custom component
+and adds it to the builder:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="index.ts" showLineNumbers>
+        {IndexTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="index.js" showLineNumbers>
+        {IndexJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Now, run Anemos build to generate the manifests and see that the output is the same as before:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos build --tsc . dist/index.js
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    anemos build index.js
+    ```
+  </TabItem>
+</Tabs>

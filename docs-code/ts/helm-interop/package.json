@@ -1,0 +1,15 @@
+{
+  "name": "helm-interop",
+  "version": "1.0.0",
+  "workspaces": [
+    ".anemos/types"
+  ],
+  "devDependencies": {
+    "@ohayocorp/anemos": "workspace:.anemos/types",
+    "typescript": "^5.8.3",
+    "copyfiles": "^2.4.1"
+  },
+  "scripts": {
+    "copy-assets": "copyfiles *.tgz dist"
+  }
+}

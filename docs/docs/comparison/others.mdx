@@ -1,0 +1,28 @@
+---
+sidebar_position: 2
+---
+
+# Anemos vs Other Tools
+
+There are numerous tools available for managing Kubernetes manifests. Most of them are created to solve problems
+of Helm, but they often end up with similar limitations.
+
+Basically, there are three types of tools:
+
+- **Template-based tools**: These tools use templating engines at their core to generate Kubernetes manifests. Tools like
+  [Timoni](https://timoni.sh/), [Tanka](https://tanka.dev/) or [ytt](https://carvel.dev/ytt/) use relatively unpopular
+  templating languages like Jsonnet or CUE. These languages require you to write YAML files with a special syntax.
+  Unfamiliar syntax can be hard to read and maintain, especially for those who are not used to it. Moreover, despite all the
+  syntactic sugar that helps to write less code in templates, it's still easy to get to a point where some programming logic,
+  like loops, conditionals, or functions are required. These constructs are not always comfortable to use in templating languages
+  and are mostly embedded in the template itself, thus obscuring the actual manifest structure.
+- **Tools based on Helm**: Tools like [Helmfile](https://github.com/helmfile/helmfile),
+  [Glasskube](https://glasskube.dev/products/package-manager) or [Holos](https://holos.run) extend Helm's capabilities, but often
+  inherit its limitations. They may introduce new features or improvements, but they still rely on Helm's templating engine
+  and its associated complexities. They bring more declaration files over Helm, adding yet another abstraction layer. These layers
+  often lead to more complexity and less flexibility, since there are more tools that require workarounds for missing features.
+- **Programmatic tools**: Tools like [cdk8s](https://cdk8s.io/) or [yoke](https://yoke.dev/) allow you to define Kubernetes
+  manifests using programming languages like TypeScript or Go. They provide a more structured and type-safe way to manage manifests.
+  Their main drawback is that they require development environments to be set up for the specific programming language. Another
+  barrier to their widespread adoption is that they support many programming languages, which makes it hard to create a unified
+  ecosystem around them. This leads to fragmentation and makes it harder to find reusable components or libraries.

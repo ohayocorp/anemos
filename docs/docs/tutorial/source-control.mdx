@@ -1,0 +1,195 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+import IndexTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/source-control/index.ts';
+import IndexJs from '!!raw-loader!{{CODE_PATH}}/js/tutorial/source-control/index.js';
+import GitignoreTs from '!!raw-loader!{{CODE_PATH}}/ts/tutorial/source-control/.gitignore';
+import GitignoreJs from '!!raw-loader!{{CODE_PATH}}/js/.gitignore';
+
+# Source Control Integration
+
+Source control is essential for all software projects. For Anemos projects, it serves
+an additional crucial role. Anemos stores its output files within the project
+directory. This practice means that these output files become part of the source control history.
+
+Tracking output files is valuable not only for monitoring changes but also because these
+files can act as implicit tests for your project. When refactoring your Anemos
+code, you can examine the diff of the output files in your source control system to verify
+that the generated configurations remain correct.
+
+## Using Git
+
+We will use Git for source control management. This tutorial assumes Git is already
+installed on your system. If not, you can download it from the
+[official Git website](https://git-scm.com/downloads).
+
+First, initialize a new Git repository within your project directory by running:
+
+```bash
+git init
+```
+
+The `anemos new` command (run in the previous step of the tutorial) had already
+created a .gitignore file for you. This file tells Git to ignore transient files like
+the `node_modules` and `.anemos/types` directories.
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="text" title=".gitignore" showLineNumbers>
+        {GitignoreTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="text" title=".gitignore" showLineNumbers>
+        {GitignoreJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Now, stage all the project files and create the initial commit:
+
+```bash
+git add .
+git commit -m "Initial commit"
+```
+
+## Observing Changes with Diff
+
+While you can push your project to a remote repository at this stage, let's first demonstrate
+how source control helps track changes.
+
+Modify the main script file to change the name of the application:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    <CodeBlock language="typescript" title="index.ts" showLineNumbers>
+        {IndexTs}
+    </CodeBlock>
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    <CodeBlock language="javascript" title="index.js" showLineNumbers>
+        {IndexJs}
+    </CodeBlock>
+  </TabItem>
+</Tabs>
+
+Run the Anemos build command again to regenerate the output files based on this change:
+
+<Tabs groupId='language'>
+  <TabItem value="typescript" label="TypeScript">
+    ```bash
+    anemos build --tsc . dist/index.js
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```bash
+    anemos build index.js
+    ```
+  </TabItem>
+</Tabs>
+
+Now, use git diff to see the changes in both your source file `index.ts`
+and the generated output files:
+
+```bash
+git diff
+```
+
+Git will display the differences. Notice how the change in the name variable
+affects the generated Kubernetes manifests:
+
+<Tabs>
+  <TabItem value="typescript" label="TypeScript">
+    ```diff title="index.ts"
+    @@ -3,7 +3,7 @@ import * as anemos from "@ohayocorp/anemos";
+     const builder = new anemos.Builder("1.31", anemos.KubernetesDistribution.Minikube, anemos.EnvironmentType.Development);
+    
+    -const name = "example-app";
+    +const name = "example-app2";
+     const namespace = "default";
+     const image = "nginx";
+     const replicas = 1;
+    ```
+  </TabItem>
+
+  <TabItem value="javascript" label="JavaScript">
+    ```diff title="index.js"
+    @@ -3,7 +3,7 @@ const anemos = require("@ohayocorp/anemos");
+     const builder = new anemos.Builder("1.31", anemos.KubernetesDistribution.Minikube, anemos.EnvironmentType.Development);
+    
+    -const name = "example-app";
+    +const name = "example-app2";
+     const namespace = "default";
+     const image = "nginx";
+     const replicas = 1;
+    ```
+  </TabItem>
+</Tabs>
+
+<Tabs>
+  <TabItem value="deployment.yaml">
+    ```diff
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    - name: example-app
+    + name: example-app2
+      namespace: default
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+    -     app: example-app
+    +     app: example-app2
+      template:
+        metadata:
+          labels:
+    -       app: example-app
+    +       app: example-app2
+        spec:
+          containers:
+            - name: app
+              image: nginx
+              ports:
+                - containerPort: 80
+    ```
+  </TabItem>
+
+  <TabItem value="service.yaml">
+    ```diff
+    apiVersion: v1
+    kind: Service
+    metadata:
+    - name: example-app
+    + name: example-app2
+      namespace: default
+    spec:
+      ports:
+        - port: 80
+          protocol: TCP
+          targetPort: 80
+      selector:
+    -   app: example-app
+    +   app: example-app2
+    ```
+  </TabItem>
+</Tabs>
+
+This demonstrates how Git tracks changes not only in your Anemos code but also
+in the generated output, providing a way to verify the impact of your modifications.
+
+To discard the experimental changes made in this section and revert
+the files back to the state of the last commit (the "Initial commit"), run the
+following command:
+
+```bash
+git checkout -- .
+```

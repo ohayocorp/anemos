@@ -1,0 +1,136 @@
+block-beta
+  columns 1
+
+  block:register
+    columns 4
+    block:component1
+        columns 1
+        component1Title["Component 1"]
+
+        s1["Sanitize 1"]
+        cA1["Custom Step A 1"]
+        g1["Generate Resources 1"]
+        m1["Modify 1"]
+    end
+
+    block:component2
+        columns 1
+        component2Title["Component 2"]
+
+        s2["Sanitize 2"]
+        g2["Generate Resources 2"]
+        cB1["Custom Step B 1"]
+        m2["Modify 2"]
+    end
+
+    e1["..."]
+
+    block:componentN
+        columns 1
+        componentNTitle["Component N"]
+
+        sN["Sanitize N"]
+        gN["Generate Resources N"]
+        mN["Modify N"]
+    end
+  end
+
+  block:build
+    columns 5
+    
+    block:sAll
+      columns 1
+      sanitizeTitle["Sanitize Step"]
+
+      sAll1["Sanitize 1"]
+      space
+      sAll2["Sanitize 2"]
+      space
+      e2["..."]
+      space
+      sAllN["Sanitize N"]
+    end
+    
+    block:cAAll
+      columns 1
+      custom1Title["Custom Step A"]
+
+      cAAll1["Custom Step A 1"]
+      space
+      space
+      space
+      space
+      space
+      space
+    end
+    
+    block:gAll
+      columns 1
+      generateResourcesTitle["Generate Resources Step"]
+
+      gAll1["Generate Resources 1"]
+      space
+      gAll2["Generate Resources 2"]
+      space
+      e3["..."]
+      space
+      gAllN["Generate Resources N"]
+    end
+
+    block:cBAll
+      columns 1
+      custom2Title["Custom Step B"]
+
+      cBAll1["Custom Step B 1"]
+      space
+      space
+      space
+      space
+      space
+      space
+    end
+    
+    block:mAll
+      columns 1
+      modifyTitle["Modify Step"]
+
+      mAll1["Modify 1"]
+      space
+      mAll2["Modify 2"]
+      space
+      e4["..."]
+      space
+      mAllN["Modify N"]
+    end
+  end
+
+  register --> build
+  sAll1 --> sAll2
+  sAll2 --> e2
+  e2 --> sAllN
+  sAllN --> cAAll
+  cAAll1 --> gAll
+  gAll1 --> gAll2
+  gAll2 --> e3
+  e3 --> gAllN
+  gAllN --> cBAll
+  cBAll1 --> mAll
+  mAll1 --> mAll2
+  mAll2 --> e4
+  e4 --> mAllN
+
+  classDef blockTitle stroke:transparent,fill:transparent;
+  classDef sanitize fill:#296,stroke:#333;
+  classDef custom1 fill:#d66,stroke:#333;
+  classDef custom2 fill:#284,stroke:#333;
+  classDef generateResources fill:#669,stroke:#333;
+  classDef modify fill:#626,stroke:#333;
+  classDef ellipsis stroke-width:0px,fill:none;
+
+  class component1Title,component2Title,componentNTitle,sanitizeTitle,generateResourcesTitle,modifyTitle,custom1Title,custom2Title blockTitle
+  class s1,s2,sN,sAll1,sAll2,sAllN sanitize
+  class cA1,cAAll1 custom1
+  class cB1,cBAll1 custom2
+  class g1,g2,gN,gAll1,gAll2,gAllN generateResources
+  class m1,m2,mN,mAll1,mAll2,mAllN modify
+  class e1,e2,e3,e4 ellipsis

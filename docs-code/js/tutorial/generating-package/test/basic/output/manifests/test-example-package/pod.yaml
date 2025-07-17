@@ -1,0 +1,11 @@
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  name: test-example-package
+  namespace: test-namespace
+  labels:
+    app: test-example-package
+spec:
+  containers:
+    - name: "nginx"
+      image: "test-image:v1"

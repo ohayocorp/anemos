@@ -1,0 +1,44 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Installation
+
+Anemos is a single binary CLI tool that can be installed by downloading the latest release from the
+[GitHub releases page](https://github.com/ohayocorp/anemos/releases). Download the appropriate
+binary for your operating system and architecture, and place it in a directory that is included
+in your system's `PATH`.
+
+You can use the following commands to download the latest release of Anemos:
+
+<Tabs>
+  <TabItem value="Linux">
+    ```bash showLineNumbers
+    curl -L -o anemos.tar.gz https://github.com/ohayocorp/anemos/releases/latest/download/anemos-linux-amd64.tar.gz && \
+    tar -xzf anemos.tar.gz && \
+    rm anemos.tar.gz && \
+    chmod +x anemos && \
+    sudo mv anemos /usr/local/bin/
+    ```
+  </TabItem>
+  <TabItem value="Windows">
+    ```powershell showLineNumbers
+    Invoke-WebRequest -Uri https://github.com/ohayocorp/anemos/releases/latest/download/anemos-windows-amd64.zip -OutFile anemos.zip
+    Expand-Archive -Path anemos.zip -DestinationPath anemos
+    Remove-Item anemos.zip
+    ```
+  </TabItem>
+  <TabItem value="MacOS">
+    ```bash showLineNumbers
+    curl -L -o anemos.tar.gz https://github.com/ohayocorp/anemos/releases/latest/download/anemos-darwin-amd64.tar.gz && \
+    tar -xzf anemos.tar.gz && \
+    rm anemos.tar.gz && \
+    chmod +x anemos && \
+    sudo mv anemos /usr/local/bin/
+    ```
+  </TabItem>
+</Tabs>

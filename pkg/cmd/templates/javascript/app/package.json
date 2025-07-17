@@ -1,0 +1,10 @@
+{
+  "name": "PACKAGE_NAME",
+  "version": "1.0.0",
+  "workspaces": [
+    ".anemos/types"
+  ],
+  "devDependencies": {
+    "@ohayocorp/anemos": "workspace:.anemos/types"
+  }
+}

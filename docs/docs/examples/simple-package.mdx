@@ -1,0 +1,106 @@
+---
+sidebar_position: 1
+---
+
+# Generating a Package in Its Simplest Form
+
+Anemos provides a template for creating a package. This template is opinionated and
+enforces a specific structure and best practices. However, if you prefer a simpler approach
+without the additional features and structure, you can create a package with just two files.
+
+First declare your package in a `package.json` file. This file is a standard definition
+file for NPM packages. You can find more information about it in the
+[NPM documentation](https://docs.npmjs.com/creating-a-package-json-file).
+
+```json title="package.json" showLineNumbers
+{
+  "name": "my-package",
+  "version": "1.0.0"
+}
+```
+
+Then, create an `index.js` file with your package logic. Following file declares a package
+with just a single function that takes a builder and an optional options object, 
+
+```javascript title="index.js" showLineNumbers
+const anemos = require("@ohayocorp/anemos");
+
+/**
+ * @typedef {Object} Options
+ * @property {string} [name] - The name of the pod.
+ * @property {string} [namespace] - The namespace for the pod.
+ * @property {string} [image] - The container image to use.
+ */
+class Options {
+    name;
+    namespace;
+    image;
+}
+
+/**
+ * @param {anemos.Builder} builder 
+ * @param {Options} options
+ */
+function add(builder, options) {
+    options = options ?? {};
+
+    options.name ??= "my-package";
+    options.namespace ??= "default";
+    options.image ??= "nginx:1.29.0";
+
+    builder.addDocument(
+        `${options.name}/pod.yaml`,
+        `
+        apiVersion: "v1"
+        kind: "Pod"
+        metadata:
+          name: ${options.name}
+          namespace: ${options.namespace}
+        spec:
+          containers:
+            - name: "nginx"
+              image: "${options.image}"
+        `
+    );
+}
+
+module.exports = {
+    add,
+    Options
+};
+```
+
+## Using the Package
+
+After publishing your package to NPM, you can use it in other projects by installing it
+as a dependency. You can also use it locally by referencing the local path to your package.
+Create a new `index.js` file with the following content to use your package:
+
+```javascript title="index.js" showLineNumbers
+const anemos = require('@ohayocorp/anemos');
+
+// Import from your published package.
+const myPackage = require('my-package');
+
+// You can also import from a local file if you are developing it locally.
+// const myPackage = require('./path/to/your/package');
+
+const builder = new anemos.Builder("1.31", anemos.EnvironmentType.Development, anemos.KubernetesDistribution.Minikube);
+
+myPackage.add(builder, {
+    name: "my-pod"
+});
+
+builder.build();
+```
+
+Run the following commands to install the package and build the project:
+
+```bash
+# Install the package from NPM if you have published it.
+# No need to do this if you are using a local package.
+anemos package add "my-package"
+
+# Build the project.
+anemos build index.js
+```

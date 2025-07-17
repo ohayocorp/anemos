@@ -1,0 +1,6 @@
+.anemos/types
+node_modules
+dist/*
+dist/test/*
+!dist/test
+!dist/test/output

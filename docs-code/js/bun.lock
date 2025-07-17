@@ -1,0 +1,23 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "code",
+      "dependencies": {
+        "@ohayocorp/anemos-hello-world": "^1.0.2",
+      },
+      "devDependencies": {
+        "@ohayocorp/anemos": "workspace:.anemos/types",
+      },
+    },
+    ".anemos/types": {
+      "name": "@ohayocorp/anemos",
+      "version": "0.0.0",
+    },
+  },
+  "packages": {
+    "@ohayocorp/anemos": ["@ohayocorp/anemos@workspace:.anemos/types"],
+
+    "@ohayocorp/anemos-hello-world": ["@ohayocorp/anemos-hello-world@1.0.2", "", {}, "sha512-jOhFSfhzFugdWPIiC+tK9ksgOAy7hu4HrXSzTNm3n6yWj6P7/moID4rqMC0TrSePCLmw89CbIalWe20epYx9sw=="],
+  }
+}
