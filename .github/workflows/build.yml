@@ -11,10 +11,10 @@ on:
         default: false
   push:
     branches:
-      - "main"
+      - "master"
   pull_request:
     branches:
-      - "main"
+      - "master"
 
 permissions:
   contents: read
