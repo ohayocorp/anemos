@@ -1,0 +1,74 @@
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ inputs.version }}
+      create_artifacts: true
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: anemos-binaries
+          path: bin/
+
+      - name: Compress binaries
+        run: |
+          set -e
+
+          # Rename binaries to anemos under their respective OS/arch
+          mkdir -p bin/linux-amd64
+          mkdir -p bin/linux-arm64
+          mkdir -p bin/windows-amd64
+          mkdir -p bin/darwin-amd64
+          mkdir -p bin/darwin-arm64
+
+          # Move and rename binaries
+          mv bin/anemos-linux-amd64 bin/linux-amd64/anemos
+          mv bin/anemos-linux-arm64 bin/linux-arm64/anemos
+          mv bin/anemos-windows-amd64 bin/windows-amd64/anemos.exe
+          mv bin/anemos-darwin-amd64 bin/darwin-amd64/anemos
+          mv bin/anemos-darwin-arm64 bin/darwin-arm64/anemos
+
+          # Compress binaries into appropriate formats
+          tar -czf anemos-linux-amd64.tar.gz -C bin/linux-amd64 anemos
+          tar -czf anemos-linux-arm64.tar.gz -C bin/linux-arm64 anemos
+          zip -j -r anemos-windows-amd64.zip bin/windows-amd64/anemos.exe
+          tar -czf anemos-darwin-amd64.tar.gz -C bin/darwin-amd64 anemos
+          tar -czf anemos-darwin-arm64.tar.gz -C bin/darwin-arm64 anemos
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ inputs.version }}
+          name: Release v${{ inputs.version }}
+          artifacts: |
+            anemos-linux-amd64.tar.gz
+            anemos-linux-arm64.tar.gz
+            anemos-windows-amd64.zip
+            anemos-darwin-amd64.tar.gz
+            anemos-darwin-arm64.tar.gz
+
+      - name: Delete artifacts
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: anemos-binaries
