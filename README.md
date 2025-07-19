@@ -1,6 +1,7 @@
 # Anemos
 
-Anemos is a CLI tool designed to simplify the management of Kubernetes manifests. It lets you define your
+Anemos is a single-binary CLI tool written in Go and designed to simplify the management of Kubernetes manifests. It
+bundles [Goja](https://github.com/dop251/goja) JavaScript runtime and lets you define your
 manifests using JavaScript and TypeScript, enabling you to leverage the full power of the language to generate
 and manipulate Kubernetes YAML manifests.
 

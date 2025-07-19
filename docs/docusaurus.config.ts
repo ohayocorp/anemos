@@ -101,6 +101,13 @@ const config: Config = {
             darkTheme: prismThemes.oneDark,
             additionalLanguages: ["diff", "bash", "powershell"],
         },
+        algolia: {
+            appId: '72G6IVIRR8',
+            apiKey: '09b05eef254dc39321153599ad7e15d8',
+            indexName: 'Anemos Docs',
+            contextualSearch: true,
+            insights: true,
+        },
     } satisfies Preset.ThemeConfig,
 };
 
