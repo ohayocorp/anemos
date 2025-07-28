@@ -14,21 +14,27 @@ type BuildContext struct {
 	BuilderOptions         *BuilderOptions
 	KubernetesResourceInfo *KubernetesResourceInfo
 	CustomData             map[string]any
+	JsRuntime              *js.JsRuntime
 
 	builder          *Builder
 	documentGroups   map[*Component][]*DocumentGroup
 	currentComponent *Component
 }
 
-// Adds given document to the document group named "". Creates the document group if it doesn't exist.
+// Adds given document to the document group named "default". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddDocument(document *Document) {
+	context.AddDocumentWithGroupName("default", document)
+}
+
+// Adds given document to the document group with the given name. Creates the document group if it doesn't exist.
+func (context *BuildContext) AddDocumentWithGroupName(documentGroupName string, document *Document) {
 	if document == nil {
 		js.Throw(fmt.Errorf("document cannot be nil"))
 	}
 
-	documentGroup := context.GetDocumentGroupWithName("")
+	documentGroup := context.GetDocumentGroupWithName(documentGroupName)
 	if documentGroup == nil {
-		documentGroup = NewDocumentGroup("")
+		documentGroup = NewDocumentGroup(documentGroupName)
 		context.AddDocumentGroup(documentGroup)
 	}
 
@@ -40,9 +46,19 @@ func (context *BuildContext) AddDocumentParse(path string, yamlContent string) {
 	context.AddDocument(document)
 }
 
+func (context *BuildContext) AddDocumentParseWithGroupName(documentGroupName string, path string, yamlContent string) {
+	document := NewDocumentWithYaml(path, yamlContent)
+	context.AddDocumentWithGroupName(documentGroupName, document)
+}
+
 func (context *BuildContext) AddDocumentMapping(path string, root *Mapping) {
 	document := NewDocumentWithRoot(path, root)
 	context.AddDocument(document)
+}
+
+func (context *BuildContext) AddDocumentMappingWithGroupName(documentGroupName string, path string, root *Mapping) {
+	document := NewDocumentWithRoot(path, root)
+	context.AddDocumentWithGroupName(documentGroupName, document)
 }
 
 // Adds given group to the document groups list.
@@ -51,15 +67,20 @@ func (context *BuildContext) AddDocumentGroup(group *DocumentGroup) {
 	group.component = context.currentComponent
 }
 
-// Adds given additional file to the document group named "". Creates the document group if it doesn't exist.
+// Adds given additional file to the document group named "default". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddAdditionalFile(additionalFile *AdditionalFile) {
+	context.AddAdditionalFileWithGroupName("default", additionalFile)
+}
+
+// Adds given additional file to the document group with the given name. Creates the document group if it doesn't exist.
+func (context *BuildContext) AddAdditionalFileWithGroupName(documentGroupName string, additionalFile *AdditionalFile) {
 	if additionalFile == nil {
 		js.Throw(fmt.Errorf("additionalFile cannot be nil"))
 	}
 
-	documentGroup := context.GetDocumentGroupWithName("")
+	documentGroup := context.GetDocumentGroupWithName(documentGroupName)
 	if documentGroup == nil {
-		documentGroup = NewDocumentGroup("")
+		documentGroup = NewDocumentGroup(documentGroupName)
 		context.AddDocumentGroup(documentGroup)
 	}
 

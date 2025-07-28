@@ -3,7 +3,7 @@ import { BuildContext } from "./buildContext";
 import { BuilderOptions, EnvironmentType, KubernetesDistribution, Version } from "./builderOptions";
 import { Document } from "./document";
 import { Mapping } from "./mapping";
-import { AdditionalFile } from "./documentGroup";
+import { DocumentGroup, AdditionalFile } from "./documentGroup";
 import { Step, steps } from "./step";
 
 export declare class Builder {
@@ -28,23 +28,73 @@ export declare class Builder {
     /** Creates a new component with the given action and adds it to the list of components. */
     onStep(step: Step, callback: (context: BuildContext) => void): void;
 
-    /** Adds the given document to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step. */
+    /**
+     * Adds the given document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources} step.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
     addDocument(document: Document): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
+     * Adds the given document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources} step.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
+    addDocument(documentGroupName: string, document: Document): void;
+
+    /**
+     * Adds a new document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources}
      * step by parsing given YAML string as a {@link Document}.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, yamlContent: string): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
+     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
+     * step by parsing given YAML string as a {@link Document}.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
+    addDocument(documentGroupName: string, path: string, yamlContent: string): void;
+
+    /**
+     * Adds a new document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources}
      * step by converting given object to a {@link Document}.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, root: Mapping | object): void;
 
-    /** Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step. */
+    /**
+     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
+     * step by converting given object to a {@link Document}.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
+    addDocument(documentGroupName: string, path: string, root: Mapping | object): void;
+
+    /**
+     * Adds the given additional file to a {@link DocumentGroup} named "default" during the {@link steps.generateResources} step.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
     addAdditionalFile(additionalFile: AdditionalFile): void;
+
+    /**
+     * Adds the given additional file to a {@link DocumentGroup} with the given name during the {@link steps.generateResources} step.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
+    addAdditionalFile(documentGroupName: string, additionalFile: AdditionalFile): void;
 
     /** Runs all the components that were added to the builder. */
     build(): void;

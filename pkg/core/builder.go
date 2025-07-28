@@ -62,9 +62,21 @@ func (builder *Builder) AddDocument(document *Document) {
 	})
 }
 
+func (builder *Builder) AddDocumentWithGroupName(documentGroupName string, document *Document) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddDocumentWithGroupName(documentGroupName, document)
+	})
+}
+
 func (builder *Builder) AddDocumentParse(path string, yamlContent string) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
 		context.AddDocumentParse(path, yamlContent)
+	})
+}
+
+func (builder *Builder) AddDocumentParseWithGroupName(documentGroupName string, path string, yamlContent string) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddDocumentParseWithGroupName(documentGroupName, path, yamlContent)
 	})
 }
 
@@ -74,9 +86,21 @@ func (builder *Builder) AddDocumentMapping(path string, root *Mapping) {
 	})
 }
 
+func (builder *Builder) AddDocumentMappingWithGroupName(documentGroupName string, path string, root *Mapping) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddDocumentMappingWithGroupName(documentGroupName, path, root)
+	})
+}
+
 func (builder *Builder) AddAdditionalFile(additionalFile *AdditionalFile) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
 		context.AddAdditionalFile(additionalFile)
+	})
+}
+
+func (builder *Builder) AddAdditionalFileWithGroupName(documentGroupName string, additionalFile *AdditionalFile) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddAdditionalFileWithGroupName(documentGroupName, additionalFile)
 	})
 }
 
@@ -237,9 +261,13 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddComponent"),
 		js.Method("RemoveComponent"),
 		js.Method("AddDocument"),
+		js.Method("AddDocumentWithGroupName").JsName("addDocument"),
 		js.Method("AddDocumentParse").JsName("addDocument"),
+		js.Method("AddDocumentParseWithGroupName").JsName("addDocument"),
 		js.Method("AddDocumentMapping").JsName("addDocument"),
+		js.Method("AddDocumentMappingWithGroupName").JsName("addDocument"),
 		js.Method("AddAdditionalFile"),
+		js.Method("AddAdditionalFileWithGroupName").JsName("addAdditionalFile"),
 		js.Method("OnStep"),
 		js.Method("Build"),
 	)
