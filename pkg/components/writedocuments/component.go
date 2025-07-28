@@ -48,6 +48,8 @@ func (component *component) output(context *core.BuildContext) {
 		js.Throw(fmt.Errorf("can't get absolute path for %s, %v", outputDirectory, err))
 	}
 
+	core.CheckPathInsideMainScriptDirectory(context.JsRuntime, outputDirectory)
+
 	slog.Info("Writing documents to ${outputDirectory}", slog.String("outputDirectory", outputDirectory))
 
 	if outputDirectory != "" {
@@ -90,7 +92,7 @@ func (component *component) output(context *core.BuildContext) {
 
 	for _, documentGroup := range context.GetDocumentGroups() {
 		for _, document := range documentGroup.Documents {
-			component.writeDocument(document, outputDirectory)
+			component.writeDocument(context, document, outputDirectory)
 		}
 
 		for _, additionalFile := range documentGroup.AdditionalFiles {
@@ -98,6 +100,8 @@ func (component *component) output(context *core.BuildContext) {
 			filePath := filepath.Join(outputDirectory, additionalFile.Path)
 			filePath = strings.ReplaceAll(filePath, "\\", "/")
 			fileDirectory := filepath.Dir(filePath)
+
+			core.CheckPathInsideMainScriptDirectory(context.JsRuntime, filePath)
 
 			if fileDirectory != "" {
 				if err := os.MkdirAll(fileDirectory, os.ModePerm); err != nil {
@@ -113,10 +117,12 @@ func (component *component) output(context *core.BuildContext) {
 	}
 }
 
-func (component *component) writeDocument(document *core.Document, outputDirectory string) {
+func (component *component) writeDocument(context *core.BuildContext, document *core.Document, outputDirectory string) {
 	documentPath := document.FullPath()
 	filePath := filepath.Join(outputDirectory, documentPath)
 	documentDirectory := filepath.Dir(filePath)
+
+	core.CheckPathInsideMainScriptDirectory(context.JsRuntime, filePath)
 
 	slog.Debug("Writing document ${path}", slog.String("path", documentPath))
 

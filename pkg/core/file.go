@@ -8,7 +8,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
-func checkPathInsideMainScriptDirectory(jsRuntime *js.JsRuntime, filePath string) {
+func CheckPathInsideMainScriptDirectory(jsRuntime *js.JsRuntime, filePath string) {
 	err := jsRuntime.CheckInsideTheMainScriptDirectory(filePath)
 	if err != nil {
 		js.Throw(err)
@@ -17,7 +17,7 @@ func checkPathInsideMainScriptDirectory(jsRuntime *js.JsRuntime, filePath string
 
 func ReadAllText(jsRuntime *js.JsRuntime, filePath string) string {
 	filePath = filepath.Clean(filePath)
-	checkPathInsideMainScriptDirectory(jsRuntime, filePath)
+	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -29,7 +29,7 @@ func ReadAllText(jsRuntime *js.JsRuntime, filePath string) string {
 
 func ReadAllBytes(jsRuntime *js.JsRuntime, filePath string) []byte {
 	filePath = filepath.Clean(filePath)
-	checkPathInsideMainScriptDirectory(jsRuntime, filePath)
+	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -41,7 +41,7 @@ func ReadAllBytes(jsRuntime *js.JsRuntime, filePath string) []byte {
 
 func WriteAllText(jsRuntime *js.JsRuntime, filePath string, content string) {
 	filePath = filepath.Clean(filePath)
-	checkPathInsideMainScriptDirectory(jsRuntime, filePath)
+	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
 
 	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
 		js.Throw(err)
@@ -50,7 +50,7 @@ func WriteAllText(jsRuntime *js.JsRuntime, filePath string, content string) {
 
 func WriteAllBytes(jsRuntime *js.JsRuntime, filePath string, data []byte) {
 	filePath = filepath.Clean(filePath)
-	checkPathInsideMainScriptDirectory(jsRuntime, filePath)
+	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
 
 	if err := os.WriteFile(filePath, data, 0644); err != nil {
 		js.Throw(err)

@@ -32,7 +32,7 @@ func TestMethods(t *testing.T) {
 	instance := &MethodTest{}
 	jsRuntime.Variable("", "test", reflect.ValueOf(instance))
 
-	err = jsRuntime.Run("tests/primitives-method.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/primitives-method.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

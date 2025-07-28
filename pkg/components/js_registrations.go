@@ -1,6 +1,7 @@
 package components
 
 import (
+	"github.com/ohayocorp/anemos/pkg/components/apply"
 	"github.com/ohayocorp/anemos/pkg/components/collectcrds"
 	"github.com/ohayocorp/anemos/pkg/components/collectnamespaces"
 	"github.com/ohayocorp/anemos/pkg/components/deleteoutputdirectory"
@@ -11,6 +12,7 @@ import (
 func RegisterComponents(jsRuntime *js.JsRuntime) {
 	registerBuilderConstructor(jsRuntime)
 
+	apply.RegisterJsDeclarations(jsRuntime)
 	collectcrds.RegisterJsDeclarations(jsRuntime)
 	collectnamespaces.RegisterJsDeclarations(jsRuntime)
 	deleteoutputdirectory.RegisterJsDeclarations(jsRuntime)

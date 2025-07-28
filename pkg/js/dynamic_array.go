@@ -23,7 +23,7 @@ func (jsRuntime *JsRuntime) NewDynamicArray(backingSlice reflect.Value) *sobek.O
 		backingSlice: backingSlice,
 	}
 
-	return jsRuntime.runtime.NewDynamicArray(dynamicArray)
+	return jsRuntime.Runtime.NewDynamicArray(dynamicArray)
 }
 
 func (d *DynamicArray) get(index int) reflect.Value {
@@ -44,12 +44,12 @@ func (d *DynamicArray) Len() int {
 
 func (d *DynamicArray) Get(index int) sobek.Value {
 	if index < 0 && index >= d.Len() {
-		panic(d.jsRuntime.runtime.ToValue(fmt.Errorf("index out of range")))
+		panic(d.jsRuntime.Runtime.ToValue(fmt.Errorf("index out of range")))
 	}
 
 	result, err := d.jsRuntime.MarshalToJs(d.get(index))
 	if err != nil {
-		panic(d.jsRuntime.runtime.ToValue(err))
+		panic(d.jsRuntime.Runtime.ToValue(err))
 	}
 
 	return result
@@ -57,7 +57,7 @@ func (d *DynamicArray) Get(index int) sobek.Value {
 
 func (d *DynamicArray) Set(index int, value sobek.Value) bool {
 	if index < 0 || index >= d.Len() {
-		callStack := d.jsRuntime.runtime.CaptureCallStack(-1, nil)
+		callStack := d.jsRuntime.Runtime.CaptureCallStack(-1, nil)
 		if len(callStack) > 0 && callStack[0].FuncName() == "push" {
 			// Sobek doesn't call SetLen when pushing to an array.
 			// We need to call it manually to ensure the backing slice is resized.
@@ -72,7 +72,7 @@ func (d *DynamicArray) Set(index int, value sobek.Value) bool {
 			return d.Set(index, value)
 		}
 
-		panic(d.jsRuntime.runtime.ToValue(fmt.Errorf(
+		panic(d.jsRuntime.Runtime.ToValue(fmt.Errorf(
 			"index out of range slice type: %s index: %d len: %d",
 			d.backingSlice.Type().String(),
 			index,
@@ -88,7 +88,7 @@ func (d *DynamicArray) Set(index int, value sobek.Value) bool {
 
 	exported, err := d.jsRuntime.MarshalToGo(value, d.elemtype())
 	if err != nil {
-		panic(d.jsRuntime.runtime.ToValue(err))
+		panic(d.jsRuntime.Runtime.ToValue(err))
 	}
 
 	if dynamicObject, ok := exported.Interface().(*DynamicObject); ok {

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/ohayocorp/anemos/pkg/cmd"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
 )
 
@@ -12,8 +13,8 @@ func main() {
 	program := &cmd.AnemosProgram{
 		RootCommand: &cobra.Command{
 			Use:     "anemos",
-			Short:   "Anemos is a tool for managing Kubernetes resource definitions using JavaScript/TypeScript.",
-			Version: cmd.AppVersion,
+			Short:   "Anemos is a Kubernetes package manager.",
+			Version: util.AppVersion,
 		},
 	}
 

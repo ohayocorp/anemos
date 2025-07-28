@@ -73,14 +73,14 @@ func (jsRuntime *JsRuntime) initializeFunctions(module *sobek.Object, functions 
 				defer func() {
 					if r := recover(); r != nil {
 						if jsErr, ok := r.(JsError); ok {
-							panic(jsRuntime.runtime.ToValue(jsErr.Err))
+							panic(jsRuntime.Runtime.ToValue(jsErr.Err))
 						}
 
 						// This is not an expected error, panic with the error so that the users can report it.
 						// Using a JS exception here since a Golang panic will pollute the stack trace with Sobek
 						// runtime internals and occasionally cause an invalid memory access error which hides the real error.
 						err := fmt.Errorf("unexpected error in function %s: %v\n%s", overloads[0].jsName, r, string(debug.Stack()))
-						panic(jsRuntime.runtime.ToValue(err))
+						panic(jsRuntime.Runtime.ToValue(err))
 					}
 				}()
 
@@ -111,7 +111,7 @@ func (jsRuntime *JsRuntime) initializeFunctions(module *sobek.Object, functions 
 			fn := func(call sobek.ConstructorCall) *sobek.Object {
 				object, err := jsRuntime.handleConstructor(overloads, call)
 				if err != nil {
-					panic(jsRuntime.runtime.ToValue(err))
+					panic(jsRuntime.Runtime.ToValue(err))
 				}
 
 				return object
@@ -163,7 +163,7 @@ func (jsRuntime *JsRuntime) handleConstructor(overloads []*DynamicFunction, call
 			continue
 		}
 
-		return value.ToObject(jsRuntime.runtime), nil
+		return value.ToObject(jsRuntime.Runtime), nil
 	}
 
 	return nil, overloadsToError(overloads, overloadErrors, false)

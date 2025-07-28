@@ -248,11 +248,11 @@ func (jsRuntime *JsRuntime) marshalToGoSlice(jsArg sobek.Value, expectedType ref
 
 	slice := reflect.MakeSlice(expectedType, 0, 0)
 
-	err := jsRuntime.runtime.Try(func() {
-		jsRuntime.runtime.ForOf(jsArg, func(value sobek.Value) bool {
+	err := jsRuntime.Runtime.Try(func() {
+		jsRuntime.Runtime.ForOf(jsArg, func(value sobek.Value) bool {
 			result, err := jsRuntime.MarshalToGo(value, expectedType.Elem())
 			if err != nil {
-				panic(jsRuntime.runtime.ToValue(err))
+				panic(jsRuntime.Runtime.ToValue(err))
 			}
 
 			slice = reflect.Append(slice, result)
@@ -291,7 +291,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 				for j := 0; j < arg.Len(); j++ {
 					marshalledArg, err := jsRuntime.MarshalToJs(arg.Index(j))
 					if err != nil {
-						panic(jsRuntime.runtime.ToValue(err))
+						panic(jsRuntime.Runtime.ToValue(err))
 					}
 
 					jsArgs = append(jsArgs, marshalledArg)
@@ -302,7 +302,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 
 			marshalledArg, err := jsRuntime.MarshalToJs(arg)
 			if err != nil {
-				panic(jsRuntime.runtime.ToValue(err))
+				panic(jsRuntime.Runtime.ToValue(err))
 			}
 
 			jsArgs = append(jsArgs, marshalledArg)
@@ -312,7 +312,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 
 		if numOut == 0 {
 			if err != nil {
-				panic(jsRuntime.runtime.ToValue(err))
+				panic(jsRuntime.Runtime.ToValue(err))
 			}
 
 			return []reflect.Value{}
@@ -320,7 +320,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 
 		if numOut == 1 {
 			if err != nil && !lastReturnIsError {
-				panic(jsRuntime.runtime.ToValue(err))
+				panic(jsRuntime.Runtime.ToValue(err))
 			}
 
 			if err != nil {
@@ -329,7 +329,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 
 			goResult, marshalErr := jsRuntime.MarshalToGo(jsResult, expectedType.Out(0))
 			if marshalErr != nil {
-				panic(jsRuntime.runtime.ToValue(marshalErr))
+				panic(jsRuntime.Runtime.ToValue(marshalErr))
 			}
 
 			return []reflect.Value{goResult}
@@ -337,12 +337,12 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 
 		if numOut == 2 {
 			if !lastReturnIsError {
-				panic(jsRuntime.runtime.ToValue(fmt.Errorf("second return value must be of type error")))
+				panic(jsRuntime.Runtime.ToValue(fmt.Errorf("second return value must be of type error")))
 			}
 
 			goResult, marshalErr := jsRuntime.MarshalToGo(jsResult, expectedType.Out(0))
 			if marshalErr != nil {
-				panic(jsRuntime.runtime.ToValue(marshalErr))
+				panic(jsRuntime.Runtime.ToValue(marshalErr))
 			}
 
 			return []reflect.Value{
@@ -351,7 +351,7 @@ func (jsRuntime *JsRuntime) marshalToGoFunc(jsArg sobek.Value, expectedType refl
 			}
 		}
 
-		panic(jsRuntime.runtime.ToValue(fmt.Errorf("function with more than 2 return values is not supported")))
+		panic(jsRuntime.Runtime.ToValue(fmt.Errorf("function with more than 2 return values is not supported")))
 	}
 
 	return reflect.MakeFunc(expectedType, wrapper), nil

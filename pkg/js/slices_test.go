@@ -47,7 +47,7 @@ func TestSlices(t *testing.T) {
 	jsRuntime.Variable("", "stringArray", reflect.ValueOf(stringArray))
 	jsRuntime.Variable("", "object", reflect.ValueOf(objectArray))
 
-	err = jsRuntime.Run("tests/slices.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/slices.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

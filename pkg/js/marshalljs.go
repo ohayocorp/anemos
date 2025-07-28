@@ -23,17 +23,17 @@ func (jsRuntime *JsRuntime) MarshalToJs(object reflect.Value) (sobek.Value, erro
 		}
 
 		dynamicArray := jsRuntime.NewDynamicArray(underlyingObject)
-		return jsRuntime.runtime.ToValue(dynamicArray), nil
+		return jsRuntime.Runtime.ToValue(dynamicArray), nil
 	case reflect.Bool:
-		return jsRuntime.runtime.ToValue(underlyingObject.Bool()), nil
+		return jsRuntime.Runtime.ToValue(underlyingObject.Bool()), nil
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return jsRuntime.runtime.ToValue(underlyingObject.Int()), nil
+		return jsRuntime.Runtime.ToValue(underlyingObject.Int()), nil
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return jsRuntime.runtime.ToValue(underlyingObject.Uint()), nil
+		return jsRuntime.Runtime.ToValue(underlyingObject.Uint()), nil
 	case reflect.Float32, reflect.Float64:
-		return jsRuntime.runtime.ToValue(underlyingObject.Float()), nil
+		return jsRuntime.Runtime.ToValue(underlyingObject.Float()), nil
 	case reflect.String:
-		return jsRuntime.runtime.ToValue(underlyingObject.String()), nil
+		return jsRuntime.Runtime.ToValue(underlyingObject.String()), nil
 	}
 
 	if object.Kind() == reflect.Interface {

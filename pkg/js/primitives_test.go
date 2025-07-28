@@ -38,7 +38,7 @@ func TestPrimitivesString(t *testing.T) {
 	jsRuntime.Variable("ns", "globalVariable", reflect.ValueOf(globalVariableNamespace))
 	jsRuntime.Variable("", "globalObject", reflect.ValueOf(instance))
 
-	err = jsRuntime.Run("tests/primitives-string.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/primitives-string.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,7 +74,7 @@ func TestPrimitivesInt(t *testing.T) {
 	jsRuntime.Variable("ns", "globalVariable", reflect.ValueOf(globalVariableNamespace))
 	jsRuntime.Variable("", "globalObject", reflect.ValueOf(instance))
 
-	err = jsRuntime.Run("tests/primitives-int.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/primitives-int.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -110,7 +110,7 @@ func TestPrimitivesBool(t *testing.T) {
 	jsRuntime.Variable("ns", "globalVariable", reflect.ValueOf(globalVariableNamespace))
 	jsRuntime.Variable("", "globalObject", reflect.ValueOf(instance))
 
-	err = jsRuntime.Run("tests/primitives-bool.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/primitives-bool.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

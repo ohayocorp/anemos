@@ -18,6 +18,9 @@ type BunCommand struct {
 	Description string
 	Args        []string
 	Cwd         *string
+	Stdout      io.Writer
+	Stderr      io.Writer
+	Stdin       io.Reader
 }
 
 func RunBunCommand(bunCommand BunCommand) error {
@@ -26,9 +29,9 @@ func RunBunCommand(bunCommand BunCommand) error {
 	}
 
 	cmd := exec.Command(bunPath, bunCommand.Args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
+	cmd.Stdout = bunCommand.Stdout
+	cmd.Stderr = bunCommand.Stderr
+	cmd.Stdin = bunCommand.Stdin
 
 	if bunCommand.Cwd != nil {
 		cmd.Dir = *bunCommand.Cwd

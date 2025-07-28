@@ -53,7 +53,7 @@ func TestMaps(t *testing.T) {
 
 	jsRuntime.Variable("", "object", reflect.ValueOf(object))
 
-	err = jsRuntime.Run("tests/maps.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/maps.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

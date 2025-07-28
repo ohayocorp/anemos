@@ -98,6 +98,7 @@ func (builder *Builder) Build() {
 		BuilderOptions:         builder.Options,
 		KubernetesResourceInfo: NewKubernetesResourceInfo(builder.Options.KubernetesCluster.Version),
 		CustomData:             map[string]any{},
+		JsRuntime:              builder.jsRuntime,
 		builder:                builder,
 		documentGroups:         map[*Component][]*DocumentGroup{},
 	}
@@ -223,9 +224,6 @@ func (builder *Builder) sanitizeBuilderOptions(options *BuilderOptions) {
 
 		outputConfiguration.OutputPath = outputPath
 	}
-
-	// Ensure the output path is under the main script directory.
-	checkPathInsideMainScriptDirectory(builder.jsRuntime, outputConfiguration.OutputPath)
 }
 
 func registerBuilder(jsRuntime *js.JsRuntime) {

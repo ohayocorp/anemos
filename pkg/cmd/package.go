@@ -47,6 +47,9 @@ func (p *packageCommand) getRunCommand() *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Running script",
 				Args:        append([]string{"run"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -61,6 +64,9 @@ func (p *packageCommand) getPackCommand() *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Packaging application",
 				Args:        append([]string{"pm", "pack"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -75,6 +81,9 @@ func (p *packageCommand) getPublishCommand() *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Publishing application",
 				Args:        append([]string{"publish"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -89,6 +98,9 @@ func (p *packageCommand) getLoginCommand() *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Logging in to the package registry",
 				Args:        append([]string{"x", "npm", "login"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -103,6 +115,9 @@ func (p *packageCommand) getConfigCommand() *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Managing NPM configuration",
 				Args:        append([]string{"x", "npm", "config"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -119,6 +134,9 @@ func (p *packageCommand) getInstallCommand(program *AnemosProgram) *cobra.Comman
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Installing dependencies",
 				Args:        append([]string{"install"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -135,6 +153,9 @@ func (p *packageCommand) getAddCommand(program *AnemosProgram) *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Adding dependencies",
 				Args:        append([]string{"add"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -151,6 +172,9 @@ func (p *packageCommand) getUpdateCommand(program *AnemosProgram) *cobra.Command
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Updating dependencies",
 				Args:        append([]string{"update"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -167,6 +191,9 @@ func (p *packageCommand) getRemoveCommand(program *AnemosProgram) *cobra.Command
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Removing dependencies",
 				Args:        append([]string{"remove"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -183,6 +210,9 @@ func (p *packageCommand) getLinkCommand(program *AnemosProgram) *cobra.Command {
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Linking dependencies",
 				Args:        append([]string{"link"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}
@@ -199,6 +229,9 @@ func (p *packageCommand) getUnlinkCommand(program *AnemosProgram) *cobra.Command
 			return js.RunBunCommand(js.BunCommand{
 				Description: "Unlinking dependencies",
 				Args:        append([]string{"unlink"}, args...),
+				Stdout:      os.Stdout,
+				Stderr:      os.Stderr,
+				Stdin:       os.Stdin,
 			})
 		},
 	}

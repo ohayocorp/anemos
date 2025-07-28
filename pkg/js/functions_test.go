@@ -27,7 +27,7 @@ func TestFunctions(t *testing.T) {
 	jsRuntime.Function(reflect.ValueOf(ReturnStringParam)).JsName("returnString")
 	jsRuntime.Function(reflect.ValueOf(ReturnStringPointer))
 
-	err = jsRuntime.Run("tests/functions.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/functions.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

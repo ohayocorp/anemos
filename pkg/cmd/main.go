@@ -9,10 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	AppVersion = "0.0.0"
-)
-
 type AnemosProgram struct {
 	RootCommand               *cobra.Command
 	InitializeRuntimeCallback func(runtime *js.JsRuntime) error
@@ -46,6 +42,9 @@ func Run(program *AnemosProgram) error {
 		getBuildCommand(program),
 		getPackageCommand(program),
 		getDocsCommand(),
+		getApplyCommand(program),
+		getDeleteCommand(program),
+		getListCommand(program),
 	)
 
 	return rootCmd.Execute()

@@ -2,16 +2,57 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Project",
+            "name": "Anemos Build",
             "type": "go",
             "request": "launch",
             "mode": "auto",
+            "console": "integratedTerminal",
             "output": "${workspaceFolder}/bin/anemos",
             "program": "${workspaceFolder}/cmd/anemos",
             "args": [
                 "build",
                 "--verbose",
                 "${input:jsFile}",
+            ]
+        },
+        {
+            "name": "Anemos Apply JsFile",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "console": "integratedTerminal",
+            "output": "${workspaceFolder}/bin/anemos",
+            "program": "${workspaceFolder}/cmd/anemos",
+            "args": [
+                "apply",
+                "--verbose",
+                "${input:jsFile}",
+            ]
+        },
+        {
+            "name": "Anemos Apply Package",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "console": "integratedTerminal",
+            "output": "${workspaceFolder}/bin/anemos",
+            "program": "${workspaceFolder}/cmd/anemos",
+            "args": [
+                "apply",
+                "${input:package}",
+            ]
+        },
+        {
+            "name": "Anemos Delete",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "console": "integratedTerminal",
+            "output": "${workspaceFolder}/bin/anemos",
+            "program": "${workspaceFolder}/cmd/anemos",
+            "args": [
+                "delete",
+                "${input:applySetName}",
             ]
         },
         {
@@ -27,6 +68,16 @@
             "id": "jsFile",
             "type": "promptString",
             "description": "JS file to build",
+        },
+        {
+            "id": "package",
+            "type": "promptString",
+            "description": "URL or package name to apply",
+        },
+        {
+            "id": "applySetName",
+            "type": "promptString",
+            "description": "Apply set name",
         },
     ]
 }

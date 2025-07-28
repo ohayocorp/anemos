@@ -30,6 +30,9 @@ var (
 
 	// Write the outputs, e.g. documents and additional files in this step.
 	StepOutput = NewStep("Output", 99)
+
+	// Apply the resources to the Kubernetes cluster in this step.
+	StepApply = NewStep("Apply", 100)
 )
 
 type Step struct {

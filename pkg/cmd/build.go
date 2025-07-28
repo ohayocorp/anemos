@@ -14,22 +14,24 @@ import (
 
 func getBuildCommand(program *AnemosProgram) *cobra.Command {
 	var tscDirs []string
+	var apply bool
 
 	command := &cobra.Command{
 		Use:   "build [js_file]",
 		Short: "Builds a project.",
 		RunE: func(ctx *cobra.Command, args []string) error {
-			return build(program, args, tscDirs)
+			return build(program, args, tscDirs, apply)
 		},
 		Args: cobra.MinimumNArgs(1),
 	}
 
 	command.Flags().StringSliceVar(&tscDirs, "tsc", nil, "Directories to compile with tsc.")
+	command.Flags().BoolVar(&apply, "apply", false, "Apply the generated manifests to the cluster.")
 
 	return command
 }
 
-func build(program *AnemosProgram, args []string, tscDirs []string) error {
+func build(program *AnemosProgram, args []string, tscDirs []string, apply bool) error {
 	var jsFile string
 	if len(args) > 0 {
 		jsFile = args[0]
@@ -38,9 +40,9 @@ func build(program *AnemosProgram, args []string, tscDirs []string) error {
 		return fmt.Errorf("no JS file provided")
 	}
 
-	jsFile, err := filepath.Abs(jsFile)
+	jsFile, err := js.ResolvePath(jsFile, false)
 	if err != nil {
-		return fmt.Errorf("failed to get absolute path: %s, %w", jsFile, err)
+		return err
 	}
 
 	err = writeTypeDeclarations(program, filepath.Dir(jsFile))
@@ -60,9 +62,32 @@ func build(program *AnemosProgram, args []string, tscDirs []string) error {
 		}
 	}
 
-	runtime, err := js.NewJsRuntime()
+	runtime, err := initializeNewRuntime(program)
 	if err != nil {
 		return err
+	}
+
+	if apply {
+		runtime.Flags[components.JsRuntimeMetadataBuilderApply] = "true"
+	}
+
+	scriptContents, err := os.ReadFile(jsFile)
+	if err != nil {
+		return fmt.Errorf("failed to read file: %s, %w", jsFile, err)
+	}
+
+	script := &js.JsScript{
+		Contents: string(scriptContents),
+		FilePath: jsFile,
+	}
+
+	return runtime.Run(script, args)
+}
+
+func initializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
+	runtime, err := js.NewJsRuntime()
+	if err != nil {
+		return nil, err
 	}
 
 	core.RegisterCore(runtime)
@@ -70,11 +95,11 @@ func build(program *AnemosProgram, args []string, tscDirs []string) error {
 
 	if program.InitializeRuntimeCallback != nil {
 		if err := program.InitializeRuntimeCallback(runtime); err != nil {
-			return fmt.Errorf("failed to initialize runtime: %w", err)
+			return nil, fmt.Errorf("failed to initialize runtime: %w", err)
 		}
 	}
 
-	return runtime.Run(jsFile, args)
+	return runtime, nil
 }
 
 func writeTypeDeclarations(program *AnemosProgram, directory string) error {

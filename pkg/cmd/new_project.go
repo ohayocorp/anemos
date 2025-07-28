@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
 )
 
@@ -197,7 +198,7 @@ func copyFS(dir string, fsys fs.FS, projectName string) error {
 			return err
 		}
 
-		modifiedContent := bytes.ReplaceAll(content, []byte("ANEMOS_VERSION"), []byte(AppVersion))
+		modifiedContent := bytes.ReplaceAll(content, []byte("ANEMOS_VERSION"), []byte(util.AppVersion))
 		modifiedContent = bytes.ReplaceAll(modifiedContent, []byte("PACKAGE_NAME"), []byte(projectName))
 
 		w, err := os.OpenFile(newPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0666|info.Mode()&0777)

@@ -11,6 +11,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +50,7 @@ func writeDeclarations(program *AnemosProgram, output string) error {
 		}
 		`,
 		map[string]interface{}{
-			"AppVersion":  AppVersion,
+			"AppVersion":  util.AppVersion,
 			"PackageName": js.PackageName,
 		})
 

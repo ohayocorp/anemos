@@ -40,6 +40,9 @@ func (component *component) sanitizeOptions(context *core.BuildContext) {
 
 func (component *component) output(context *core.BuildContext) {
 	outputDirectory := context.BuilderOptions.OutputConfiguration.OutputPath
+	// Ensure the output path is under the main script directory.
+	core.CheckPathInsideMainScriptDirectory(context.JsRuntime, outputDirectory)
+
 	errs := []error{}
 
 	// Try multiple times to delete the output directory. Git commands run by VS Code

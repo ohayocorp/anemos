@@ -20,7 +20,9 @@ const PackageName = "@ohayocorp/anemos"
 
 type JsRuntime struct {
 	MainScriptPath         string
-	runtime                *sobek.Runtime
+	Registry               *require.Registry
+	Runtime                *sobek.Runtime
+	Flags                  map[string]string
 	variableRegistrations  []*VariableRegistration
 	functionRegistrations  []*FunctionRegistration
 	typeRegistrations      map[reflect.Type]*TypeRegistration
@@ -30,11 +32,16 @@ type JsRuntime struct {
 	disabledObjectMappings mapset.Set[reflect.Type]
 }
 
+type JsScript struct {
+	Contents string
+	FilePath string
+}
+
 func (jsRuntime *JsRuntime) CheckInsideTheMainScriptDirectory(filePath string) error {
 	// Main script path has already been resolved, so we can use it directly.
 	mainScriptDirectory := filepath.Dir(jsRuntime.MainScriptPath)
 
-	filePath, err := resolvePath(filePath, true)
+	filePath, err := ResolvePath(filePath, true)
 	if err != nil {
 		return err
 	}
@@ -47,7 +54,7 @@ func (jsRuntime *JsRuntime) CheckInsideTheMainScriptDirectory(filePath string) e
 	return nil
 }
 
-func resolvePath(path string, mayNotExist bool) (string, error) {
+func ResolvePath(path string, mayNotExist bool) (string, error) {
 	if path == "" {
 		return "", fmt.Errorf("path cannot be empty")
 	}
@@ -106,7 +113,7 @@ func pathResolver(jsRuntime *JsRuntime, base, path string) string {
 	return require.DefaultPathResolver(base, path)
 }
 
-func sourceLoader(path string) ([]byte, error) {
+func SourceLoader(path string) ([]byte, error) {
 	if runtime.GOOS == "windows" {
 		match, _ := regexp.Match(`^([a-zA-Z]):///`, []byte(path))
 		if match {
@@ -122,7 +129,8 @@ func NewJsRuntime() (*JsRuntime, error) {
 	runtime := sobek.New()
 
 	jsRuntime := &JsRuntime{
-		runtime:                runtime,
+		Runtime:                runtime,
+		Flags:                  make(map[string]string),
 		typeRegistrations:      make(map[reflect.Type]*TypeRegistration),
 		typeConversions:        make(map[reflect.Type][]*TypeConversion),
 		templates:              make(map[reflect.Type]*DynamicObjectTemplate),
@@ -130,7 +138,7 @@ func NewJsRuntime() (*JsRuntime, error) {
 	}
 
 	registry := &require.Registry{}
-	require.WithLoader(sourceLoader)(registry)
+	require.WithLoader(SourceLoader)(registry)
 	require.WithPathResolver(func(base, path string) string {
 		return pathResolver(jsRuntime, base, path)
 	})(registry)
@@ -139,6 +147,8 @@ func NewJsRuntime() (*JsRuntime, error) {
 	console.Enable(runtime)
 	process.Enable(runtime)
 	runtime.Set("exports", runtime.NewObject())
+
+	jsRuntime.Registry = registry
 
 	err := jsRuntime.initialize()
 	if err != nil {
@@ -149,11 +159,11 @@ func NewJsRuntime() (*JsRuntime, error) {
 }
 
 func (jsRuntime *JsRuntime) GetStackTrace() []sobek.StackFrame {
-	return jsRuntime.runtime.CaptureCallStack(0, nil)
+	return jsRuntime.Runtime.CaptureCallStack(0, nil)
 }
 
 func (jsRuntime *JsRuntime) GetEnv(key string) *string {
-	value, err := jsRuntime.runtime.RunString(fmt.Sprintf("process.env.%s", key))
+	value, err := jsRuntime.Runtime.RunString(fmt.Sprintf("process.env.%s", key))
 	if err != nil {
 		Throw(fmt.Errorf("failed to get environment variable %s: %w", key, err))
 	}
@@ -167,59 +177,44 @@ func (jsRuntime *JsRuntime) GetEnv(key string) *string {
 }
 
 func (jsRuntime *JsRuntime) ToSobekValue(object any) sobek.Value {
-	return jsRuntime.runtime.ToValue(object)
+	return jsRuntime.Runtime.ToValue(object)
 }
 
 func (jsRuntime *JsRuntime) ToSobekObject(value sobek.Value) *sobek.Object {
-	return value.ToObject(jsRuntime.runtime)
+	return value.ToObject(jsRuntime.Runtime)
 }
 
-func (jsRuntime *JsRuntime) Run(jsFile string, args []string) error {
-	jsFile, err := filepath.Abs(jsFile)
-	if err != nil {
-		return fmt.Errorf("failed to get absolute path for %s: %w", jsFile, err)
+func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
+	if script == nil || script.Contents == "" {
+		return fmt.Errorf("no script provided to run")
 	}
 
-	jsFile, err = filepath.EvalSymlinks(jsFile)
-	if err != nil {
-		return fmt.Errorf("failed to resolve symlinks for %s: %w", jsFile, err)
-	}
-
+	jsRuntime.MainScriptPath = script.FilePath
 	defer func() {
 		jsRuntime.MainScriptPath = ""
 	}()
-
-	jsRuntime.MainScriptPath, err = resolvePath(jsFile, false)
-	if err != nil {
-		return err
-	}
 
 	jsArgs, err := jsRuntime.MarshalToJs(reflect.ValueOf(args))
 	if err != nil {
 		return fmt.Errorf("failed to marshal args: %w", err)
 	}
 
-	err = jsRuntime.runtime.Set("args", jsArgs)
+	err = jsRuntime.Runtime.Set("args", jsArgs)
 	if err != nil {
 		return fmt.Errorf("failed to set args: %w", err)
 	}
 
-	_, err = jsRuntime.runtime.RunString("require('process').argv = args; delete args;")
+	_, err = jsRuntime.Runtime.RunString("require('process').argv = args; delete args;")
 	if err != nil {
 		return fmt.Errorf("failed to set process.argv: %w", err)
 	}
 
-	script, err := os.ReadFile(jsFile)
-	if err != nil {
-		return fmt.Errorf("failed to read file: %s, %w", jsFile, err)
-	}
-
-	_, err = jsRuntime.runtime.RunScript(jsFile, string(script))
+	_, err = jsRuntime.Runtime.RunScript(script.FilePath, string(script.Contents))
 	if err != nil {
 		if ex, ok := err.(*sobek.Exception); ok {
-			return fmt.Errorf("failed to run script %s: %s", jsFile, ex.String())
+			return fmt.Errorf("failed to run script %s: %s", script.FilePath, ex.String())
 		} else {
-			return fmt.Errorf("failed to run script %s: %w", jsFile, err)
+			return fmt.Errorf("failed to run script %s: %w", script.FilePath, err)
 		}
 	}
 
@@ -244,7 +239,7 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 		objectType:         objectType,
 		goToJsNameMappings: make(map[string]string),
 		jsToGoNameMappings: make(map[string][]string),
-		prototype:          jsRuntime.runtime.NewObject(),
+		prototype:          jsRuntime.Runtime.NewObject(),
 	}
 
 	jsRuntime.templates[objectType] = template
@@ -333,7 +328,7 @@ func (jsRuntime *JsRuntime) getNamespace(rootObject *sobek.Object, namespace str
 
 		ns, ok := currentNamespace.Get(tokens[i]).(*sobek.Object)
 		if !ok {
-			ns = jsRuntime.runtime.NewObject()
+			ns = jsRuntime.Runtime.NewObject()
 			err := currentNamespace.Set(tokens[i], ns)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set namespace: %s, token: %s, %w", namespace, tokens[i], err)

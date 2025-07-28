@@ -86,7 +86,7 @@ func (template *DynamicObjectTemplate) NewObject(backingObject reflect.Value) *s
 		backingObject: backingObject,
 	}
 
-	object := template.jsRuntime.runtime.NewDynamicObject(dynamicObject)
+	object := template.jsRuntime.Runtime.NewDynamicObject(dynamicObject)
 	object.SetPrototype(template.prototype)
 
 	template.objectStore.Store(backingObjectSelf, object)

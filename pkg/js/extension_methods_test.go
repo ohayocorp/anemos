@@ -31,7 +31,7 @@ func TestExtensionMethods(t *testing.T) {
 
 	jsRuntime.Variable("", "object", reflect.ValueOf(object))
 
-	err = jsRuntime.Run("tests/extension-methods.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/extension-methods.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

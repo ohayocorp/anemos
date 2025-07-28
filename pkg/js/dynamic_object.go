@@ -56,7 +56,7 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 	}
 
 	if len(marshalErrors) == len(mappedKeys) {
-		panic(d.jsRuntime.runtime.ToValue(errors.Join(marshalErrors...)))
+		panic(d.jsRuntime.Runtime.ToValue(errors.Join(marshalErrors...)))
 	}
 
 	if hasNullResult {
@@ -98,7 +98,7 @@ func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
 	}
 
 	if len(marshalErrors) == len(mappedKeys) {
-		panic(d.jsRuntime.runtime.ToValue(errors.Join(marshalErrors...)))
+		panic(d.jsRuntime.Runtime.ToValue(errors.Join(marshalErrors...)))
 	}
 
 	if d.jsPropertyStore == nil {

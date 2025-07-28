@@ -4,12 +4,17 @@ import (
 	"reflect"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/ohayocorp/anemos/pkg/components/apply"
 	"github.com/ohayocorp/anemos/pkg/components/collectcrds"
 	"github.com/ohayocorp/anemos/pkg/components/collectnamespaces"
 	"github.com/ohayocorp/anemos/pkg/components/deleteoutputdirectory"
 	"github.com/ohayocorp/anemos/pkg/components/writedocuments"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+)
+
+const (
+	JsRuntimeMetadataBuilderApply = "builder/apply"
 )
 
 func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *core.Builder {
@@ -19,6 +24,10 @@ func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *c
 	collectnamespaces.Add(builder)
 	deleteoutputdirectory.Add(builder)
 	writedocuments.Add(builder)
+
+	if jsRuntime.Flags[JsRuntimeMetadataBuilderApply] == "true" {
+		apply.Add(builder)
+	}
 
 	return builder
 }

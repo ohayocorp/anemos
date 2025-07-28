@@ -18,7 +18,7 @@ func TestConstructors(t *testing.T) {
 		js.Constructor(reflect.ValueOf(ConstructorPrimitives)),
 	)
 
-	err = jsRuntime.Run("tests/constructors.js", nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/constructors.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

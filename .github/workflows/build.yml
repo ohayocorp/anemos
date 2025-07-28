@@ -38,7 +38,7 @@ jobs:
 
       - name: Build
         run: |
-          LD_FLAGS="-X github.com/ohayocorp/anemos/pkg/cmd.AppVersion=${{ inputs.version }}"
+          LD_FLAGS="-X github.com/ohayocorp/anemos/pkg/util.AppVersion=${{ inputs.version }}"
           LD_FLAGS="${LD_FLAGS} -s -w"
 
           bash download-bun.sh
