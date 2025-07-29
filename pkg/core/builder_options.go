@@ -10,20 +10,20 @@ import (
 )
 
 const (
-	EnvironmentTypeDevelopment EnvironmentType = "Development"
-	EnvironmentTypeTesting     EnvironmentType = "Testing"
-	EnvironmentTypeProduction  EnvironmentType = "Production"
+	EnvironmentTypeDevelopment EnvironmentType = "dev"
+	EnvironmentTypeTesting     EnvironmentType = "test"
+	EnvironmentTypeProduction  EnvironmentType = "prod"
 )
 
 const (
-	KubernetesDistributionAKS       KubernetesDistribution = "AKS"
-	KubernetesDistributionEKS       KubernetesDistribution = "EKS"
-	KubernetesDistributionGKE       KubernetesDistribution = "GKE"
-	KubernetesDistributionK3S       KubernetesDistribution = "K3S"
-	KubernetesDistributionKubeadm   KubernetesDistribution = "Kubeadm"
-	KubernetesDistributionMicroK8s  KubernetesDistribution = "MicroK8s"
-	KubernetesDistributionMinikube  KubernetesDistribution = "Minikube"
-	KubernetesDistributionOpenShift KubernetesDistribution = "OpenShift"
+	KubernetesDistributionAKS       KubernetesDistribution = "aks"
+	KubernetesDistributionEKS       KubernetesDistribution = "eks"
+	KubernetesDistributionGKE       KubernetesDistribution = "gke"
+	KubernetesDistributionK3S       KubernetesDistribution = "k3s"
+	KubernetesDistributionKubeadm   KubernetesDistribution = "kubeadm"
+	KubernetesDistributionMicroK8s  KubernetesDistribution = "microk8s"
+	KubernetesDistributionMinikube  KubernetesDistribution = "minikube"
+	KubernetesDistributionOpenShift KubernetesDistribution = "openshift"
 )
 
 const (
