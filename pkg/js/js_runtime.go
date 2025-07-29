@@ -2,6 +2,8 @@ package js
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -82,6 +84,10 @@ func ResolvePath(path string, mayNotExist bool) (string, error) {
 }
 
 func pathResolver(jsRuntime *JsRuntime, base, path string) string {
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		return path
+	}
+
 	fileName := filepath.Base(path)
 	if fileName == "package.json" {
 		// If the path is a package.json file, search all directories traversing up
@@ -114,6 +120,17 @@ func pathResolver(jsRuntime *JsRuntime, base, path string) string {
 }
 
 func SourceLoader(path string) ([]byte, error) {
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
+		// Download the file from the URL.
+		response, err := http.Get(path)
+		if err != nil {
+			return nil, fmt.Errorf("failed to download file from %s: %w", path, err)
+		}
+		defer response.Body.Close()
+
+		return io.ReadAll(response.Body)
+	}
+
 	if runtime.GOOS == "windows" {
 		match, _ := regexp.Match(`^([a-zA-Z]):///`, []byte(path))
 		if match {
