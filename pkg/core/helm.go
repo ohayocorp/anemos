@@ -3,7 +3,9 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"log/slog"
+	"net/http"
 	"reflect"
 	"regexp"
 	"slices"
@@ -47,10 +49,6 @@ func (options *HelmOptions) sanitize() {
 	if options.ReleaseName == "" {
 		js.Throw(fmt.Errorf("release name is not defined on helm options, %#+v", options))
 	}
-
-	if options.Namespace == "" {
-		js.Throw(fmt.Errorf("namespace is not defined on helm options, %#+v", options))
-	}
 }
 
 // Loads the given chart file into memory.
@@ -71,6 +69,56 @@ func LoadChartFromPath(path string) *chart.Chart {
 	}
 
 	return chart
+}
+
+func AddHelmChart(builder *Builder, chartIdentifier string, releaseName string, values string) {
+	if chartIdentifier == "" {
+		js.Throw(fmt.Errorf("chart identifier is not defined"))
+	}
+
+	slog.Info(
+		"Adding Helm chart: ${chart}, release name: ${releaseName}",
+		slog.String("chart", chartIdentifier),
+		slog.String("releaseName", releaseName))
+
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		var chart *chart.Chart
+
+		if strings.HasPrefix(chartIdentifier, "http://") || strings.HasPrefix(chartIdentifier, "https://") {
+			response, err := http.Get(chartIdentifier)
+			if err != nil {
+				js.Throw(fmt.Errorf("can't load chart from URL %s, %v", chartIdentifier, err))
+			}
+			defer response.Body.Close()
+
+			if response.StatusCode != http.StatusOK {
+				js.Throw(fmt.Errorf("can't load chart from URL %s, status code: %d", chartIdentifier, response.StatusCode))
+			}
+
+			data, err := io.ReadAll(response.Body)
+			if err != nil {
+				js.Throw(fmt.Errorf("can't read chart data from URL %s, %v", chartIdentifier, err))
+			}
+
+			chart = LoadChart(data)
+		} else {
+			chart = LoadChartFromPath(chartIdentifier)
+		}
+
+		if chart == nil {
+			js.Throw(fmt.Errorf("can't load chart from path %s", chartIdentifier))
+		}
+
+		options := NewHelmOptionsWithValues(releaseName, "", values)
+
+		documentGroup := GenerateFromChart(chart, context, options)
+		context.AddDocumentGroup(documentGroup)
+	})
+}
+
+func AddHelmChartMapping(builder *Builder, chartIdentifier string, releaseName string, values *Mapping) {
+	valuesString := SerializeToYaml(values)
+	AddHelmChart(builder, chartIdentifier, releaseName, valuesString)
 }
 
 // Runs helm template with values from the options and parses the generated documents.
@@ -152,7 +200,7 @@ func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmO
 func (options *HelmOptions) getValues() (values map[string]interface{}) {
 	valuesYaml := options.Values
 
-	slog.Debug("Values for helm chart, release name: ${releaseName}, values: ${values}",
+	slog.Debug("Values for helm chart, release name: ${releaseName}, values:\n${values}",
 		slog.String("releaseName", options.ReleaseName),
 		slog.String("values", valuesYaml))
 
@@ -247,6 +295,11 @@ func RemoveTestHooks(helmRelease *release.Release) {
 }
 
 func registerHelm(jsRuntime *js.JsRuntime) {
+	jsRuntime.Type(reflect.TypeFor[Builder]()).ExtensionMethods(
+		js.ExtensionMethod(reflect.ValueOf(AddHelmChart)),
+		js.ExtensionMethod(reflect.ValueOf(AddHelmChartMapping)).JsName("addHelmChart"),
+	)
+
 	jsRuntime.Type(reflect.TypeFor[chart.Chart]()).JsName("HelmChart").ExtensionMethods(
 		js.ExtensionMethod(reflect.ValueOf(GenerateFromChart)).JsName("generate"),
 	).Constructors(

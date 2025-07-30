@@ -1,5 +1,16 @@
 import { BuildContext } from "./buildContext";
 import { DocumentGroup } from "./documentGroup";
+import { steps } from "./step";
+
+declare module "./builder" {
+    export interface Builder {
+        /**
+         * Creates a document group from the Helm chart using the given values on
+         * {@link steps.generateResources} step. Chart identifier can be a local path or a URL.
+         */
+        addHelmChart(chartIdentifier: string, releaseName: string, values?: string): void;
+    }
+}
 
 /**
  * Options for generating Helm charts.
