@@ -68,7 +68,7 @@ func (client *KubernetesClient) Delete(
 	if len(objectsToDelete) == 0 {
 		fmt.Println("No objects to delete. Will delete the apply set parent only.")
 	} else {
-		fmt.Printf("Deleting objects for apply set %s:\n\n", applySetParentRef.Name)
+		fmt.Printf("Deleting objects for apply set %s:\n\n", cleanupApplySetParentName(applySetParentRef.Name))
 
 		writer := tabwriter.NewWriter(os.Stdout, 1, 1, 2, ' ', 0)
 		fmt.Fprintf(writer, "\x1b[00m%s\t%s\t%s\n", "NAMESPACE", "RESOURCE", "NAME")
@@ -118,10 +118,9 @@ func (client *KubernetesClient) Delete(
 		}
 
 		fmt.Printf(
-			"Successfully deleted object %s/%s, namespace: %s\n",
-			object.Mapping.Resource.Resource,
-			object.Name,
-			object.Namespace)
+			"Successfully deleted object %s, namespace: %s\n",
+			getDiffColored(fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name), DiffTypeModified),
+			getDiffColored(object.Namespace, DiffTypeModified))
 	}
 
 	// Finally, delete the apply set parent.
