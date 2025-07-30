@@ -21,9 +21,9 @@ type BuildContext struct {
 	currentComponent *Component
 }
 
-// Adds given document to the document group named "default". Creates the document group if it doesn't exist.
+// Adds given document to the document group named "". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddDocument(document *Document) {
-	context.AddDocumentWithGroupName("default", document)
+	context.AddDocumentWithGroupName("", document)
 }
 
 // Adds given document to the document group with the given name. Creates the document group if it doesn't exist.
@@ -67,9 +67,9 @@ func (context *BuildContext) AddDocumentGroup(group *DocumentGroup) {
 	group.component = context.currentComponent
 }
 
-// Adds given additional file to the document group named "default". Creates the document group if it doesn't exist.
+// Adds given additional file to the document group named "". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddAdditionalFile(additionalFile *AdditionalFile) {
-	context.AddAdditionalFileWithGroupName("default", additionalFile)
+	context.AddAdditionalFileWithGroupName("", additionalFile)
 }
 
 // Adds given additional file to the document group with the given name. Creates the document group if it doesn't exist.

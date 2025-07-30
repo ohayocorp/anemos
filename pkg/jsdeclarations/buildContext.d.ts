@@ -18,9 +18,9 @@ export declare class BuildContext {
     customData: Record<string, any>;
 
     /**
-     * Adds the given document to a {@link DocumentGroup} named "default".
+     * Adds the given document to a {@link DocumentGroup} named "".
      * 
-     * Checks for an existing {@link DocumentGroup} with name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(document: Document): void;
@@ -34,9 +34,9 @@ export declare class BuildContext {
     addDocument(documentGroupName: string, document: Document): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "default" by parsing given YAML string as a {@link Document}.
+     * Adds a new document to a {@link DocumentGroup} named "" by parsing given YAML string as a {@link Document}.
      * 
-     * Checks for an existing {@link DocumentGroup} with name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, yamlContent: string): void;
@@ -51,9 +51,9 @@ export declare class BuildContext {
     addDocument(documentGroupName: string, path: string, yamlContent: string): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "default" by converting given object to a {@link Document}.
+     * Adds a new document to a {@link DocumentGroup} named "" by converting given object to a {@link Document}.
      * 
-     * Checks for an existing {@link DocumentGroup} with name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, root: Mapping | object): void;
@@ -71,9 +71,9 @@ export declare class BuildContext {
     addDocumentGroup(documentGroup: DocumentGroup): void;
 
     /**
-     * Adds given additional file to a {@link DocumentGroup} named "default".
+     * Adds given additional file to a {@link DocumentGroup} named "".
      * 
-     * Checks for an existing {@link DocumentGroup} with name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addAdditionalFile(additionalFile: AdditionalFile): void;

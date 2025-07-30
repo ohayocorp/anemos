@@ -51,14 +51,19 @@ func (component *component) apply(context *core.BuildContext) {
 		numberOfAppliedChanges := 0
 
 		for _, documentGroup := range context.GetDocumentGroups() {
-			err = kubernetesClient.Apply(documentGroup.Documents, documentGroup.Name, "", options.SkipConfirmation)
+			name := documentGroup.Name
+			if name == "" {
+				name = "default"
+			}
+
+			err = kubernetesClient.Apply(documentGroup.Documents, name, "", options.SkipConfirmation)
 			if err != nil {
 				if _, ok := err.(client.NoChangesError); ok {
-					slog.Info("No changes to apply for document group ${name}", slog.String("name", documentGroup.Name))
+					slog.Info("No changes to apply for document group ${name}", slog.String("name", name))
 					continue
 				}
 
-				js.Throw(fmt.Errorf("failed to apply document group '%s': %w", documentGroup.Name, err))
+				js.Throw(fmt.Errorf("failed to apply document group '%s': %w", name, err))
 			}
 
 			numberOfAppliedChanges++

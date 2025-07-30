@@ -29,9 +29,9 @@ export declare class Builder {
     onStep(step: Step, callback: (context: BuildContext) => void): void;
 
     /**
-     * Adds the given document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources} step.
+     * Adds the given document to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
-     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(document: Document): void;
@@ -45,10 +45,10 @@ export declare class Builder {
     addDocument(documentGroupName: string, document: Document): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources}
+     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
      * step by parsing given YAML string as a {@link Document}.
      * 
-     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, yamlContent: string): void;
@@ -63,10 +63,10 @@ export declare class Builder {
     addDocument(documentGroupName: string, path: string, yamlContent: string): void;
 
     /**
-     * Adds a new document to a {@link DocumentGroup} named "default" during the {@link steps.generateResources}
+     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
      * step by converting given object to a {@link Document}.
      * 
-     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addDocument(path: string, root: Mapping | object): void;
@@ -81,9 +81,9 @@ export declare class Builder {
     addDocument(documentGroupName: string, path: string, root: Mapping | object): void;
 
     /**
-     * Adds the given additional file to a {@link DocumentGroup} named "default" during the {@link steps.generateResources} step.
+     * Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
-     * Checks for an existing {@link DocumentGroup} with the name "default" and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addAdditionalFile(additionalFile: AdditionalFile): void;
