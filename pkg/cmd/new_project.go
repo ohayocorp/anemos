@@ -161,6 +161,9 @@ func newProject(program *AnemosProgram, args []string, language language, projec
 		Description: "Initialize packages",
 		Args:        []string{"install"},
 		Cwd:         &output,
+		Stdout:      os.Stdout,
+		Stderr:      os.Stderr,
+		Stdin:       os.Stdin,
 	})
 }
 

@@ -3,6 +3,7 @@ package js
 import (
 	_ "embed"
 	"log/slog"
+	"os"
 	"time"
 )
 
@@ -28,6 +29,9 @@ func runTscWithBun(directory string) error {
 		Description: "TypeScript compilation",
 		Args:        []string{"run", "tsc"},
 		Cwd:         &directory,
+		Stdout:      os.Stdout,
+		Stderr:      os.Stderr,
+		Stdin:       os.Stdin,
 	})
 
 	endTime := time.Now()
