@@ -27,7 +27,6 @@ const (
 
 type KubernetesClient struct {
 	Factory       cmdutil.Factory
-	Builder       *resource.Builder
 	Mapper        meta.RESTMapper
 	CoreClient    kubernetes.Interface
 	DynamicClient dynamic.Interface
@@ -41,8 +40,6 @@ type ClusterInfo struct {
 func NewKubernetesClient() (*KubernetesClient, error) {
 	getter := genericclioptions.NewConfigFlags(true)
 	factory := cmdutil.NewFactory(getter)
-
-	builder := factory.NewBuilder()
 
 	mapper, err := factory.ToRESTMapper()
 	if err != nil {
@@ -61,7 +58,6 @@ func NewKubernetesClient() (*KubernetesClient, error) {
 
 	return &KubernetesClient{
 		Factory:       factory,
-		Builder:       builder,
 		Mapper:        mapper,
 		CoreClient:    coreClient,
 		DynamicClient: dynamicClient,

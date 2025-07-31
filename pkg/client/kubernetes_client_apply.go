@@ -122,7 +122,7 @@ func (client *KubernetesClient) Apply(
 	}
 
 	// Configure builder and get objects.
-	builder := client.Builder.
+	builder := client.Factory.NewBuilder().
 		ContinueOnError().
 		Flatten().
 		NamespaceParam(applySetParentRef.Namespace).
