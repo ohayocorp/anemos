@@ -5,8 +5,6 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/ohayocorp/anemos/pkg/components/apply"
-	"github.com/ohayocorp/anemos/pkg/components/collectcrds"
-	"github.com/ohayocorp/anemos/pkg/components/collectnamespaces"
 	"github.com/ohayocorp/anemos/pkg/components/deleteoutputdirectory"
 	"github.com/ohayocorp/anemos/pkg/components/writedocuments"
 	"github.com/ohayocorp/anemos/pkg/core"
@@ -14,19 +12,23 @@ import (
 )
 
 const (
-	JsRuntimeMetadataBuilderApply = "builder/apply"
+	JsRuntimeMetadataBuilderApply            = "builder/apply"
+	JsRuntimeMetadataBuilderSkipConfirmation = "builder/skipConfirmation"
 )
 
 func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *core.Builder {
 	builder := core.NewBuilder(builderOptions, jsRuntime)
 
-	collectcrds.Add(builder)
-	collectnamespaces.Add(builder)
 	deleteoutputdirectory.Add(builder)
 	writedocuments.Add(builder)
 
 	if jsRuntime.Flags[JsRuntimeMetadataBuilderApply] == "true" {
-		apply.Add(builder)
+		applyOptions := apply.NewOptions()
+		if jsRuntime.Flags[JsRuntimeMetadataBuilderSkipConfirmation] == "true" {
+			applyOptions.SkipConfirmation = true
+		}
+
+		apply.AddWithOptions(builder, applyOptions)
 	}
 
 	return builder

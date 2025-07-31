@@ -15,23 +15,25 @@ import (
 func getBuildCommand(program *AnemosProgram) *cobra.Command {
 	var tscDirs []string
 	var apply bool
+	var skipConfirmation bool
 
 	command := &cobra.Command{
 		Use:   "build [js_file]",
 		Short: "Builds a project.",
 		RunE: func(ctx *cobra.Command, args []string) error {
-			return build(program, args, tscDirs, apply)
+			return build(program, args, tscDirs, apply, skipConfirmation)
 		},
 		Args: cobra.MinimumNArgs(1),
 	}
 
 	command.Flags().StringSliceVar(&tscDirs, "tsc", nil, "Directories to compile with tsc.")
 	command.Flags().BoolVar(&apply, "apply", false, "Apply the generated manifests to the cluster.")
+	command.Flags().BoolVarP(&skipConfirmation, "yes", "y", false, "Skip confirmation prompt and apply changes directly")
 
 	return command
 }
 
-func build(program *AnemosProgram, args []string, tscDirs []string, apply bool) error {
+func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, skipConfirmation bool) error {
 	var jsFile string
 	if len(args) > 0 {
 		jsFile = args[0]
@@ -69,6 +71,10 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool) 
 
 	if apply {
 		runtime.Flags[components.JsRuntimeMetadataBuilderApply] = "true"
+	}
+
+	if skipConfirmation {
+		runtime.Flags[components.JsRuntimeMetadataBuilderSkipConfirmation] = "true"
 	}
 
 	scriptContents, err := os.ReadFile(jsFile)

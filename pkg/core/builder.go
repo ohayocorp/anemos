@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
