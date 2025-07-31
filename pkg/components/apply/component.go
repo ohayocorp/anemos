@@ -3,6 +3,7 @@ package apply
 import (
 	"fmt"
 	"log/slog"
+	"sort"
 
 	"github.com/ohayocorp/anemos/pkg/client"
 	"github.com/ohayocorp/anemos/pkg/core"
@@ -49,12 +50,19 @@ func (component *component) apply(context *core.BuildContext) {
 	// If no documents are provided, apply all document groups from the context.
 	if len(documents) == 0 {
 		numberOfAppliedChanges := 0
+		documentGroups := context.GetDocumentGroups()
 
-		for _, documentGroup := range context.GetDocumentGroups() {
+		sort.Slice(documentGroups, func(i, j int) bool {
+			return documentGroups[i].Name < documentGroups[j].Name
+		})
+
+		for _, documentGroup := range documentGroups {
 			name := documentGroup.Name
 			if name == "" {
 				name = "default"
 			}
+
+			slog.Info("Applying document group: ${name}", slog.String("name", name))
 
 			err = kubernetesClient.Apply(documentGroup.Documents, name, "", options.SkipConfirmation)
 			if err != nil {
