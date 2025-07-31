@@ -55,13 +55,6 @@
                 "${input:applySetName}",
             ]
         },
-        {
-            "name": "Start Docs Server",
-            "type": "node-terminal",
-            "request": "launch",
-            "cwd": "${workspaceFolder}/docs",
-            "command": "npm run start"
-        },
     ],
     "inputs": [
         {
