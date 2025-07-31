@@ -1,5 +1,0 @@
-.anemos
-node_modules
-dist/*
-!dist/**/output
-!dist/**/output/**

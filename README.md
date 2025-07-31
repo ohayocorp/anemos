@@ -102,15 +102,3 @@ To build Anemos from source, clone the repository and run the following commands
 ./download-bun.sh
 go build ./cmd/anemos
 ```
-
-If you wish to contribute to the documentation, you should build the docs-code and then
-run the development server:
-
-```bash
-# This command requires anemos binary to be in your PATH
-./build-docs-project.sh
-cd docs
-# Ensure you have NodeJS installed.
-npm install
-npm run start
-```

@@ -41,7 +41,6 @@ func Run(program *AnemosProgram) error {
 		getWriteDeclarationsCommand(program),
 		getBuildCommand(program),
 		getPackageCommand(program),
-		getDocsCommand(),
 		getApplyCommand(program),
 		getDeleteCommand(program),
 		getListCommand(program),

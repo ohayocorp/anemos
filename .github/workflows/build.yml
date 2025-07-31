@@ -26,10 +26,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # For documentation.
-      - name: Setup Node
-        uses: actions/setup-node@v4
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -42,15 +38,7 @@ jobs:
           LD_FLAGS="${LD_FLAGS} -s -w"
 
           bash download-bun.sh
-
-          # Build anemos binary to be able to build the documentation code.
-          go build -o /usr/local/bin/anemos ./cmd/anemos
-
-          bash build-docs-project.sh
           
-          npm install --prefix docs
-          npm run --prefix docs build
-
           OS_LIST=("linux" "windows" "darwin")
           ARCH_LIST=("amd64" "arm64")
 
