@@ -95,13 +95,13 @@ func NewYamlDocumentNode() *yaml.Node {
 	}
 }
 
-// Returns the path to write the document. Adds group name as base directory if it is not nil.
+// Returns the path to write the document. Adds group path as base directory if it is not nil.
 func (document *Document) FullPath() string {
 	if document.Group == nil {
 		return document.Path
 	}
 
-	return path.Join(document.Group.Name, document.Path)
+	return path.Join(document.Group.Path, document.Path)
 }
 
 // Returns a clone of the document.

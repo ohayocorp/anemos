@@ -67,7 +67,7 @@ func (component *component) output(context *core.BuildContext) {
 		}
 
 		for _, additionalFile := range documentGroup.AdditionalFiles {
-			path := fmt.Sprintf("%s/%s", documentGroup.Name, additionalFile.Path)
+			path := fmt.Sprintf("%s/%s", documentGroup.Path, additionalFile.Path)
 			paths[path]++
 		}
 	}
@@ -96,7 +96,7 @@ func (component *component) output(context *core.BuildContext) {
 		}
 
 		for _, additionalFile := range documentGroup.AdditionalFiles {
-			outputDirectory := filepath.Join(outputDirectory, documentGroup.Name)
+			outputDirectory := filepath.Join(outputDirectory, documentGroup.Path)
 			filePath := filepath.Join(outputDirectory, additionalFile.Path)
 			filePath = strings.ReplaceAll(filePath, "\\", "/")
 			fileDirectory := filepath.Dir(filePath)

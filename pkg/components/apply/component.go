@@ -53,25 +53,27 @@ func (component *component) apply(context *core.BuildContext) {
 		documentGroups := context.GetDocumentGroups()
 
 		sort.Slice(documentGroups, func(i, j int) bool {
-			return documentGroups[i].Name < documentGroups[j].Name
+			return documentGroups[i].Path < documentGroups[j].Path
 		})
 
 		for _, documentGroup := range documentGroups {
-			name := documentGroup.Name
-			if name == "" {
-				name = "default"
+			path := documentGroup.Path
+			if path == "" {
+				path = "default"
 			}
 
-			slog.Info("Applying document group: ${name}", slog.String("name", name))
+			path = core.ToKubernetesIdentifier(path)
 
-			err = kubernetesClient.Apply(documentGroup.Documents, name, "", options.SkipConfirmation)
+			slog.Info("Applying document group: ${path}", slog.String("path", path))
+
+			err = kubernetesClient.Apply(documentGroup.Documents, path, "", options.SkipConfirmation)
 			if err != nil {
 				if _, ok := err.(client.NoChangesError); ok {
-					slog.Info("No changes to apply for document group ${name}", slog.String("name", name))
+					slog.Info("No changes to apply for document group ${path}", slog.String("path", path))
 					continue
 				}
 
-				js.Throw(fmt.Errorf("failed to apply document group '%s': %w", name, err))
+				js.Throw(fmt.Errorf("failed to apply document group '%s': %w", path, err))
 			}
 
 			numberOfAppliedChanges++

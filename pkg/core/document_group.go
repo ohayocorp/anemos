@@ -13,7 +13,7 @@ import (
 
 // DocumentGroup is a named container for multiple [Document] instances.
 type DocumentGroup struct {
-	Name            string
+	Path            string
 	Documents       []*Document
 	AdditionalFiles []*AdditionalFile
 
@@ -25,10 +25,10 @@ type AdditionalFile struct {
 	Content string
 }
 
-// Creates a new [DocumentGroup] with given name.
-func NewDocumentGroup(name string) *DocumentGroup {
+// Creates a new [DocumentGroup] with given path.
+func NewDocumentGroup(path string) *DocumentGroup {
 	return &DocumentGroup{
-		Name: name,
+		Path: path,
 	}
 }
 
@@ -202,7 +202,7 @@ func (group *DocumentGroup) FixNameClashes() {
 
 func registerDocumentGroup(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[DocumentGroup]()).Fields(
-		js.Field("Name"),
+		js.Field("Path"),
 		js.Field("Documents"),
 		js.Field("AdditionalFiles"),
 	).Methods(

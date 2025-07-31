@@ -39,7 +39,7 @@ export declare class Builder {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, document: Document): void;
+    addDocument(documentGroupPath: string, document: Document): void;
 
     /**
      * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
@@ -57,7 +57,7 @@ export declare class Builder {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, path: string, yamlContent: string): void;
+    addDocument(documentGroupPath: string, path: string, yamlContent: string): void;
 
     /**
      * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
@@ -75,7 +75,7 @@ export declare class Builder {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, path: string, root: Mapping | object): void;
+    addDocument(documentGroupPath: string, path: string, root: Mapping | object): void;
 
     /**
      * Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
@@ -91,7 +91,7 @@ export declare class Builder {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addAdditionalFile(documentGroupName: string, additionalFile: AdditionalFile): void;
+    addAdditionalFile(documentGroupPath: string, additionalFile: AdditionalFile): void;
 
     /** Creates a new component with the given action and adds it to the list of components. */
     onStep(step: Step, callback: (context: BuildContext) => void): Component;

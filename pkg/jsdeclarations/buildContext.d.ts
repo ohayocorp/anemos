@@ -31,7 +31,7 @@ export declare class BuildContext {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, document: Document): void;
+    addDocument(documentGroupPath: string, document: Document): void;
 
     /**
      * Adds a new document to a {@link DocumentGroup} named "" by parsing given YAML string as a {@link Document}.
@@ -48,7 +48,7 @@ export declare class BuildContext {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, path: string, yamlContent: string): void;
+    addDocument(documentGroupPath: string, path: string, yamlContent: string): void;
 
     /**
      * Adds a new document to a {@link DocumentGroup} named "" by converting given object to a {@link Document}.
@@ -65,7 +65,7 @@ export declare class BuildContext {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupName: string, path: string, root: Mapping | object): void;
+    addDocument(documentGroupPath: string, path: string, root: Mapping | object): void;
 
     /** Adds given group to the document groups list. */
     addDocumentGroup(documentGroup: DocumentGroup): void;
@@ -84,7 +84,7 @@ export declare class BuildContext {
      * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addAdditionalFile(documentGroupName: string, additionalFile: AdditionalFile): void;
+    addAdditionalFile(documentGroupPath: string, additionalFile: AdditionalFile): void;
 
     /** Removes given group from the document groups list. */
     removeDocumentGroup(documentGroup: DocumentGroup): void;

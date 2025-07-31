@@ -63,9 +63,9 @@ func (builder *Builder) AddDocument(document *Document) {
 	})
 }
 
-func (builder *Builder) AddDocumentWithGroupName(documentGroupName string, document *Document) {
+func (builder *Builder) AddDocumentWithGroupPath(documentGroupPath string, document *Document) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentWithGroupName(documentGroupName, document)
+		context.AddDocumentWithGroupPath(documentGroupPath, document)
 	})
 }
 
@@ -75,9 +75,9 @@ func (builder *Builder) AddDocumentParse(path string, yamlContent string) {
 	})
 }
 
-func (builder *Builder) AddDocumentParseWithGroupName(documentGroupName string, path string, yamlContent string) {
+func (builder *Builder) AddDocumentParseWithGroupPath(documentGroupPath string, path string, yamlContent string) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentParseWithGroupName(documentGroupName, path, yamlContent)
+		context.AddDocumentParseWithGroupPath(documentGroupPath, path, yamlContent)
 	})
 }
 
@@ -87,9 +87,9 @@ func (builder *Builder) AddDocumentMapping(path string, root *Mapping) {
 	})
 }
 
-func (builder *Builder) AddDocumentMappingWithGroupName(documentGroupName string, path string, root *Mapping) {
+func (builder *Builder) AddDocumentMappingWithGroupPath(documentGroupPath string, path string, root *Mapping) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentMappingWithGroupName(documentGroupName, path, root)
+		context.AddDocumentMappingWithGroupPath(documentGroupPath, path, root)
 	})
 }
 
@@ -99,9 +99,9 @@ func (builder *Builder) AddAdditionalFile(additionalFile *AdditionalFile) {
 	})
 }
 
-func (builder *Builder) AddAdditionalFileWithGroupName(documentGroupName string, additionalFile *AdditionalFile) {
+func (builder *Builder) AddAdditionalFileWithGroupPath(documentGroupPath string, additionalFile *AdditionalFile) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddAdditionalFileWithGroupName(documentGroupName, additionalFile)
+		context.AddAdditionalFileWithGroupPath(documentGroupPath, additionalFile)
 	})
 }
 
@@ -309,13 +309,13 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddComponent"),
 		js.Method("RemoveComponent"),
 		js.Method("AddDocument"),
-		js.Method("AddDocumentWithGroupName").JsName("addDocument"),
+		js.Method("AddDocumentWithGroupPath").JsName("addDocument"),
 		js.Method("AddDocumentParse").JsName("addDocument"),
-		js.Method("AddDocumentParseWithGroupName").JsName("addDocument"),
+		js.Method("AddDocumentParseWithGroupPath").JsName("addDocument"),
 		js.Method("AddDocumentMapping").JsName("addDocument"),
-		js.Method("AddDocumentMappingWithGroupName").JsName("addDocument"),
+		js.Method("AddDocumentMappingWithGroupPath").JsName("addDocument"),
 		js.Method("AddAdditionalFile"),
-		js.Method("AddAdditionalFileWithGroupName").JsName("addAdditionalFile"),
+		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),
 		js.Method("OnStep"),
 		js.Method("OnSanitize"),
 		js.Method("OnGenerateResources"),

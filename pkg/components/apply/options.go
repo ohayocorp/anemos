@@ -16,14 +16,14 @@ func NewOptions() *Options {
 func NewOptionsWithDocumentGroup(documentGroup *core.DocumentGroup) *Options {
 	return &Options{
 		Documents:          documentGroup.Documents,
-		ApplySetParentName: documentGroup.Name,
+		ApplySetParentName: core.ToKubernetesIdentifier(documentGroup.Path),
 	}
 }
 
 func NewOptionsWithDocumentGroupAndNamespace(documentGroup *core.DocumentGroup, namespace string) *Options {
 	return &Options{
 		Documents:               documentGroup.Documents,
-		ApplySetParentName:      documentGroup.Name,
+		ApplySetParentName:      core.ToKubernetesIdentifier(documentGroup.Path),
 		ApplySetParentNamespace: namespace,
 	}
 }

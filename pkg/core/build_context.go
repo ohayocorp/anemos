@@ -23,18 +23,18 @@ type BuildContext struct {
 
 // Adds given document to the document group named "". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddDocument(document *Document) {
-	context.AddDocumentWithGroupName("", document)
+	context.AddDocumentWithGroupPath("", document)
 }
 
 // Adds given document to the document group with the given name. Creates the document group if it doesn't exist.
-func (context *BuildContext) AddDocumentWithGroupName(documentGroupName string, document *Document) {
+func (context *BuildContext) AddDocumentWithGroupPath(documentGroupPath string, document *Document) {
 	if document == nil {
 		js.Throw(fmt.Errorf("document cannot be nil"))
 	}
 
-	documentGroup := context.GetDocumentGroupWithName(documentGroupName)
+	documentGroup := context.GetDocumentGroupWithPath(documentGroupPath)
 	if documentGroup == nil {
-		documentGroup = NewDocumentGroup(documentGroupName)
+		documentGroup = NewDocumentGroup(documentGroupPath)
 		context.AddDocumentGroup(documentGroup)
 	}
 
@@ -46,9 +46,9 @@ func (context *BuildContext) AddDocumentParse(path string, yamlContent string) {
 	context.AddDocument(document)
 }
 
-func (context *BuildContext) AddDocumentParseWithGroupName(documentGroupName string, path string, yamlContent string) {
+func (context *BuildContext) AddDocumentParseWithGroupPath(documentGroupPath string, path string, yamlContent string) {
 	document := NewDocumentWithYaml(path, yamlContent)
-	context.AddDocumentWithGroupName(documentGroupName, document)
+	context.AddDocumentWithGroupPath(documentGroupPath, document)
 }
 
 func (context *BuildContext) AddDocumentMapping(path string, root *Mapping) {
@@ -56,9 +56,9 @@ func (context *BuildContext) AddDocumentMapping(path string, root *Mapping) {
 	context.AddDocument(document)
 }
 
-func (context *BuildContext) AddDocumentMappingWithGroupName(documentGroupName string, path string, root *Mapping) {
+func (context *BuildContext) AddDocumentMappingWithGroupPath(documentGroupPath string, path string, root *Mapping) {
 	document := NewDocumentWithRoot(path, root)
-	context.AddDocumentWithGroupName(documentGroupName, document)
+	context.AddDocumentWithGroupPath(documentGroupPath, document)
 }
 
 // Adds given group to the document groups list.
@@ -69,18 +69,18 @@ func (context *BuildContext) AddDocumentGroup(group *DocumentGroup) {
 
 // Adds given additional file to the document group named "". Creates the document group if it doesn't exist.
 func (context *BuildContext) AddAdditionalFile(additionalFile *AdditionalFile) {
-	context.AddAdditionalFileWithGroupName("", additionalFile)
+	context.AddAdditionalFileWithGroupPath("", additionalFile)
 }
 
 // Adds given additional file to the document group with the given name. Creates the document group if it doesn't exist.
-func (context *BuildContext) AddAdditionalFileWithGroupName(documentGroupName string, additionalFile *AdditionalFile) {
+func (context *BuildContext) AddAdditionalFileWithGroupPath(documentGroupPath string, additionalFile *AdditionalFile) {
 	if additionalFile == nil {
 		js.Throw(fmt.Errorf("additionalFile cannot be nil"))
 	}
 
-	documentGroup := context.GetDocumentGroupWithName(documentGroupName)
+	documentGroup := context.GetDocumentGroupWithPath(documentGroupPath)
 	if documentGroup == nil {
-		documentGroup = NewDocumentGroup(documentGroupName)
+		documentGroup = NewDocumentGroup(documentGroupPath)
 		context.AddDocumentGroup(documentGroup)
 	}
 
@@ -152,10 +152,10 @@ func (context *BuildContext) GetDocumentGroups() []*DocumentGroup {
 	return documentGroups
 }
 
-func (context *BuildContext) GetDocumentGroupWithName(name string) *DocumentGroup {
+func (context *BuildContext) GetDocumentGroupWithPath(path string) *DocumentGroup {
 	for _, r := range context.documentGroups {
 		for _, documentGroup := range r {
-			if documentGroup.Name == name {
+			if documentGroup.Path == path {
 				return documentGroup
 			}
 		}
@@ -206,7 +206,7 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Method("GetAllDocuments"),
 		js.Method("GetAllDocumentsSorted"),
 		js.Method("GetDocumentGroups"),
-		js.Method("GetDocumentGroupWithName").JsName("getDocumentGroup"),
+		js.Method("GetDocumentGroupWithPath").JsName("getDocumentGroup"),
 		js.Method("GetDocumentGroupsForComponent").JsName("getDocumentGroups"),
 		js.Method("GetDocument"),
 		js.Method("GetDocumentWithPath").JsName("getDocument"),
