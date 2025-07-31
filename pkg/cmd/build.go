@@ -42,7 +42,7 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 		return fmt.Errorf("no JS file provided")
 	}
 
-	jsFile, err := js.ResolvePath(jsFile, false)
+	jsFile, err := js.ResolvePath(jsFile, true)
 	if err != nil {
 		return err
 	}
