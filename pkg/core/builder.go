@@ -138,18 +138,50 @@ func (builder *Builder) Build() {
 
 	defer func() {
 		if r := recover(); r != nil {
-			if jsErr, ok := r.(js.JsError); ok && context.currentComponent != nil {
-				stackTraceStringToPrint := strings.Join(
-					strings.Split(strings.TrimSpace(context.currentComponent.stackTrace), "\n"),
-					"\n\tat ",
-				)
-				js.Throw(fmt.Errorf("%w\n\tat %s", jsErr.Err, stackTraceStringToPrint))
+			cleanupStackTrace := func(stackTrace string) string {
+				lines := strings.Split(stackTrace, "\n")
+
+				var builder strings.Builder
+				for _, line := range lines {
+					if strings.Contains(line, "initializeFunctions.func2 (native)") {
+						continue
+					}
+
+					line = strings.TrimSpace(line)
+					line = strings.TrimPrefix(line, "at")
+					line = strings.TrimSpace(line)
+
+					if line == "" {
+						continue
+					}
+
+					builder.WriteString(fmt.Sprintf("\tat %s\n", line))
+				}
+
+				return builder.String()
 			}
 
-			// This is not an expected error, panic with the error so that the users can report it.
-			// Using a JS exception here since a Golang panic will pollute the stack trace with Sobek
-			// runtime internals and occasionally cause an invalid memory access error which hides the real error.
-			err := fmt.Errorf("unexpected error: %v\n%s", r, string(debug.Stack()))
+			var err error
+
+			if jsErr, ok := r.(js.JsError); ok && context.currentComponent != nil {
+				err = fmt.Errorf(
+					"%s\n%s\n%s",
+					strings.TrimPrefix(cleanupStackTrace(jsErr.Err.Error()), "\tat "),
+					"Component registration stack trace:",
+					cleanupStackTrace(context.currentComponent.stackTrace))
+			} else if jsObj, ok := r.(*sobek.Object); ok && context.currentComponent != nil {
+				err = fmt.Errorf(
+					"%s\n%s\n%s",
+					strings.TrimPrefix(cleanupStackTrace(jsObj.ToString().String()), "\tat "),
+					"Component registration stack trace:",
+					cleanupStackTrace(context.currentComponent.stackTrace))
+			} else {
+				// This is not an expected error, panic with the error so that the users can report it.
+				// Using a JS exception here since a Golang panic will pollute the stack trace with Sobek
+				// runtime internals and occasionally cause an invalid memory access error which hides the real error.
+				err = fmt.Errorf("unexpected error: %v\n%s", r, string(debug.Stack()))
+			}
+
 			js.Throw(err)
 		}
 	}()

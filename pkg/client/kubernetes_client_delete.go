@@ -119,8 +119,8 @@ func (client *KubernetesClient) Delete(
 
 		fmt.Printf(
 			"Successfully deleted object %s, namespace: %s\n",
-			getDiffColored(fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name), DiffTypeModified),
-			getDiffColored(object.Namespace, DiffTypeModified))
+			getDiffColored(fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name), DiffTypeDeleted),
+			getDiffColored(object.Namespace, DiffTypeDeleted))
 	}
 
 	// Finally, delete the apply set parent.

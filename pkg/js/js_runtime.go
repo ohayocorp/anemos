@@ -229,9 +229,9 @@ func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
 	_, err = jsRuntime.Runtime.RunScript(script.FilePath, string(script.Contents))
 	if err != nil {
 		if ex, ok := err.(*sobek.Exception); ok {
-			return fmt.Errorf("failed to run script %s: %s", script.FilePath, ex.String())
+			return fmt.Errorf("failed to run script %s:\n%s", script.FilePath, ex.String())
 		} else {
-			return fmt.Errorf("failed to run script %s: %w", script.FilePath, err)
+			return fmt.Errorf("failed to run script %s:\n%w", script.FilePath, err)
 		}
 	}
 

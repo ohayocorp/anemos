@@ -292,7 +292,7 @@ func (client *KubernetesClient) preprocess(
 		// Get the diff text between the live and merged objects.
 		diff := getDiffText(liveYamlString, mergedYamlString)
 		if diff == "" {
-			fmt.Printf("\nNo changes for %s\n", getDiffColored(fmt.Sprintf("%s/%s", info.Mapping.Resource.Resource, info.Name), DiffTypeModified))
+			fmt.Printf("No changes for %s\n", getDiffColored(fmt.Sprintf("%s/%s", info.Mapping.Resource.Resource, info.Name), DiffTypeAdded))
 			continue
 		}
 
