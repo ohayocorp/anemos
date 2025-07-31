@@ -114,6 +114,21 @@ func (builder *Builder) OnStep(step *Step, callback func(context *BuildContext))
 	return component
 }
 
+// Creates a new component with the given action that will be run during [StepSanitize] and adds it to the list of components.
+func (builder *Builder) OnSanitize(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepSanitize, callback)
+}
+
+// Creates a new component with the given action that will be run during [StepGenerateResources] and adds it to the list of components.
+func (builder *Builder) OnGenerateResources(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepGenerateResources, callback)
+}
+
+// Creates a new component with the given action that will be run during [StepModify] and adds it to the list of components.
+func (builder *Builder) OnModify(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepModify, callback)
+}
+
 // Build method is at the heart of the all process. It collects all actions from all components
 // and sorts them by their steps. Then it applies each action sequentially.
 func (builder *Builder) Build() {
@@ -302,6 +317,9 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupName").JsName("addAdditionalFile"),
 		js.Method("OnStep"),
+		js.Method("OnSanitize"),
+		js.Method("OnGenerateResources"),
+		js.Method("OnModify"),
 		js.Method("Build"),
 	)
 }

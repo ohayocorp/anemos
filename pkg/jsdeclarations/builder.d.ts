@@ -25,9 +25,6 @@ export declare class Builder {
     /** Removes given component from the list of components. */
     removeComponent(component: Component): void;
 
-    /** Creates a new component with the given action and adds it to the list of components. */
-    onStep(step: Step, callback: (context: BuildContext) => void): void;
-
     /**
      * Adds the given document to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
@@ -95,6 +92,27 @@ export declare class Builder {
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
     addAdditionalFile(documentGroupName: string, additionalFile: AdditionalFile): void;
+
+    /** Creates a new component with the given action and adds it to the list of components. */
+    onStep(step: Step, callback: (context: BuildContext) => void): Component;
+
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.sanitize}
+     * and adds it to the list of components.
+     */
+    onSanitize(callback: (context: BuildContext) => void): Component;
+
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.generateResources}
+     * and adds it to the list of components.
+     */
+    onGenerateResources(callback: (context: BuildContext) => void): Component;
+
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.modify}
+     * and adds it to the list of components.
+     */
+    onModify(callback: (context: BuildContext) => void): Component;
 
     /** Runs all the components that were added to the builder. */
     build(): void;
