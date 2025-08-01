@@ -114,20 +114,20 @@ EOF
 
 Example output:
 
-<code style="display: block; white-space: pre-wrap;"><span>[09:44:11.880] </span><span style="color: dodgerblue;">INFO: </span><span>Starting to build documents<br></span>
-<span>[09:44:11.881] </span><span style="color: dodgerblue;">INFO: </span><span>Applying actions for step: '<span style="color: lawngreen;">2</span>' - <span style="color: lawngreen;">Sanitize</span><br></span>
-<span>[09:44:11.881] </span><span style="color: dodgerblue;">INFO: </span><span>Applying actions for step: '<span style="color: lawngreen;">5</span>' - <span style="color: lawngreen;">Generate resources</span><br></span>
-<span>[09:44:11.883] </span><span style="color: dodgerblue;">INFO: </span><span>Applying actions for step: '<span style="color: lawngreen;">100</span>' - <span style="color: lawngreen;">Apply</span><br></span>
-<br>
-<span>Summary of changes:<br></span>
-<br>
-<span>OP  NAMESPACE  RESOURCE<br></span>
-<span style="color: lawngreen;">A   default    deployments/anemos-hello-world<br></span>
-<span style="color: lawngreen;">A   default    services/anemos-hello-world<br></span>
-<br>
-<span>[09:44:11.948] </span><span style="color: dodgerblue;">INFO: </span><span>Successfully applied Kubernetes manifests<br></span>
-</code>
+```
+[09:44:11.880] INFO: Starting to build documents
+[09:44:11.881] INFO: Applying actions for step: '2' - Sanitize
+[09:44:11.881] INFO: Applying actions for step: '5' - Generate resources
+[09:44:11.883] INFO: Applying actions for step: '100' - Apply
 
+Summary of changes:
+
+OP  NAMESPACE  RESOURCE
+A   default    deployments/anemos-hello-world
+A   default    services/anemos-hello-world
+
+[09:44:11.948] INFO: Successfully applied Kubernetes manifests
+```
 
 Or use the `anemos build --apply <js-file>` command to build and apply all manifests defined in the JavaScript file:
 
