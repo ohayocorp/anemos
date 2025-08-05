@@ -365,6 +365,24 @@ func (sequence *Sequence) Remove(index int) {
 	yamlNode.Content = append(contents[:index], contents[index+1:]...)
 }
 
+func (sequence *Sequence) Contains(value string) bool {
+	for _, content := range sequence.YamlNode.Content {
+		if content == nil {
+			continue
+		}
+
+		if content.Kind != yaml.ScalarNode {
+			continue
+		}
+
+		if content.Value == value {
+			return true
+		}
+	}
+
+	return false
+}
+
 func jsToSequence(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Sequence, error) {
 	slice, err := jsRuntime.MarshalToGo(jsValue, reflect.TypeFor[[]sobek.Value]())
 	if err != nil {
@@ -451,6 +469,7 @@ func registerYamlSequence(jsRuntime *js.JsRuntime) {
 		js.Method("GetValue"),
 		js.Method("Length"),
 		js.Method("Remove"),
+		js.Method("Contains"),
 		js.Method("Clear"),
 		js.Method("Clone"),
 	).Constructors(

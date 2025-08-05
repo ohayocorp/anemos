@@ -85,6 +85,9 @@ export declare class Sequence {
     /** Removes the node at the given index. */
     remove(index: number): void;
 
+    /** Returns true if the sequence contains a {@link Scalar} with the given value. */
+    contains(value: string): boolean;
+
     /** Removes all elements. */
     clear(): void;
 
