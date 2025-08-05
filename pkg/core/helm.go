@@ -121,6 +121,10 @@ func AddHelmChartMapping(builder *Builder, chartIdentifier string, releaseName s
 	AddHelmChart(builder, chartIdentifier, releaseName, valuesString)
 }
 
+func AddHelmChartNoValues(builder *Builder, chartIdentifier string, releaseName string) {
+	AddHelmChart(builder, chartIdentifier, releaseName, "")
+}
+
 // Runs helm template with values from the options and parses the generated documents.
 func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmOptions) *DocumentGroup {
 	options.sanitize()
@@ -298,6 +302,7 @@ func registerHelm(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Builder]()).ExtensionMethods(
 		js.ExtensionMethod(reflect.ValueOf(AddHelmChart)),
 		js.ExtensionMethod(reflect.ValueOf(AddHelmChartMapping)).JsName("addHelmChart"),
+		js.ExtensionMethod(reflect.ValueOf(AddHelmChartNoValues)).JsName("addHelmChart"),
 	)
 
 	jsRuntime.Type(reflect.TypeFor[chart.Chart]()).JsName("HelmChart").ExtensionMethods(
