@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"log/slog"
 	"sort"
+	"time"
 
 	"github.com/ohayocorp/anemos/pkg/client"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"sigs.k8s.io/cli-utils/pkg/kstatus/status"
 )
 
 type component struct {
@@ -33,6 +35,10 @@ func (component *component) sanitizeOptions(context *core.BuildContext) {
 	if options == nil {
 		options = &Options{}
 		component.options = options
+	}
+
+	if options.Timeout == 0 {
+		options.Timeout, _ = time.ParseDuration("5m0s")
 	}
 
 	component.SetIdentifier(fmt.Sprintf("apply-%s-%s", options.ApplySetParentNamespace, options.ApplySetParentName))
@@ -66,14 +72,24 @@ func (component *component) apply(context *core.BuildContext) {
 
 			slog.Info("Applying document group: ${path}", slog.String("path", path))
 
-			err = kubernetesClient.Apply(documentGroup.Documents, path, "", options.SkipConfirmation)
+			err := kubernetesClient.Apply(
+				documentGroup.Documents,
+				path,
+				"",
+				options.SkipConfirmation,
+				options.Timeout)
+
 			if err != nil {
 				if _, ok := err.(client.NoChangesError); ok {
 					slog.Info("No changes to apply for document group ${path}", slog.String("path", path))
-					continue
+				} else {
+					js.Throw(fmt.Errorf("failed to apply document group '%s': %w", path, err))
 				}
+			}
 
-				js.Throw(fmt.Errorf("failed to apply document group '%s': %w", path, err))
+			err = kubernetesClient.WaitDocuments(documentGroup.Documents, status.CurrentStatus, options.Timeout)
+			if err != nil {
+				js.Throw(fmt.Errorf("failed to wait for Kubernetes manifests: %w", err))
 			}
 
 			numberOfAppliedChanges++
@@ -83,14 +99,24 @@ func (component *component) apply(context *core.BuildContext) {
 			return
 		}
 	} else {
-		err = kubernetesClient.Apply(documents, options.ApplySetParentName, options.ApplySetParentNamespace, options.SkipConfirmation)
+		err := kubernetesClient.Apply(
+			documents,
+			options.ApplySetParentName,
+			options.ApplySetParentNamespace,
+			options.SkipConfirmation,
+			options.Timeout)
+
 		if err != nil {
 			if _, ok := err.(client.NoChangesError); ok {
 				slog.Info("No changes to apply")
-				return
+			} else {
+				js.Throw(fmt.Errorf("failed to apply Kubernetes manifests: %w", err))
 			}
+		}
 
-			js.Throw(fmt.Errorf("failed to apply Kubernetes manifests: %w", err))
+		err = kubernetesClient.WaitDocuments(documents, status.CurrentStatus, options.Timeout)
+		if err != nil {
+			js.Throw(fmt.Errorf("failed to wait for Kubernetes manifests: %w", err))
 		}
 	}
 

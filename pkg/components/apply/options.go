@@ -1,12 +1,17 @@
 package apply
 
-import "github.com/ohayocorp/anemos/pkg/core"
+import (
+	"time"
+
+	"github.com/ohayocorp/anemos/pkg/core"
+)
 
 type Options struct {
 	Documents               []*core.Document
 	ApplySetParentName      string
 	ApplySetParentNamespace string
 	SkipConfirmation        bool
+	Timeout                 time.Duration
 }
 
 func NewOptions() *Options {

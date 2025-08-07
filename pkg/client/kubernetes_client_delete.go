@@ -97,8 +97,12 @@ func (client *KubernetesClient) Delete(
 			return err
 		}
 
+		deletePropagation := metav1.DeletePropagationForeground
+
 		helper := resource.NewHelper(restClient, object.Mapping)
-		_, err = helper.Delete(object.Namespace, object.Name)
+		_, err = helper.DeleteWithOptions(object.Namespace, object.Name, &metav1.DeleteOptions{
+			PropagationPolicy: &deletePropagation,
+		})
 		if err != nil {
 			if errors.IsNotFound(err) {
 				fmt.Printf(
@@ -126,7 +130,10 @@ func (client *KubernetesClient) Delete(
 	// Finally, delete the apply set parent.
 	_, err = applySetHelper.Delete(applySetParentRef.Namespace, applySetParentRef.Name)
 	if err != nil {
-		return fmt.Errorf("failed to delete apply set parent %s/%s: %w", applySetParentRef.Namespace, applySetParentRef.Name, err)
+		return fmt.Errorf(
+			"deleted all objects, but failed to delete apply set parent %s/%s: %w",
+			applySetParentRef.Namespace,
+			applySetParentRef.Name, err)
 	}
 
 	return nil

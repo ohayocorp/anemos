@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
+	"time"
 
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -57,6 +58,7 @@ func (client *KubernetesClient) Apply(
 	applySetParentName string,
 	applySetParentNamespace string,
 	skipConfirmation bool,
+	timeout time.Duration,
 ) error {
 	applySetParentRef, err := client.getApplySetParentRef(applySetParentName, applySetParentNamespace)
 	if err != nil {
@@ -82,11 +84,11 @@ func (client *KubernetesClient) Apply(
 	applyOptions := &apply.ApplyOptions{
 		DeleteOptions: &cmddelete.DeleteOptions{
 			DynamicClient:     client.DynamicClient,
-			CascadingStrategy: metav1.DeletePropagationBackground,
+			CascadingStrategy: metav1.DeletePropagationForeground,
 			GracePeriod:       -1, // Use default grace period.
 			Quiet:             false,
 			Output:            "name",
-			Timeout:           0, // No timeout.
+			Timeout:           timeout,
 			WaitForDeletion:   true,
 			IgnoreNotFound:    true,
 			IOStreams:         genericclioptions.IOStreams{Out: bytes.NewBuffer(nil)},

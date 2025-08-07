@@ -19,6 +19,7 @@ require (
 	k8s.io/cli-runtime v0.33.0
 	k8s.io/client-go v0.33.0
 	k8s.io/kubectl v0.33.0
+	sigs.k8s.io/cli-utils v0.37.2
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -42,6 +43,7 @@ require (
 	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/evanphx/json-patch v5.9.11+incompatible // indirect
+	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/exponent-io/jsonpath v0.0.0-20210407135951-1de76d718b3f // indirect
 	github.com/fatih/camelcase v1.0.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
@@ -128,6 +130,7 @@ require (
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738 // indirect
 	oras.land/oras-go/v2 v2.5.0 // indirect
+	sigs.k8s.io/controller-runtime v0.18.4 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/kustomize/api v0.19.0 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.19.0 // indirect
