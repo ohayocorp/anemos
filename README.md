@@ -119,13 +119,10 @@ Example output:
 [09:44:11.881] INFO: Applying actions for step: '2' - Sanitize
 [09:44:11.881] INFO: Applying actions for step: '5' - Generate resources
 [09:44:11.883] INFO: Applying actions for step: '100' - Apply
-
-Summary of changes:
-
-OP  NAMESPACE  RESOURCE
-A   default    deployments/anemos-hello-world
-A   default    services/anemos-hello-world
-
+[09:44:11.883] INFO: Summary of changes:
+[09:44:11.883] INFO: OP  NAMESPACE  RESOURCE
+[09:44:11.883] INFO: A   default    deployments/anemos-hello-world
+[09:44:11.883] INFO: A   default    services/anemos-hello-world
 [09:44:11.948] INFO: Successfully applied Kubernetes manifests
 ```
 

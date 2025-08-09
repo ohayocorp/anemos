@@ -32,6 +32,9 @@ export declare class Document {
     /** Returns a deep clone of the document. */
     clone(): Document;
 
-    /** Ensures a {@link Mapping} for ".metadata". */
-    ensureMetadata(): Mapping;
+    /** Apply and wait for this document after the given document. Documents must be in the same group. */
+    provisionAfter(other: Document): void;
+
+    /** Apply and wait for this document before the given document. Documents must be in the same group. */
+    provisionBefore(other: Document): void;
 }

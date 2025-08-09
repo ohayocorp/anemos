@@ -7,6 +7,8 @@ import { KubernetesResource } from "./kubernetesResourceInfo";
  * - {@link generateResources}                      -> 5
  * - {@link generateResourcesBasedOnOtherResources} -> 5,1
  * - {@link modify}                                 -> 6
+ * - {@link specifyProvisioners}                    -> 7
+ * - {@link specifyProvisionerDependencies}         -> 7,1
  * - {@link output}                                 -> 99
  */
 export declare namespace steps {
@@ -34,6 +36,12 @@ export declare namespace steps {
      * Use this step to modify the generated documents, e.g. set labels, annotations, etc.
      */
     export const modify: Step;
+
+    /** Use this step to specify provisioners. */
+    export const specifyProvisioners: Step;
+
+    /** Specify provisioner dependencies in this step. */
+    export const specifyProvisionerDependencies: Step;
 
     /** Write the outputs, e.g. documents and additional files in this step. */
     export const output: Step;

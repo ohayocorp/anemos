@@ -3,6 +3,7 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -229,7 +230,7 @@ func setGeneration(live, merged runtime.Object) {
 }
 
 func confirmChanges() (bool, error) {
-	fmt.Print("Apply these changes? [y/N]: ")
+	slog.Info("Apply these changes? [y/N]: ", util.SlogNoLineBreakAttr())
 
 	scanner := bufio.NewScanner(os.Stdin)
 	if !scanner.Scan() {

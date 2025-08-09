@@ -3,8 +3,9 @@ package client
 import (
 	"context"
 	"fmt"
-	"os"
+	"log/slog"
 	"sort"
+	"strings"
 	"text/tabwriter"
 
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -66,11 +67,12 @@ func (client *KubernetesClient) Delete(
 	})
 
 	if len(objectsToDelete) == 0 {
-		fmt.Println("No objects to delete. Will delete the apply set parent only.")
+		slog.Info("No objects to delete. Will delete the apply set parent only.")
 	} else {
-		fmt.Printf("Deleting objects for apply set %s:\n\n", cleanupApplySetParentName(applySetParentRef.Name))
+		slog.Info("Deleting objects for apply set ${name}:", slog.String("name", cleanupApplySetParentName(applySetParentRef.Name)))
 
-		writer := tabwriter.NewWriter(os.Stdout, 1, 1, 2, ' ', 0)
+		builder := &strings.Builder{}
+		writer := tabwriter.NewWriter(builder, 1, 1, 2, ' ', 0)
 		fmt.Fprintf(writer, "\x1b[00m%s\t%s\t%s\n", "NAMESPACE", "RESOURCE", "NAME")
 
 		for _, object := range objectsToDelete {
@@ -78,17 +80,25 @@ func (client *KubernetesClient) Delete(
 		}
 
 		writer.Flush()
+
+		for _, line := range strings.Split(builder.String(), "\n") {
+			if line == "" {
+				continue
+			}
+
+			slog.Info(line)
+		}
 	}
 
-	fmt.Println()
+	if !skipConfirmation {
+		confirmed, err := confirmChanges()
+		if err != nil {
+			return err
+		}
 
-	confirmed, err := confirmChanges()
-	if err != nil {
-		return fmt.Errorf("failed to confirm changes: %w", err)
-	}
-
-	if !confirmed {
-		return fmt.Errorf("aborting delete operation due to user confirmation")
+		if !confirmed {
+			return fmt.Errorf("aborting delete operation due to user confirmation")
+		}
 	}
 
 	for _, object := range objectsToDelete {
@@ -105,11 +115,10 @@ func (client *KubernetesClient) Delete(
 		})
 		if err != nil {
 			if errors.IsNotFound(err) {
-				fmt.Printf(
-					"Object not found, skipping deletion: %s/%s, namespace: %s\n",
-					object.Mapping.Resource.Resource,
-					object.Name,
-					object.Namespace)
+				slog.Warn("Object not found, skipping deletion: ${resource}/${name}, namespace: ${namespace}",
+					slog.String("resource", object.Mapping.Resource.Resource),
+					slog.String("name", object.Name),
+					slog.String("namespace", object.Namespace))
 
 				continue
 			}
@@ -121,10 +130,9 @@ func (client *KubernetesClient) Delete(
 				object.Namespace, err)
 		}
 
-		fmt.Printf(
-			"Successfully deleted object %s, namespace: %s\n",
-			getDiffColored(fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name), DiffTypeDeleted),
-			getDiffColored(object.Namespace, DiffTypeDeleted))
+		slog.Info("Successfully deleted object ${resource}, namespace: ${namespace}",
+			slog.String("resource", getDiffColored(fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name), DiffTypeDeleted)),
+			slog.String("namespace", getDiffColored(object.Namespace, DiffTypeDeleted)))
 	}
 
 	// Finally, delete the apply set parent.

@@ -13,6 +13,7 @@ import (
 	"sync"
 
 	"github.com/ohayocorp/anemos/pkg/core"
+	"github.com/ohayocorp/anemos/pkg/util"
 )
 
 const (
@@ -100,8 +101,14 @@ func (handler *CliSlogHandler) Handle(context context.Context, record slog.Recor
 		return err
 	}
 
+	noNewLine := false
+
 	collector := make(map[string]string)
 	record.Attrs(func(attr slog.Attr) bool {
+		if attr.Key == util.NoLineBreakAttrKey {
+			noNewLine = true
+		}
+
 		handler.handleAttr(attr, "", collector)
 		return true
 	})
@@ -110,8 +117,10 @@ func (handler *CliSlogHandler) Handle(context context.Context, record slog.Recor
 		return err
 	}
 
-	if err := handler.write("\n"); err != nil {
-		return err
+	if !noNewLine {
+		if err := handler.write("\n"); err != nil {
+			return err
+		}
 	}
 
 	if !handler.printAttrs {
@@ -173,6 +182,10 @@ func (handler *CliSlogHandler) handleAttr(attr slog.Attr, groupIdentifier string
 	attr.Value = attr.Value.Resolve()
 
 	if attr.Equal(slog.Attr{}) {
+		return
+	}
+
+	if attr.Key == util.NoLineBreakAttrKey {
 		return
 	}
 

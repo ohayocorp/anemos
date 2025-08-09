@@ -1,6 +1,7 @@
 import { Component } from "./component";
 import { BuildContext } from "./buildContext";
 import { Document } from "./document";
+import { Provisioner } from "./provisioner";
 
 /**
  * Container for multiple {@link Document} instances. It can also contain multiple
@@ -20,6 +21,12 @@ export declare class DocumentGroup {
 
     /** Additional files in this group. Don't modify this array directly. Use {@link DocumentGroup.addAdditionalFile} instead. */
     additionalFiles: AdditionalFile[];
+
+    /** The provisioner that applies the documents in this group. */
+    applyProvisioner?: Provisioner;
+
+    /** The provisioner that waits for the documents in this group to be ready. */
+    waitProvisioner?: Provisioner;
 
     /** Adds the given document to this group and sets its group field to this group. */
     addDocument(document: Document): void;

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"sort"
 	"strings"
@@ -294,7 +295,10 @@ func (client *KubernetesClient) preprocess(
 		// Get the diff text between the live and merged objects.
 		diff := getDiffText(liveYamlString, mergedYamlString)
 		if diff == "" {
-			fmt.Printf("No changes for %s\n", getDiffColored(fmt.Sprintf("%s/%s", info.Mapping.Resource.Resource, info.Name), DiffTypeAdded))
+			slog.Info(fmt.Sprintf(
+				"No changes for %s",
+				getDiffColored(fmt.Sprintf("%s/%s", info.Mapping.Resource.Resource, info.Name), DiffTypeAdded)))
+
 			continue
 		}
 
@@ -381,17 +385,20 @@ func printChanges(diffs []Diff) {
 		// Print the diff for modified resources.
 		if diff.DiffType == DiffTypeModified {
 			if !printedLabel {
-				fmt.Printf("\nChanges to be applied:\n\n")
+				slog.Info("Changes to be applied:")
 				printedLabel = true
 			}
 
-			fmt.Printf("%s:\n  %s\n", getDiffColored(diff.Resource, diff.DiffType), core.Indent(diff.DiffText, 2))
+			slog.Info(fmt.Sprintf(
+				"%s:\n  %s",
+				getDiffColored(diff.Resource, diff.DiffType), core.Indent(diff.DiffText, 2)))
 		}
 	}
 
-	fmt.Printf("Summary of changes:\n\n")
+	slog.Info("Summary of changes:")
 
-	w := tabwriter.NewWriter(os.Stdout, 1, 1, 2, ' ', 0)
+	builder := &strings.Builder{}
+	w := tabwriter.NewWriter(builder, 1, 1, 2, ' ', 0)
 
 	// Print the header with color codes. Labels won't have actual colors,
 	// but when color codes are not added, tabwriter will not align the columns correctly.
@@ -415,6 +422,14 @@ func printChanges(diffs []Diff) {
 	fmt.Fprintf(w, "\n")
 
 	w.Flush()
+
+	for _, line := range strings.Split(builder.String(), "\n") {
+		if line == "" {
+			continue
+		}
+
+		slog.Info(line)
+	}
 }
 
 func getDiffColored(text string, diffType DiffType) string {

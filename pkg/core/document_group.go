@@ -13,9 +13,11 @@ import (
 
 // DocumentGroup is a named container for multiple [Document] instances.
 type DocumentGroup struct {
-	Path            string
-	Documents       []*Document
-	AdditionalFiles []*AdditionalFile
+	Path             string
+	Documents        []*Document
+	AdditionalFiles  []*AdditionalFile
+	ApplyProvisioner *Provisioner
+	WaitProvisioner  *Provisioner
 
 	component *Component
 }
@@ -27,9 +29,16 @@ type AdditionalFile struct {
 
 // Creates a new [DocumentGroup] with given path.
 func NewDocumentGroup(path string) *DocumentGroup {
-	return &DocumentGroup{
+	documentGroup := &DocumentGroup{
 		Path: path,
 	}
+
+	documentGroup.ApplyProvisioner = ApplyDocuments(documentGroup)
+	documentGroup.WaitProvisioner = WaitDocuments(documentGroup)
+
+	documentGroup.WaitProvisioner.RunAfter(documentGroup.ApplyProvisioner)
+
+	return documentGroup
 }
 
 // Creates a new [AdditionalFile] with given path and content.
@@ -205,6 +214,8 @@ func registerDocumentGroup(jsRuntime *js.JsRuntime) {
 		js.Field("Path"),
 		js.Field("Documents"),
 		js.Field("AdditionalFiles"),
+		js.Field("ApplyProvisioner"),
+		js.Field("WaitProvisioner"),
 	).Methods(
 		js.Method("AddDocument"),
 		js.Method("AddAdditionalFile"),

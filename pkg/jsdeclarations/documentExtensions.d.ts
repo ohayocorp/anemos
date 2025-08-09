@@ -4,6 +4,9 @@ import { Document } from "./document"
 
 declare module "./document" {
     export interface Document {
+        /** Ensures a {@link Mapping} for ".metadata". */
+        ensureMetadata(): Mapping;
+
         /** Ensures a {@link Mapping} for ".metadata.labels". */
         ensureLabels(): Mapping;
 

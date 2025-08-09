@@ -11,6 +11,7 @@ func RegisterCore(jsRuntime *js.JsRuntime) {
 	registerFile(jsRuntime)
 	registerHelm(jsRuntime)
 	registerKubernetesResourceInfo(jsRuntime)
+	registerProvisioner(jsRuntime)
 	registerStep(jsRuntime)
 	registerStringExtensions(jsRuntime)
 	registerYamlDocument(jsRuntime)

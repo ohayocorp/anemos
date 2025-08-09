@@ -19,6 +19,9 @@ export declare class Builder {
     /** Common options that are used by the builder components. */
     options: BuilderOptions;
 
+    /** Runs all the components that were added to the builder. */
+    build(): void;
+
     /** Adds given component to the list of components. */
     addComponent(component: Component): void;
 
@@ -97,6 +100,12 @@ export declare class Builder {
     onStep(step: Step, callback: (context: BuildContext) => void): Component;
 
     /**
+     * Creates a new component with the given action that will be run during {@link steps.populateKubernetesResources}
+     * and adds it to the list of components.
+     */
+    onPopulateKubernetesResources(callback: (context: BuildContext) => void): Component;
+
+    /**
      * Creates a new component with the given action that will be run during {@link steps.sanitize}
      * and adds it to the list of components.
      */
@@ -109,11 +118,26 @@ export declare class Builder {
     onGenerateResources(callback: (context: BuildContext) => void): Component;
 
     /**
+     * Creates a new component with the given action that will be run during {@link steps.generateResourcesBasedOnOtherResources}
+     * and adds it to the list of components.
+     */
+    onGenerateResourcesBasedOnOtherResources(callback: (context: BuildContext) => void): Component;
+
+    /**
      * Creates a new component with the given action that will be run during {@link steps.modify}
      * and adds it to the list of components.
      */
     onModify(callback: (context: BuildContext) => void): Component;
 
-    /** Runs all the components that were added to the builder. */
-    build(): void;
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.specifyProvisioners}
+     * and adds it to the list of components.
+     */
+    onSpecifyProvisioners(callback: (context: BuildContext) => void): Component;
+
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.specifyProvisionerDependencies}
+     * and adds it to the list of components.
+     */
+    onSpecifyProvisionerDependencies(callback: (context: BuildContext) => void): Component;
 }

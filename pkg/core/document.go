@@ -20,8 +20,9 @@ import (
 //
 // Although the root of the document can be any kind of node, only [Mapping] is supported.
 type Document struct {
-	Path  string
-	Group *DocumentGroup
+	Path         string
+	Group        *DocumentGroup
+	Dependencies *Dependencies[*Document]
 
 	YamlNode *yaml.Node
 	root     *Mapping
@@ -29,20 +30,8 @@ type Document struct {
 
 // Retuns a new [Document] with the root set to an empty mapping.
 func NewEmptyDocument(path string) *Document {
-	yamlNode := NewYamlDocumentNode()
 	root := NewEmptyMapping()
-
-	document := &Document{
-		Path:     path,
-		YamlNode: yamlNode,
-		root:     root,
-	}
-
-	document.YamlNode.Content = []*yaml.Node{
-		root.YamlNode,
-	}
-
-	return document
+	return NewDocumentWithRoot(path, root)
 }
 
 // Retuns a new [Document] with the root set to the given mapping.
@@ -50,9 +39,10 @@ func NewDocumentWithRoot(path string, root *Mapping) *Document {
 	yamlNode := NewYamlDocumentNode()
 
 	document := &Document{
-		Path:     path,
-		YamlNode: yamlNode,
-		root:     root,
+		Path:         path,
+		YamlNode:     yamlNode,
+		Dependencies: NewDependencies[*Document](),
+		root:         root,
 	}
 
 	document.YamlNode.Content = []*yaml.Node{
@@ -80,11 +70,7 @@ func NewDocument(path string, yamlNode *yaml.Node) *Document {
 
 	root := NewMapping(yamlNode.Content[0])
 
-	return &Document{
-		Path:     path,
-		YamlNode: yamlNode,
-		root:     root,
-	}
+	return NewDocumentWithRoot(path, root)
 }
 
 // Retuns a new [Document] with the content set to an empty yaml node with type [yaml.DocumentNode].
@@ -115,6 +101,22 @@ func (document *Document) GetRoot() *Mapping {
 	return document.root
 }
 
+func (document *Document) ProvisionAfter(other *Document) {
+	if document.Group == nil || other.Group != document.Group {
+		js.Throw(fmt.Errorf("cannot set provision order for documents that are not in the same group"))
+	}
+
+	document.Dependencies.RunAfter(other)
+}
+
+func (document *Document) ProvisionBefore(other *Document) {
+	if document.Group == nil || other.Group != document.Group {
+		js.Throw(fmt.Errorf("cannot set provision order for documents that are not in the same group"))
+	}
+
+	document.Dependencies.RunBefore(other)
+}
+
 func registerYamlDocument(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Document]()).Fields(
 		js.Field("Path"),
@@ -123,6 +125,8 @@ func registerYamlDocument(jsRuntime *js.JsRuntime) {
 		js.Method("Clone"),
 		js.Method("FullPath"),
 		js.Method("GetRoot"),
+		js.Method("ProvisionAfter"),
+		js.Method("ProvisionBefore"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEmptyDocument)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithRoot)),

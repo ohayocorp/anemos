@@ -114,6 +114,11 @@ func (builder *Builder) OnStep(step *Step, callback func(context *BuildContext))
 	return component
 }
 
+// Creates a new component with the given action that will be run during [StepPopulateKubernetesResources] and adds it to the list of components.
+func (builder *Builder) OnPopulateKubernetesResources(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepPopulateKubernetesResources, callback)
+}
+
 // Creates a new component with the given action that will be run during [StepSanitize] and adds it to the list of components.
 func (builder *Builder) OnSanitize(callback func(context *BuildContext)) *Component {
 	return builder.OnStep(StepSanitize, callback)
@@ -124,9 +129,24 @@ func (builder *Builder) OnGenerateResources(callback func(context *BuildContext)
 	return builder.OnStep(StepGenerateResources, callback)
 }
 
+// Creates a new component with the given action that will be run during [StepGenerateResourcesBasedOnOtherResources] and adds it to the list of components.
+func (builder *Builder) OnGenerateResourcesBasedOnOtherResources(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepGenerateResourcesBasedOnOtherResources, callback)
+}
+
 // Creates a new component with the given action that will be run during [StepModify] and adds it to the list of components.
 func (builder *Builder) OnModify(callback func(context *BuildContext)) *Component {
 	return builder.OnStep(StepModify, callback)
+}
+
+// Creates a new component with the given action that will be run during [StepSpecifyProvisioners] and adds it to the list of components.
+func (builder *Builder) OnSpecifyProvisioners(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepSpecifyProvisioners, callback)
+}
+
+// Creates a new component with the given action that will be run during [StepSpecifyProvisionerDependencies] and adds it to the list of components.
+func (builder *Builder) OnSpecifyProvisionerDependencies(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepSpecifyProvisionerDependencies, callback)
 }
 
 // Build method is at the heart of the all process. It collects all actions from all components
@@ -317,9 +337,13 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),
 		js.Method("OnStep"),
+		js.Method("OnPopulateKubernetesResources"),
 		js.Method("OnSanitize"),
 		js.Method("OnGenerateResources"),
+		js.Method("OnGenerateResourcesBasedOnOtherResources"),
 		js.Method("OnModify"),
+		js.Method("OnSpecifyProvisioners"),
+		js.Method("OnSpecifyProvisionerDependencies"),
 		js.Method("Build"),
 	)
 }

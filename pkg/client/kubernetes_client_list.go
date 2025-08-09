@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"sort"
 	"text/tabwriter"
@@ -29,7 +30,7 @@ func (client *KubernetesClient) List(applySetParentNamespace string) error {
 	})
 
 	if len(listOfSecrets.Items) == 0 {
-		fmt.Println("No apply sets found.")
+		slog.Info("No apply sets found.")
 		return nil
 	}
 

@@ -9,6 +9,7 @@ replace github.com/go-sourcemap/sourcemap => github.com/ohayocorp/sourcemap v0.0
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/deckarep/golang-set/v2 v2.8.0
+	github.com/dominikbraun/graph v0.23.0
 	github.com/grafana/sobek v0.0.0-20250512150554-7b933fc8a3e0
 	github.com/ohayocorp/sobek_nodejs v0.0.0-20250711162509-e11a98f75dcf
 	github.com/sergi/go-diff v1.4.0
