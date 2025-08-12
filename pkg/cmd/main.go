@@ -5,8 +5,10 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/go-logr/logr"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"github.com/spf13/cobra"
+	ctrl "sigs.k8s.io/controller-runtime"
 )
 
 type AnemosProgram struct {
@@ -22,7 +24,9 @@ func Run(program *AnemosProgram) error {
 	logHandlerOptions := &slog.HandlerOptions{
 		Level: logLevelVar,
 	}
+
 	slog.SetDefault(slog.New(NewCliSlogHandler(os.Stdout, logHandlerOptions)))
+	ctrl.SetLogger(logr.FromSlogHandler(slog.Default().Handler()))
 
 	var isVerbose bool
 
