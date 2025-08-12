@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/ohayocorp/anemos/pkg/components/apply"
 	"github.com/ohayocorp/anemos/pkg/components/deleteoutputdirectory"
+	"github.com/ohayocorp/anemos/pkg/components/setdefaultprovisionerdependencies"
 	"github.com/ohayocorp/anemos/pkg/components/writedocuments"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
@@ -21,6 +22,8 @@ func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *c
 
 	deleteoutputdirectory.Add(builder)
 	writedocuments.Add(builder)
+
+	setdefaultprovisionerdependencies.Add(builder)
 
 	if jsRuntime.Flags[JsRuntimeMetadataBuilderApply] == "true" {
 		applyOptions := apply.NewOptions()
