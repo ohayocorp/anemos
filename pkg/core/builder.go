@@ -139,11 +139,6 @@ func (builder *Builder) OnModify(callback func(context *BuildContext)) *Componen
 	return builder.OnStep(StepModify, callback)
 }
 
-// Creates a new component with the given action that will be run during [StepSpecifyProvisioners] and adds it to the list of components.
-func (builder *Builder) OnSpecifyProvisioners(callback func(context *BuildContext)) *Component {
-	return builder.OnStep(StepSpecifyProvisioners, callback)
-}
-
 // Creates a new component with the given action that will be run during [StepSpecifyProvisionerDependencies] and adds it to the list of components.
 func (builder *Builder) OnSpecifyProvisionerDependencies(callback func(context *BuildContext)) *Component {
 	return builder.OnStep(StepSpecifyProvisionerDependencies, callback)
@@ -342,7 +337,6 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("OnGenerateResources"),
 		js.Method("OnGenerateResourcesBasedOnOtherResources"),
 		js.Method("OnModify"),
-		js.Method("OnSpecifyProvisioners"),
 		js.Method("OnSpecifyProvisionerDependencies"),
 		js.Method("Build"),
 	)

@@ -130,12 +130,6 @@ export declare class Builder {
     onModify(callback: (context: BuildContext) => void): Component;
 
     /**
-     * Creates a new component with the given action that will be run during {@link steps.specifyProvisioners}
-     * and adds it to the list of components.
-     */
-    onSpecifyProvisioners(callback: (context: BuildContext) => void): Component;
-
-    /**
      * Creates a new component with the given action that will be run during {@link steps.specifyProvisionerDependencies}
      * and adds it to the list of components.
      */

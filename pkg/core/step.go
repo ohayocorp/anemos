@@ -28,11 +28,8 @@ var (
 	// other services add documents to the document group on the [StepGenerateResources] step and you want to modify them.
 	StepModify = NewStep("Modify", 6)
 
-	// Use this step to specify provisioners.
-	StepSpecifyProvisioners = NewStep("Specify provisioners", 7)
-
 	// Specify provisioner dependencies in this step.
-	StepSpecifyProvisionerDependencies = NewStep("Specify provisioner dependencies", 7, 1)
+	StepSpecifyProvisionerDependencies = NewStep("Specify provisioner dependencies", 7)
 
 	// Write the outputs, e.g. documents and additional files in this step.
 	StepOutput = NewStep("Output", 99)
@@ -106,7 +103,6 @@ func registerStep(jsRuntime *js.JsRuntime) {
 	jsRuntime.Variable("steps", "generateResources", reflect.ValueOf(StepGenerateResources))
 	jsRuntime.Variable("steps", "generateResourcesBasedOnOtherResources", reflect.ValueOf(StepGenerateResourcesBasedOnOtherResources))
 	jsRuntime.Variable("steps", "modify", reflect.ValueOf(StepModify))
-	jsRuntime.Variable("steps", "specifyProvisioners", reflect.ValueOf(StepSpecifyProvisioners))
 	jsRuntime.Variable("steps", "specifyProvisionerDependencies", reflect.ValueOf(StepSpecifyProvisionerDependencies))
 	jsRuntime.Variable("steps", "output", reflect.ValueOf(StepOutput))
 
