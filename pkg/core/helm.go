@@ -168,7 +168,7 @@ func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmO
 	}
 
 	documentGroup := NewDocumentGroup(options.ReleaseName)
-	documents := HelmManifestToDocuments(helmRelease.Manifest, options.ReleaseName, "unnamed")
+	documents := HelmManifestToDocuments(helmRelease.Manifest, options.ReleaseName, "no-name.yaml")
 
 	for _, document := range documents {
 		documentGroup.AddDocument(document)
