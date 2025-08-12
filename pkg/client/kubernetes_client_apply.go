@@ -258,7 +258,14 @@ func (client *KubernetesClient) preprocess(
 			if err != nil {
 				return err
 			}
+
+			liveIsNil := live == nil
 			live, merged = m.From(), m.To()
+
+			if liveIsNil {
+				// Masker returns an object that has nil data, but we need live object to be actually nil.
+				live = nil
+			}
 		}
 
 		liveYamlString := ""
