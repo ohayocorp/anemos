@@ -1,4 +1,5 @@
 import { BuildContext } from "./buildContext";
+import { Provisioner } from "./provisioner";
 import { Step } from "./step";
 
 export declare class Action {
@@ -97,4 +98,28 @@ export declare class Component {
      * that this component belongs to. It is not used by the builder, but can be used by other components.
      */
     setComponentType(componentType: string): void;
+
+    /**
+     * Provisions all document groups associated with this component after the given provisioner.
+     * @param provisioner The provisioner to run after.
+     */
+    provisionAfter(provisioner: Provisioner): void;
+
+    /**
+     * Provisions all document groups associated with this component before the given provisioner.
+     * @param provisioner The provisioner to run before.
+     */
+    provisionBefore(provisioner: Provisioner): void;
+
+    /**
+     * Provisions all document groups associated with this component after all the document groups associated with the given component.
+     * @param component The component to run after.
+     */
+    provisionAfter(component: Component): void;
+    
+    /**
+     * Provisions all document groups associated with this component before all the document groups associated with the given component.
+     * @param component The component to run before.
+     */
+    provisionBefore(component: Component): void;
 }

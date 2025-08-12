@@ -209,6 +209,50 @@ func (group *DocumentGroup) FixNameClashes() {
 	}
 }
 
+func (documentGroup *DocumentGroup) ProvisionAfter(other *DocumentGroup) {
+	if documentGroup.ApplyProvisioner != nil {
+		if other.ApplyProvisioner != nil {
+			documentGroup.ApplyProvisioner.RunAfter(other.ApplyProvisioner)
+		}
+
+		if documentGroup.WaitProvisioner != nil {
+			documentGroup.ApplyProvisioner.RunAfter(other.WaitProvisioner)
+		}
+	}
+
+	if documentGroup.WaitProvisioner != nil {
+		if other.ApplyProvisioner != nil {
+			documentGroup.WaitProvisioner.RunAfter(other.ApplyProvisioner)
+		}
+
+		if documentGroup.WaitProvisioner != nil {
+			documentGroup.WaitProvisioner.RunAfter(other.WaitProvisioner)
+		}
+	}
+}
+
+func (documentGroup *DocumentGroup) ProvisionBefore(other *DocumentGroup) {
+	if documentGroup.ApplyProvisioner != nil {
+		if other.ApplyProvisioner != nil {
+			documentGroup.ApplyProvisioner.RunBefore(other.ApplyProvisioner)
+		}
+
+		if documentGroup.WaitProvisioner != nil {
+			documentGroup.ApplyProvisioner.RunBefore(other.WaitProvisioner)
+		}
+	}
+
+	if documentGroup.WaitProvisioner != nil {
+		if other.ApplyProvisioner != nil {
+			documentGroup.WaitProvisioner.RunBefore(other.ApplyProvisioner)
+		}
+
+		if documentGroup.WaitProvisioner != nil {
+			documentGroup.WaitProvisioner.RunBefore(other.WaitProvisioner)
+		}
+	}
+}
+
 func registerDocumentGroup(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[DocumentGroup]()).Fields(
 		js.Field("Path"),
@@ -226,6 +270,8 @@ func registerDocumentGroup(jsRuntime *js.JsRuntime) {
 		js.Method("MoveTo"),
 		js.Method("RemoveDocument"),
 		js.Method("RemoveAdditionalFile"),
+		js.Method("ProvisionAfter"),
+		js.Method("ProvisionBefore"),
 		js.Method("SetNamespaces"),
 		js.Method("FixNameClashes"),
 	).Constructors(

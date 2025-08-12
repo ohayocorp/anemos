@@ -91,6 +91,52 @@ func (component *Component) SetComponentType(componentType string) {
 	component.SetMetadata(MetadataComponentType, componentType)
 }
 
+func (component *Component) ProvisionAfter(provisioner *Provisioner) {
+	component.AddAction(StepSpecifyProvisionerDependencies, func(context *BuildContext) {
+		for _, documentGroup := range context.GetDocumentGroupsForComponent(component) {
+			if documentGroup.ApplyProvisioner != nil {
+				documentGroup.ApplyProvisioner.RunAfter(provisioner)
+			}
+			if documentGroup.WaitProvisioner != nil {
+				documentGroup.WaitProvisioner.RunAfter(provisioner)
+			}
+		}
+	})
+}
+
+func (component *Component) ProvisionBefore(provisioner *Provisioner) {
+	component.AddAction(StepSpecifyProvisionerDependencies, func(context *BuildContext) {
+		for _, documentGroup := range context.GetDocumentGroupsForComponent(component) {
+			if documentGroup.ApplyProvisioner != nil {
+				documentGroup.ApplyProvisioner.RunBefore(provisioner)
+			}
+			if documentGroup.WaitProvisioner != nil {
+				documentGroup.WaitProvisioner.RunBefore(provisioner)
+			}
+		}
+	})
+}
+
+func (component *Component) ProvisionAfterComponent(other *Component) {
+	component.AddAction(StepSpecifyProvisionerDependencies, func(context *BuildContext) {
+		for _, documentGroup := range context.GetDocumentGroupsForComponent(component) {
+			for _, otherDocumentGroup := range context.GetDocumentGroupsForComponent(other) {
+				documentGroup.ProvisionAfter(otherDocumentGroup)
+			}
+		}
+	})
+}
+
+func (component *Component) ProvisionBeforeComponent(other *Component) {
+	component.AddAction(StepSpecifyProvisionerDependencies, func(context *BuildContext) {
+		for _, documentGroup := range context.GetDocumentGroupsForComponent(component) {
+			for _, otherDocumentGroup := range context.GetDocumentGroupsForComponent(other) {
+				documentGroup.ProvisionBefore(otherDocumentGroup)
+			}
+		}
+	})
+}
+
 func registerComponent(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Component]()).Fields(
 		js.Field("Actions"),
@@ -104,6 +150,10 @@ func registerComponent(jsRuntime *js.JsRuntime) {
 		js.Method("SetIdentifier"),
 		js.Method("GetComponentType"),
 		js.Method("SetComponentType"),
+		js.Method("ProvisionAfter"),
+		js.Method("ProvisionBefore"),
+		js.Method("ProvisionAfterComponent").JsName("provisionAfter"),
+		js.Method("ProvisionBeforeComponent").JsName("provisionBefore"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewComponent)),
 	)
