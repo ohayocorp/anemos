@@ -29,6 +29,13 @@ export declare class Builder {
     removeComponent(component: Component): void;
 
     /**
+     * Adds a component that creates a document group with the given name during {@link steps.generateResources}.
+     * Document group doesn't contain any documents, it serves as a placeholder for provision dependencies.
+     * @param name
+     */
+    addProvisionCheckpoint(name: string): Component;
+
+    /**
      * Adds the given document to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
      * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.

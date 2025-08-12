@@ -57,6 +57,22 @@ func (builder *Builder) RemoveComponent(component *Component) {
 	}
 }
 
+// Adds a component that creates a document group with the given name during [StepGenerateResources].
+// Document group doesn't contain any documents, it serves as a placeholder for provision dependencies.
+func (builder *Builder) AddProvisionCheckpoint(name string) *Component {
+	component := NewComponent()
+
+	component.SetIdentifier(name)
+	component.AddAction(StepGenerateResources, func(context *BuildContext) {
+		documentGroup := NewDocumentGroup(name)
+		context.AddDocumentGroup(documentGroup)
+	})
+
+	builder.AddComponent(component)
+
+	return component
+}
+
 func (builder *Builder) AddDocument(document *Document) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
 		context.AddDocument(document)
@@ -323,6 +339,7 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 	).Methods(
 		js.Method("AddComponent"),
 		js.Method("RemoveComponent"),
+		js.Method("AddProvisionCheckpoint"),
 		js.Method("AddDocument"),
 		js.Method("AddDocumentWithGroupPath").JsName("addDocument"),
 		js.Method("AddDocumentParse").JsName("addDocument"),
