@@ -8,13 +8,15 @@ import (
 )
 
 func RegisterJsDeclarations(jsRuntime *js.JsRuntime) {
+	jsRuntime.Variable("collectCRDs", "componentType", reflect.ValueOf(componentType))
+
 	jsRuntime.Type(reflect.TypeFor[Options]()).JsNamespace(
 		"collectCRDs",
 	).Fields(
-		js.Field("Directory"),
+		js.Field("DocumentGroupPath"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewOptions)),
-		js.Constructor(reflect.ValueOf(NewOptionsWithDirectory)),
+		js.Constructor(reflect.ValueOf(NewOptionsWithDocumentGroupPath)),
 	)
 
 	jsRuntime.Type(reflect.TypeFor[core.Builder]()).ExtensionMethods(

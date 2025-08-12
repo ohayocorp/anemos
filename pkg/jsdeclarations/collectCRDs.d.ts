@@ -13,10 +13,12 @@ declare module "./builder" {
 }
 
 export declare namespace collectCRDs {
-    export class Options {
-        constructor(directory?: string);
+    export const componentType: string;
 
-        /** Directory where CRDs will be written. Default value is 'crds'. */
-        directory?: string;
+    export class Options {
+        constructor(documentGroupPath?: string);
+
+        /** Path of the document group in which CRDs will be collected. Default value is 'crds'. */
+        documentGroupPath?: string;
     }
 }

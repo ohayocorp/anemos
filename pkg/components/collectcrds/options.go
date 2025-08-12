@@ -1,15 +1,15 @@
 package collectcrds
 
 type Options struct {
-	Directory string
+	DocumentGroupPath string
 }
 
 func NewOptions() *Options {
 	return &Options{}
 }
 
-func NewOptionsWithDirectory(directory string) *Options {
+func NewOptionsWithDocumentGroupPath(documentGroupPath string) *Options {
 	return &Options{
-		Directory: directory,
+		DocumentGroupPath: documentGroupPath,
 	}
 }

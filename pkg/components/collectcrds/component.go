@@ -8,6 +8,10 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
+const (
+	componentType = "collect-crds"
+)
+
 type component struct {
 	*core.Component
 	options *Options
@@ -20,6 +24,9 @@ func NewComponent(options *Options) *core.Component {
 		Component: core.NewComponent(),
 		options:   options,
 	}
+
+	component.SetIdentifier(componentType)
+	component.SetComponentType(componentType)
 
 	component.AddAction(core.StepSanitize, component.sanitizeOptions)
 	component.AddAction(core.NewStep("Collect CRDs", append(core.StepModify.Numbers, 1)...), component.modify)
@@ -35,17 +42,15 @@ func (component *component) sanitizeOptions(context *core.BuildContext) {
 		component.options = options
 	}
 
-	if options.Directory == "" {
-		options.Directory = "crds"
+	if options.DocumentGroupPath == "" {
+		options.DocumentGroupPath = "crds"
 	}
-
-	component.SetIdentifier("collect-crds")
 }
 
 func (component *component) modify(context *core.BuildContext) {
 	options := component.options
 
-	crds := core.NewDocumentGroup(options.Directory)
+	crds := core.NewDocumentGroup(options.DocumentGroupPath)
 	documentGroupsToRemove := []*core.DocumentGroup{}
 
 	for _, documentGroup := range context.GetDocumentGroups() {
@@ -59,7 +64,7 @@ func (component *component) modify(context *core.BuildContext) {
 			slog.Debug(
 				"Moving document ${document} to ${to}",
 				slog.String("document", document.FullPath()),
-				slog.String("to", options.Directory))
+				slog.String("to", options.DocumentGroupPath))
 
 			documentsToMove = append(documentsToMove, document)
 		}

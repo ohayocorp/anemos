@@ -13,10 +13,12 @@ declare module "./builder" {
 }
 
 export declare namespace collectNamespaces {
+    export const componentType: string;
+    
     export class Options {
-        constructor(directory?: string);
-        
-        /** Directory where namespaces will be written. Default value is 'namespaces'. */
-        directory?: string;
+        constructor(documentGroupPath?: string);
+
+        /** Path of the document group in which namespaces will be collected. Default value is 'namespaces'. */
+        documentGroupPath?: string;
     }
 }
