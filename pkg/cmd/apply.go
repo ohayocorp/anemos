@@ -34,8 +34,10 @@ type applyContext struct {
 	source           string
 	namespace        string
 	skipConfirmation bool
+	forceConflicts   bool
 	distribution     core.KubernetesDistribution
 	environmentType  core.EnvironmentType
+	documentGroups   []string
 	options          map[string]any
 }
 
@@ -59,6 +61,8 @@ func getApplyCommand(program *AnemosProgram) *cobra.Command {
 
 	command.Flags().StringP("namespace", "", "", "Namespace to apply the manifests to")
 	command.Flags().BoolP("yes", "y", false, "Skip confirmation prompt and apply changes directly")
+	command.Flags().Bool("force-conflicts", false, "Forcefully apply changes even if there are conflicts")
+	command.Flags().StringArrayP("document-groups", "d", nil, "Document groups to apply, other groups will be skipped")
 	command.Flags().StringP("options-file", "f", "", "Path to YAML file containing options to pass to the package")
 	command.Flags().String("distribution", "", "Distribution of the target Kubernetes cluster, e.g., minikube, openshift, etc. If not set, it will be determined based on the cluster version.")
 	command.Flags().String("environment-type", "", "Environment type such as dev, test or prod. If not set, it will be determined based on the cluster distribution.")
@@ -68,8 +72,10 @@ func getApplyCommand(program *AnemosProgram) *cobra.Command {
 
 func runApplyCommand(cmd *cobra.Command, args []string, program *AnemosProgram) error {
 	skipConfirmation := cmdutil.GetFlagBool(cmd, "yes")
+	forceConflicts := cmdutil.GetFlagBool(cmd, "force-conflicts")
 	namespace := cmdutil.GetFlagString(cmd, "namespace")
 	optionsFile := cmdutil.GetFlagString(cmd, "options-file")
+	documentGroups := cmdutil.GetFlagStringArray(cmd, "document-group")
 	distribution := cmdutil.GetFlagString(cmd, "distribution")
 	environmentType := cmdutil.GetFlagString(cmd, "environment-type")
 
@@ -98,8 +104,10 @@ func runApplyCommand(cmd *cobra.Command, args []string, program *AnemosProgram) 
 		source:           source,
 		namespace:        namespace,
 		skipConfirmation: skipConfirmation,
+		forceConflicts:   forceConflicts,
 		distribution:     core.KubernetesDistribution(distribution),
 		environmentType:  core.EnvironmentType(environmentType),
+		documentGroups:   documentGroups,
 		options:          yamlOptions,
 	}
 
@@ -327,8 +335,10 @@ func setVariables(jsRuntime *js.JsRuntime, context *applyContext) {
 	}
 
 	jsRuntime.Runtime.Set("options", context.options)
+	jsRuntime.Runtime.Set("documentGroups", context.documentGroups)
 	jsRuntime.Runtime.Set("namespace", context.namespace)
 	jsRuntime.Runtime.Set("skipConfirmation", context.skipConfirmation)
+	jsRuntime.Runtime.Set("forceConflicts", context.forceConflicts)
 	jsRuntime.Runtime.Set("clusterInfo", clusterInfo)
 	jsRuntime.Runtime.Set("environmentType", getEnvironmentType(clusterInfo, context))
 }

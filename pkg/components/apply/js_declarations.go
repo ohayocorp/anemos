@@ -11,16 +11,11 @@ func RegisterJsDeclarations(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Options]()).JsNamespace(
 		"apply",
 	).Fields(
-		js.Field("Documents"),
-		js.Field("ApplySetParentName"),
-		js.Field("ApplySetParentNamespace"),
+		js.Field("DocumentGroups"),
 		js.Field("SkipConfirmation"),
+		js.Field("ForceConflicts"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewOptions)),
-		js.Constructor(reflect.ValueOf(NewOptionsWithDocumentGroup)),
-		js.Constructor(reflect.ValueOf(NewOptionsWithDocumentGroupAndNamespace)),
-		js.Constructor(reflect.ValueOf(NewOptionsWithDocumentsAndName)),
-		js.Constructor(reflect.ValueOf(NewOptionsWithDocumentsNameAndNamespace)),
 	)
 
 	jsRuntime.Type(reflect.TypeFor[core.Builder]()).ExtensionMethods(

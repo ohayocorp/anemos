@@ -16,14 +16,14 @@ declare module "./builder" {
 export declare namespace apply {
     export class Options {
         constructor();
-        constructor(documents: DocumentGroup);
-        constructor(documents: DocumentGroup, namespace: string);
-        constructor(documents: Document[], name: string);
-        constructor(documents: Document[], name: string, namespace: string);
 
-        documents?: Document[];
-        applySetParentName?: string;
-        applySetParentNamespace?: string;
+        /** Regex patterns of document group paths to include. If not set, all groups will be included. */
+        documentGroups?: string[];
+
+        /** Skip confirmation prompt and apply changes directly. */
         skipConfirmation?: boolean;
+
+        /** Forcefully apply changes even if there are conflicts on server side apply. */
+        forceConflicts?: boolean;
     }
 }

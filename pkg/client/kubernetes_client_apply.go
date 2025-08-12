@@ -59,6 +59,7 @@ func (client *KubernetesClient) Apply(
 	applySetParentName string,
 	applySetParentNamespace string,
 	skipConfirmation bool,
+	forceConflicts bool,
 	timeout time.Duration,
 ) error {
 	applySetParentRef, err := client.getApplySetParentRef(applySetParentName, applySetParentNamespace)
@@ -97,7 +98,7 @@ func (client *KubernetesClient) Apply(
 		ApplySet:            applySet,
 		FieldManager:        applySetParentRef.Name,
 		ServerSideApply:     true,
-		ForceConflicts:      false,
+		ForceConflicts:      forceConflicts,
 		Prune:               true,
 		DryRunStrategy:      cmdutil.DryRunNone,
 		ValidationDirective: validationDirective,
@@ -223,7 +224,7 @@ func (client *KubernetesClient) preprocess(
 		}
 
 		options := metav1.PatchOptions{
-			Force:        core.Pointer(false),
+			Force:        core.Pointer(true),
 			FieldManager: applyOptions.FieldManager,
 		}
 

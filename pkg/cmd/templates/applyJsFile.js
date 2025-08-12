@@ -20,9 +20,12 @@ for (let i = builder.components.length - 1; i >= 0; i--) {
 // Options is passed from the native code.
 package.add(builder, options);
 
-// Add the apply component to the builder. skipConfirmation and namespace are passed from the native code.
+// Add the apply component to the builder. Option variables are passed from the native code.
 builder.apply({
     skipConfirmation: skipConfirmation,
+    forceConflicts: forceConflicts,
     namespace: namespace,
+    documentGroups: documentGroups,
 });
+
 builder.build();
