@@ -7,14 +7,18 @@ import (
 	"log/slog"
 	"maps"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/ohayocorp/anemos/pkg/core"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
 	"sigs.k8s.io/cli-utils/pkg/kstatus/polling"
 	"sigs.k8s.io/cli-utils/pkg/kstatus/polling/aggregator"
 	"sigs.k8s.io/cli-utils/pkg/kstatus/polling/collector"
+	"sigs.k8s.io/cli-utils/pkg/kstatus/polling/engine"
 	"sigs.k8s.io/cli-utils/pkg/kstatus/polling/event"
+	"sigs.k8s.io/cli-utils/pkg/kstatus/polling/statusreaders"
 	"sigs.k8s.io/cli-utils/pkg/kstatus/status"
 	"sigs.k8s.io/cli-utils/pkg/object"
 )
@@ -24,7 +28,11 @@ func (client *KubernetesClient) Wait(objects object.ObjMetadataSet, status statu
 		return nil
 	}
 
-	poller, err := polling.NewStatusPollerFromFactory(client.Factory, polling.Options{})
+	poller, err := polling.NewStatusPollerFromFactory(client.Factory, polling.Options{
+		CustomStatusReaders: []engine.StatusReader{
+			statusreaders.NewGenericStatusReader(client.Mapper, readStatus),
+		},
+	})
 	if err != nil {
 		return fmt.Errorf("failed to create status poller: %w", err)
 	}
@@ -40,6 +48,10 @@ func (client *KubernetesClient) Wait(objects object.ObjMetadataSet, status statu
 	statusCollector := collector.NewResourceStatusCollector(objects)
 	done := statusCollector.ListenWithObserver(eventsChannel, statusObserver(initialObjects, cancel, status))
 	<-done
+
+	if ctx.Err() == context.DeadlineExceeded {
+		return fmt.Errorf("timed out waiting for resources to reach desired state after %v", timeout)
+	}
 
 	if statusCollector.Error != nil {
 		return statusCollector.Error
@@ -154,4 +166,34 @@ func (client *KubernetesClient) WaitDocuments(documents []*core.Document, sts st
 	}
 
 	return client.Wait(identifiers, sts, timeout)
+}
+
+func readStatus(u *unstructured.Unstructured) (*status.Result, error) {
+	result, err := status.Compute(u)
+	if err != nil {
+		return nil, err
+	}
+
+	gvk := u.GroupVersionKind()
+	if gvk.Kind == "Job" && gvk.Group == "batch" {
+		setJobStatus(result)
+	}
+
+	return result, nil
+}
+
+func setJobStatus(result *status.Result) {
+	if result.Status != status.CurrentStatus {
+		return
+	}
+
+	// Current status can mean the job is running/suspended/completed. We only want to accept
+	// completed jobs as current and wait on other conditions.
+	if strings.Contains(result.Message, "suspended") {
+		result.Status = status.InProgressStatus
+	}
+
+	if strings.Contains(result.Message, "in progress") {
+		result.Status = status.InProgressStatus
+	}
 }
