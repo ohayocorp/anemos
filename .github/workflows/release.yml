@@ -41,12 +41,12 @@ jobs:
           mkdir -p bin/darwin-amd64
           mkdir -p bin/darwin-arm64
 
-          # Move and rename binaries
-          mv bin/anemos-linux-amd64 bin/linux-amd64/anemos
-          mv bin/anemos-linux-arm64 bin/linux-arm64/anemos
-          mv bin/anemos-windows-amd64 bin/windows-amd64/anemos.exe
-          mv bin/anemos-darwin-amd64 bin/darwin-amd64/anemos
-          mv bin/anemos-darwin-arm64 bin/darwin-arm64/anemos
+          # Copy binaries to their respective directories
+          cp bin/anemos-linux-amd64 bin/linux-amd64/anemos
+          cp bin/anemos-linux-arm64 bin/linux-arm64/anemos
+          cp bin/anemos-windows-amd64 bin/windows-amd64/anemos.exe
+          cp bin/anemos-darwin-amd64 bin/darwin-amd64/anemos
+          cp bin/anemos-darwin-arm64 bin/darwin-arm64/anemos
 
           # Compress binaries into appropriate formats
           tar -czf anemos-linux-amd64.tar.gz -C bin/linux-amd64 anemos
@@ -62,6 +62,11 @@ jobs:
           tag: v${{ inputs.version }}
           name: Release v${{ inputs.version }}
           artifacts: |
+            bin/anemos-linux-amd64
+            bin/anemos-linux-arm64
+            bin/anemos-windows-amd64
+            bin/anemos-darwin-amd64
+            bin/anemos-darwin-arm64
             anemos-linux-amd64.tar.gz
             anemos-linux-arm64.tar.gz
             anemos-windows-amd64.zip
