@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
@@ -19,6 +20,8 @@ type AnemosProgram struct {
 
 func Run(program *AnemosProgram) error {
 	rootCmd := program.RootCommand
+	rootCmd.Version = util.AppVersion
+	rootCmd.SetVersionTemplate("{{.Version}}")
 
 	logLevelVar := &slog.LevelVar{}
 	logHandlerOptions := &slog.HandlerOptions{
