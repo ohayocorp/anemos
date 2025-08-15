@@ -67,7 +67,7 @@ func (component *component) apply(context *core.BuildContext) {
 
 	provisioners := []*core.Provisioner{}
 	for _, group := range documentGroups {
-		if !component.checkDocumentGroupToApply(regexList, group) {
+		if !component.shouldApplyDocumentGroup(regexList, group) {
 			continue
 		}
 
@@ -251,9 +251,9 @@ func (component *component) getRegexList() ([]*regexp.Regexp, error) {
 	return regexList, nil
 }
 
-func (component *component) checkDocumentGroupToApply(regexList []*regexp.Regexp, documentGroup *core.DocumentGroup) bool {
+func (component *component) shouldApplyDocumentGroup(regexList []*regexp.Regexp, documentGroup *core.DocumentGroup) bool {
 	if regexList == nil {
-		return false
+		return true
 	}
 
 	// Check if the document group is applicable for this component.
