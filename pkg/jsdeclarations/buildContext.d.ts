@@ -7,8 +7,7 @@ import { DocumentGroup, AdditionalFile } from "./documentGroup";
 
 export declare class AddDocumentOptions {
     path: string;
-    yaml?: string;
-    root?: Mapping | object;
+    content: string | Mapping | object;
     documentGroup?: string;
 }
 

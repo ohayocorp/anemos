@@ -69,7 +69,7 @@ func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions)
 	}
 
 	if options.Root == nil && options.Yaml == nil {
-		js.Throw(fmt.Errorf("either root or yaml must be specified"))
+		js.Throw(fmt.Errorf("content must be specified"))
 	}
 
 	var document *Document
@@ -237,8 +237,8 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[AddDocumentOptions]()).Fields(
 		js.Field("DocumentGroup"),
 		js.Field("Path"),
-		js.Field("Yaml"),
-		js.Field("Root"),
+		js.Field("Yaml").JsName("content"),
+		js.Field("Root").JsName("content"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewAddDocumentOptions)),
 	)
