@@ -92,33 +92,9 @@ func (builder *Builder) AddDocument(document *Document) {
 	})
 }
 
-func (builder *Builder) AddDocumentWithGroupPath(documentGroupPath string, document *Document) {
+func (builder *Builder) AddDocumentWithOptions(options *AddDocumentOptions) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentWithGroupPath(documentGroupPath, document)
-	})
-}
-
-func (builder *Builder) AddDocumentParse(path string, yamlContent string) {
-	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentParse(path, yamlContent)
-	})
-}
-
-func (builder *Builder) AddDocumentParseWithGroupPath(documentGroupPath string, path string, yamlContent string) {
-	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentParseWithGroupPath(documentGroupPath, path, yamlContent)
-	})
-}
-
-func (builder *Builder) AddDocumentMapping(path string, root *Mapping) {
-	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentMapping(path, root)
-	})
-}
-
-func (builder *Builder) AddDocumentMappingWithGroupPath(documentGroupPath string, path string, root *Mapping) {
-	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentMappingWithGroupPath(documentGroupPath, path, root)
+		context.AddDocumentWithOptions(options)
 	})
 }
 
@@ -363,11 +339,7 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("RemoveComponent"),
 		js.Method("AddProvisionCheckpoint"),
 		js.Method("AddDocument"),
-		js.Method("AddDocumentWithGroupPath").JsName("addDocument"),
-		js.Method("AddDocumentParse").JsName("addDocument"),
-		js.Method("AddDocumentParseWithGroupPath").JsName("addDocument"),
-		js.Method("AddDocumentMapping").JsName("addDocument"),
-		js.Method("AddDocumentMappingWithGroupPath").JsName("addDocument"),
+		js.Method("AddDocumentWithOptions").JsName("addDocument"),
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),
 		js.Method("OnStep"),

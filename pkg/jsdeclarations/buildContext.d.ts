@@ -5,6 +5,13 @@ import { BuilderOptions } from "./builderOptions";
 import { KubernetesResourceInfo } from "./kubernetesResourceInfo";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
 
+export declare class AddDocumentOptions {
+    path: string;
+    yaml?: string;
+    root?: Mapping | object;
+    documentGroup?: string;
+}
+
 export declare class BuildContext {
     private constructor();
 
@@ -26,46 +33,12 @@ export declare class BuildContext {
     addDocument(document: Document): void;
 
     /**
-     * Adds the given document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources} step.
+     * Adds a new document using the provided options during the {@link steps.generateResources} step.
      * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the same name as `options.documentGroup` and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupPath: string, document: Document): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} named "" by parsing given YAML string as a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(path: string, yamlContent: string): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
-     * step by parsing given YAML string as a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(documentGroupPath: string, path: string, yamlContent: string): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} named "" by converting given object to a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with name "" and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(path: string, root: Mapping | object): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
-     * step by converting given object to a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(documentGroupPath: string, path: string, root: Mapping | object): void;
+    addDocument(options: AddDocumentOptions): void;
 
     /** Adds given group to the document groups list. */
     addDocumentGroup(documentGroup: DocumentGroup): void;

@@ -1,8 +1,7 @@
 import { Component } from "./component";
-import { BuildContext } from "./buildContext";
+import { BuildContext, AddDocumentOptions } from "./buildContext";
 import { BuilderOptions, EnvironmentType, KubernetesDistribution, Version } from "./builderOptions";
 import { Document } from "./document";
-import { Mapping } from "./mapping";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
 import { Step, steps } from "./step";
 
@@ -44,48 +43,12 @@ export declare class Builder {
     addDocument(document: Document): void;
 
     /**
-     * Adds the given document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources} step.
+     * Adds a new document using the provided options during the {@link steps.generateResources} step.
      * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
+     * Checks for an existing {@link DocumentGroup} with the same name as `options.documentGroup` and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(documentGroupPath: string, document: Document): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
-     * step by parsing given YAML string as a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(path: string, yamlContent: string): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
-     * step by parsing given YAML string as a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(documentGroupPath: string, path: string, yamlContent: string): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} named "" during the {@link steps.generateResources}
-     * step by converting given object to a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(path: string, root: Mapping | object): void;
-
-    /**
-     * Adds a new document to a {@link DocumentGroup} with the given name during the {@link steps.generateResources}
-     * step by converting given object to a {@link Document}.
-     * 
-     * Checks for an existing {@link DocumentGroup} with the same name and adds the document to it if it exists.
-     * Creates a new {@link DocumentGroup} if it doesn't exist.
-     */
-    addDocument(documentGroupPath: string, path: string, root: Mapping | object): void;
+    addDocument(options: AddDocumentOptions): void;
 
     /**
      * Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.

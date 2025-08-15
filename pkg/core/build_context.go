@@ -21,44 +21,66 @@ type BuildContext struct {
 	currentComponent *Component
 }
 
-// Adds given document to the document group named "". Creates the document group if it doesn't exist.
-func (context *BuildContext) AddDocument(document *Document) {
-	context.AddDocumentWithGroupPath("", document)
+type AddDocumentOptions struct {
+	Path          string
+	Yaml          *string
+	Root          *Mapping
+	DocumentGroup *string
 }
 
-// Adds given document to the document group with the given name. Creates the document group if it doesn't exist.
-func (context *BuildContext) AddDocumentWithGroupPath(documentGroupPath string, document *Document) {
+func NewAddDocumentOptions() *AddDocumentOptions {
+	return &AddDocumentOptions{}
+}
+
+func (context *BuildContext) addDocument(documentGroupPath *string, document *Document) {
 	if document == nil {
 		js.Throw(fmt.Errorf("document cannot be nil"))
 	}
 
-	documentGroup := context.GetDocumentGroupWithPath(documentGroupPath)
+	if documentGroupPath == nil {
+		documentGroupPath = Pointer("")
+	}
+
+	documentGroup := context.GetDocumentGroupWithPath(*documentGroupPath)
 	if documentGroup == nil {
-		documentGroup = NewDocumentGroup(documentGroupPath)
+		documentGroup = NewDocumentGroup(*documentGroupPath)
 		context.AddDocumentGroup(documentGroup)
 	}
 
 	documentGroup.AddDocument(document)
 }
 
-func (context *BuildContext) AddDocumentParse(path string, yamlContent string) {
-	document := NewDocumentWithYaml(path, yamlContent)
-	context.AddDocument(document)
+// Adds given document to the document group named "". Creates the document group if it doesn't exist.
+func (context *BuildContext) AddDocument(document *Document) {
+	context.addDocument(nil, document)
 }
 
-func (context *BuildContext) AddDocumentParseWithGroupPath(documentGroupPath string, path string, yamlContent string) {
-	document := NewDocumentWithYaml(path, yamlContent)
-	context.AddDocumentWithGroupPath(documentGroupPath, document)
-}
+func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions) {
+	if options == nil {
+		js.Throw(fmt.Errorf("options cannot be nil"))
+	}
 
-func (context *BuildContext) AddDocumentMapping(path string, root *Mapping) {
-	document := NewDocumentWithRoot(path, root)
-	context.AddDocument(document)
-}
+	if options.Path == "" {
+		js.Throw(fmt.Errorf("path cannot be empty"))
+	}
 
-func (context *BuildContext) AddDocumentMappingWithGroupPath(documentGroupPath string, path string, root *Mapping) {
-	document := NewDocumentWithRoot(path, root)
-	context.AddDocumentWithGroupPath(documentGroupPath, document)
+	if options.Root != nil && options.Yaml != nil {
+		js.Throw(fmt.Errorf("cannot specify both root and yaml"))
+	}
+
+	if options.Root == nil && options.Yaml == nil {
+		js.Throw(fmt.Errorf("either root or yaml must be specified"))
+	}
+
+	var document *Document
+
+	if options.Root != nil {
+		document = NewDocumentWithRoot(options.Path, options.Root)
+	} else {
+		document = NewDocumentWithYaml(options.Path, *options.Yaml)
+	}
+
+	context.addDocument(options.DocumentGroup, document)
 }
 
 // Adds given group to the document groups list.
@@ -199,8 +221,7 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Field("CustomData"),
 	).Methods(
 		js.Method("AddDocument"),
-		js.Method("AddDocumentParse").JsName("addDocument"),
-		js.Method("AddDocumentMapping").JsName("addDocument"),
+		js.Method("AddDocumentWithOptions").JsName("addDocument"),
 		js.Method("AddDocumentGroup"),
 		js.Method("AddAdditionalFile"),
 		js.Method("GetAllDocuments"),
@@ -211,5 +232,14 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Method("GetDocument"),
 		js.Method("GetDocumentWithPath").JsName("getDocument"),
 		js.Method("RemoveDocumentGroup"),
+	)
+
+	jsRuntime.Type(reflect.TypeFor[AddDocumentOptions]()).Fields(
+		js.Field("DocumentGroup"),
+		js.Field("Path"),
+		js.Field("Yaml"),
+		js.Field("Root"),
+	).Constructors(
+		js.Constructor(reflect.ValueOf(NewAddDocumentOptions)),
 	)
 }
