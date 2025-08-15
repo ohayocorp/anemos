@@ -10,12 +10,14 @@ import (
 )
 
 const (
+	EnvironmentTypeUnknown     EnvironmentType = "unknown"
 	EnvironmentTypeDevelopment EnvironmentType = "dev"
 	EnvironmentTypeTesting     EnvironmentType = "test"
 	EnvironmentTypeProduction  EnvironmentType = "prod"
 )
 
 const (
+	KubernetesDistributionUnknown   KubernetesDistribution = "unknown"
 	KubernetesDistributionAKS       KubernetesDistribution = "aks"
 	KubernetesDistributionEKS       KubernetesDistribution = "eks"
 	KubernetesDistributionGKE       KubernetesDistribution = "gke"
@@ -144,10 +146,12 @@ func registerBuilderOptions(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewBuilderOptionsWithOutputConfiguration)),
 	)
 
+	jsRuntime.Variable("EnvironmentType", "Unknown", reflect.ValueOf(EnvironmentTypeUnknown))
 	jsRuntime.Variable("EnvironmentType", "Development", reflect.ValueOf(EnvironmentTypeDevelopment))
 	jsRuntime.Variable("EnvironmentType", "Testing", reflect.ValueOf(EnvironmentTypeTesting))
 	jsRuntime.Variable("EnvironmentType", "Production", reflect.ValueOf(EnvironmentTypeProduction))
 
+	jsRuntime.Variable("KubernetesDistribution", "Unknown", reflect.ValueOf(KubernetesDistributionUnknown))
 	jsRuntime.Variable("KubernetesDistribution", "AKS", reflect.ValueOf(KubernetesDistributionAKS))
 	jsRuntime.Variable("KubernetesDistribution", "EKS", reflect.ValueOf(KubernetesDistributionEKS))
 	jsRuntime.Variable("KubernetesDistribution", "GKE", reflect.ValueOf(KubernetesDistributionGKE))

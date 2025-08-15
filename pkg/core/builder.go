@@ -22,12 +22,25 @@ type Builder struct {
 	jsRuntime *js.JsRuntime
 }
 
+// Creates a new [Builder] instance with default options.
+func NewBuilder(jsRuntime *js.JsRuntime) *Builder {
+	return NewBuilderWithOptions(nil, jsRuntime)
+}
+
 // Creates a new [Builder] instance with given options.
-func NewBuilder(options *BuilderOptions, jsRuntime *js.JsRuntime) *Builder {
-	return &Builder{
+func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Builder {
+	if options == nil {
+		options = &BuilderOptions{}
+	}
+
+	builder := &Builder{
 		Options:   options,
 		jsRuntime: jsRuntime,
 	}
+
+	builder.sanitizeBuilderOptions(builder.Options)
+
+	return builder
 }
 
 // Appends given component to the list of components.
@@ -165,6 +178,8 @@ func (builder *Builder) OnSpecifyProvisionerDependencies(callback func(context *
 func (builder *Builder) Build() {
 	slog.Info("Starting to build documents")
 
+	builder.sanitizeBuilderOptions(builder.Options)
+
 	context := BuildContext{
 		BuilderOptions:         builder.Options,
 		KubernetesResourceInfo: NewKubernetesResourceInfo(builder.Options.KubernetesCluster.Version),
@@ -177,8 +192,6 @@ func (builder *Builder) Build() {
 	for _, resource := range builder.Options.KubernetesCluster.AdditionalResources {
 		context.KubernetesResourceInfo.AddKubernetesResource(resource)
 	}
-
-	builder.sanitizeBuilderOptions(context.BuilderOptions)
 
 	steps := builder.getSteps()
 	components := builder.Components
@@ -291,11 +304,20 @@ func (builder *Builder) getSteps() []Step {
 
 func (builder *Builder) sanitizeBuilderOptions(options *BuilderOptions) {
 	if options.KubernetesCluster == nil {
-		js.Throw(fmt.Errorf("KubernetesCluster is not set in builder options"))
+		options.KubernetesCluster = NewKubernetesCluster(DefaultKubernetesVersion, KubernetesDistributionUnknown)
+	}
+
+	if options.KubernetesCluster.Version == nil {
+		slog.Debug(
+			"Using Kubernetes ${defaultVersion} resources as base since version is not specified.",
+			slog.String("defaultVersion", DefaultKubernetesVersion.String()),
+		)
+
+		options.KubernetesCluster.Version = DefaultKubernetesVersion
 	}
 
 	if options.Environment == nil {
-		js.Throw(fmt.Errorf("Environment is not set in builder options"))
+		options.Environment = NewEnvironment("none", EnvironmentTypeUnknown)
 	}
 
 	outputConfiguration := options.OutputConfiguration

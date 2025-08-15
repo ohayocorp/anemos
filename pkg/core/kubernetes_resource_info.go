@@ -10,6 +10,10 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
+var (
+	DefaultKubernetesVersion = semver.MustParse("1.33")
+)
+
 // KubernetesResource defines a Kubernetes API resource. This includes both built-in Kubernetes objects
 // and external CRDs.
 type KubernetesResource struct {
@@ -98,36 +102,34 @@ func (info *KubernetesResourceInfo) populateBuiltInResources(version *semver.Ver
 	// Run following command to create the lines for a version:
 	// kubectl api-resources --no-headers | awk '{printf "info.AddResource(\"%s\", \"%s\", %s)\n", $(NF-2), $(NF), $(NF-1)}'
 
-	kubernetesVersion := fmt.Sprintf("%d.%d", version.Major(), version.Minor())
-	switch kubernetesVersion {
-	case "1.26":
-		info.addKubernetes1_26()
-	case "1.27":
-		info.addKubernetes1_27()
-	case "1.28":
-		info.addKubernetes1_28()
-	case "1.29":
-		info.addKubernetes1_29()
-	case "1.30":
-		info.addKubernetes1_30()
-	case "1.31":
-		info.addKubernetes1_31()
-	case "1.32":
-		info.addKubernetes1_32()
-	case "1.33":
-		info.addKubernetes1_33()
-	default:
-		if version.Major() == 1 && version.Minor() > 33 {
-			slog.Warn(
-				"Using Kubernetes version ${version} greater than 1.33, Anemos may not support all resources. Using 1.33 resources as a base.",
-				slog.String("version", version.String()))
-
-			info.addKubernetes1_33()
-			return
-		}
-
-		js.Throw(fmt.Errorf("kubernetes version %s is not supported", kubernetesVersion))
+	funcs := map[string]func(){
+		"1.26": info.addKubernetes1_26,
+		"1.27": info.addKubernetes1_27,
+		"1.28": info.addKubernetes1_28,
+		"1.29": info.addKubernetes1_29,
+		"1.30": info.addKubernetes1_30,
+		"1.31": info.addKubernetes1_31,
+		"1.32": info.addKubernetes1_32,
+		"1.33": info.addKubernetes1_33,
 	}
+
+	kubernetesVersion := fmt.Sprintf("%d.%d", version.Major(), version.Minor())
+	if funcs[kubernetesVersion] != nil {
+		funcs[kubernetesVersion]()
+		return
+	}
+
+	if version.Major() == DefaultKubernetesVersion.Major() && version.Minor() > DefaultKubernetesVersion.Minor() {
+		slog.Warn(
+			"Using Kubernetes version ${version} greater than ${defaultVersion}, Anemos may not support all resources. Using ${defaultVersion} resources as a base.",
+			slog.String("version", version.String()),
+			slog.String("defaultVersion", DefaultKubernetesVersion.String()))
+
+		funcs[DefaultKubernetesVersion.String()]()
+		return
+	}
+
+	js.Throw(fmt.Errorf("kubernetes version %s is not supported", kubernetesVersion))
 }
 
 func (info *KubernetesResourceInfo) addKubernetes1_26() {

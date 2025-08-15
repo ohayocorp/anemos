@@ -7,14 +7,14 @@ import { DocumentGroup, AdditionalFile } from "./documentGroup";
 import { Step, steps } from "./step";
 
 export declare class Builder {
+    constructor();
     constructor(options: BuilderOptions);
     constructor(version: string | Version, distribution: KubernetesDistribution, environmentType: EnvironmentType);
 
     /**
-     * All components that will be run by this builder. Don't modify this array directly, use {@link Builder.addComponent}
-     * or {@link Builder.removeComponent} instead.
+     * All components that will be run by this builder. Don't add to this array directly, use {@link Builder.addComponent} instead.
      */
-    components: ReadonlyArray<Component>;
+    components: Array<Component>;
 
     /** Common options that are used by the builder components. */
     options: BuilderOptions;

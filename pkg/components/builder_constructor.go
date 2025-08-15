@@ -17,8 +17,8 @@ const (
 	JsRuntimeMetadataBuilderSkipConfirmation = "builder/skipConfirmation"
 )
 
-func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *core.Builder {
-	builder := core.NewBuilder(builderOptions, jsRuntime)
+func NewBuilderWithOptions(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *core.Builder {
+	builder := core.NewBuilderWithOptions(builderOptions, jsRuntime)
 
 	deleteoutputdirectory.Add(builder)
 	writedocuments.Add(builder)
@@ -37,6 +37,10 @@ func NewBuilder(builderOptions *core.BuilderOptions, jsRuntime *js.JsRuntime) *c
 	return builder
 }
 
+func NewBuilder(jsRuntime *js.JsRuntime) *core.Builder {
+	return NewBuilderWithOptions(nil, jsRuntime)
+}
+
 func NewBuilderVersionDistributionEnvironmentType(
 	version *semver.Version,
 	distribution core.KubernetesDistribution,
@@ -48,12 +52,13 @@ func NewBuilderVersionDistributionEnvironmentType(
 		core.NewEnvironment(string(environment), environment),
 	)
 
-	return NewBuilder(options, jsRuntime)
+	return NewBuilderWithOptions(options, jsRuntime)
 }
 
 func registerBuilderConstructor(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[core.Builder]()).Constructors(
 		js.Constructor(reflect.ValueOf(NewBuilder)),
+		js.Constructor(reflect.ValueOf(NewBuilderWithOptions)),
 		js.Constructor(reflect.ValueOf(NewBuilderVersionDistributionEnvironmentType)),
 	)
 }

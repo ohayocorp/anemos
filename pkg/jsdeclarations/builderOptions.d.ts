@@ -26,6 +26,7 @@ export declare class Environment {
  * For example, in the development environment, some components may disable high availability.
  */
 export declare enum EnvironmentType {
+    Unknown,
     Development,
     Testing,
     Production,
@@ -46,6 +47,7 @@ export declare class KubernetesCluster {
  * Predefined types for the Kubernetes distribution. These are used to determine the behavior of some components.
  */
 export declare enum KubernetesDistribution {
+    Unknown,
     AKS,
     EKS,
     GKE,
