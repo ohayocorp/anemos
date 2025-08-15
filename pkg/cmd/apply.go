@@ -75,7 +75,7 @@ func runApplyCommand(cmd *cobra.Command, args []string, program *AnemosProgram) 
 	forceConflicts := cmdutil.GetFlagBool(cmd, "force-conflicts")
 	namespace := cmdutil.GetFlagString(cmd, "namespace")
 	optionsFile := cmdutil.GetFlagString(cmd, "options-file")
-	documentGroups := cmdutil.GetFlagStringArray(cmd, "document-group")
+	documentGroups := cmdutil.GetFlagStringArray(cmd, "document-groups")
 	distribution := cmdutil.GetFlagString(cmd, "distribution")
 	environmentType := cmdutil.GetFlagString(cmd, "environment-type")
 
