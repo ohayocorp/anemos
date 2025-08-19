@@ -9,6 +9,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg/components"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/k8s"
 	"github.com/spf13/cobra"
 )
 
@@ -96,6 +97,7 @@ func initializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
 		return nil, err
 	}
 
+	k8s.RegisterK8S(runtime)
 	core.RegisterCore(runtime)
 	components.RegisterComponents(runtime)
 
