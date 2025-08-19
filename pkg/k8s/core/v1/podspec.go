@@ -68,7 +68,7 @@ type PodSpec struct {
 	NodeName *string `json:"nodeName,omitempty" yaml:"nodeName,omitempty"`
 
 	// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-	NodeSelector *any `json:"nodeSelector,omitempty" yaml:"nodeSelector,omitempty"`
+	NodeSelector map[string]string `json:"nodeSelector,omitempty" yaml:"nodeSelector,omitempty"`
 
 	// Specifies the OS of the containers in the pod. Some pod and container fields are restricted if this is set.
 	// If the OS field is set to linux, the following fields must be unset: -securityContext.windowsOptions
@@ -76,7 +76,7 @@ type PodSpec struct {
 	Os *PodOS `json:"os,omitempty" yaml:"os,omitempty"`
 
 	// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass. This field will be autopopulated at admission time by the RuntimeClass admission controller. If the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests. The RuntimeClass admission controller will reject Pod create requests which have the overhead already set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero. More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
-	Overhead *any `json:"overhead,omitempty" yaml:"overhead,omitempty"`
+	Overhead map[string]any `json:"overhead,omitempty" yaml:"overhead,omitempty"`
 
 	// PreemptionPolicy is the Policy for preempting pods with lower priority. One of Never, PreemptLowerPriority. Defaults to PreemptLowerPriority if unset.
 	PreemptionPolicy *string `json:"preemptionPolicy,omitempty" yaml:"preemptionPolicy,omitempty"`

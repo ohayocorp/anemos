@@ -13,7 +13,7 @@ import (
 // Scheduling specifies the scheduling constraints for nodes supporting a RuntimeClass.
 type Scheduling struct {
 	// NodeSelector lists labels that must be present on nodes that support this RuntimeClass. Pods using this RuntimeClass can only be scheduled to a node matched by this selector. The RuntimeClass nodeSelector is merged with a pod's existing nodeSelector. Any conflicts will cause the pod to be rejected in admission.
-	NodeSelector *any `json:"nodeSelector,omitempty" yaml:"nodeSelector,omitempty"`
+	NodeSelector map[string]string `json:"nodeSelector,omitempty" yaml:"nodeSelector,omitempty"`
 
 	// Tolerations are appended (excluding duplicates) to pods running with this RuntimeClass during admission, effectively unioning the set of nodes tolerated by the pod and the RuntimeClass.
 	Tolerations []*corev1.Toleration `json:"tolerations,omitempty" yaml:"tolerations,omitempty"`

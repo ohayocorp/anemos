@@ -42,7 +42,7 @@ type PersistentVolumeClaimStatus struct {
 	// When this field is not set, it means that no resize operation is in progress for the given PVC.
 	// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC.
 	// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-	AllocatedResourceStatuses *any `json:"allocatedResourceStatuses,omitempty" yaml:"allocatedResourceStatuses,omitempty"`
+	AllocatedResourceStatuses map[string]string `json:"allocatedResourceStatuses,omitempty" yaml:"allocatedResourceStatuses,omitempty"`
 
 	// AllocatedResources tracks the resources allocated to a PVC including its capacity. Key names follow standard Kubernetes label syntax. Valid values are either:
 	// 	* Un-prefixed keys:
@@ -52,10 +52,10 @@ type PersistentVolumeClaimStatus struct {
 	// Capacity reported here may be larger than the actual capacity when a volume expansion operation is requested. For storage quota, the larger value from allocatedResources and PVC.spec.resources is used. If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation. If a volume expansion capacity request is lowered, allocatedResources is only lowered if there are no expansion operations in progress and if the actual volume capacity is equal or lower than the requested capacity.
 	// A controller that receives PVC update with previously unknown resourceName should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC.
 	// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-	AllocatedResources *any `json:"allocatedResources,omitempty" yaml:"allocatedResources,omitempty"`
+	AllocatedResources map[string]any `json:"allocatedResources,omitempty" yaml:"allocatedResources,omitempty"`
 
 	// Capacity represents the actual resources of the underlying volume.
-	Capacity *any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
+	Capacity map[string]any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
 
 	// Conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'Resizing'.
 	Conditions []*PersistentVolumeClaimCondition `json:"conditions,omitempty" yaml:"conditions,omitempty"`

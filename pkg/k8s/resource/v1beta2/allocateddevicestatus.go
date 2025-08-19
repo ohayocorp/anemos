@@ -19,7 +19,7 @@ type AllocatedDeviceStatus struct {
 
 	// Data contains arbitrary driver-specific data.
 	// The length of the raw data must be smaller or equal to 10 Ki.
-	Data *any `json:"data,omitempty" yaml:"data,omitempty"`
+	Data any `json:"data,omitempty" yaml:"data,omitempty"`
 
 	// Device references one device instance via its name in the driver's resource pool. It must be a DNS label.
 	Device string `json:"device" yaml:"device"`

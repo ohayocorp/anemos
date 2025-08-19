@@ -26,7 +26,7 @@ export declare class VolumeAttachmentStatus {
      * AttachmentMetadata is populated with any information returned by the attach operation, upon successful attach, that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
      * 
      */
-    attachmentMetadata?: any
+    attachmentMetadata?: Record<string, string>
 
 	/**
      * DetachError represents the last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.

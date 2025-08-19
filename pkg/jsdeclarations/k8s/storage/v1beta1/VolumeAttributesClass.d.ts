@@ -40,5 +40,5 @@ export declare class VolumeAttributesClass {
      * This field is required and must contain at least one key/value pair. The keys cannot be empty, and the maximum number of parameters is 512, with a cumulative max size of 256K. If the CSI driver rejects invalid parameters, the target PersistentVolumeClaim will be set to an "Infeasible" state in the modifyVolumeStatus field.
      * 
      */
-    parameters?: any
+    parameters?: Record<string, string>
 }

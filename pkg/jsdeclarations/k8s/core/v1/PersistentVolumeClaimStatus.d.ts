@@ -73,7 +73,7 @@ export declare class PersistentVolumeClaimStatus {
      * This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
      * 
      */
-    allocatedResourceStatuses?: any
+    allocatedResourceStatuses?: Record<string, string>
 
 	/**
      * AllocatedResources tracks the resources allocated to a PVC including its capacity. Key names follow standard Kubernetes label syntax. Valid values are either:
@@ -93,13 +93,13 @@ export declare class PersistentVolumeClaimStatus {
      * This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
      * 
      */
-    allocatedResources?: any
+    allocatedResources?: Record<string, any>
 
 	/**
      * Capacity represents the actual resources of the underlying volume.
      * 
      */
-    capacity?: any
+    capacity?: Record<string, any>
 
 	/**
      * Conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'Resizing'.

@@ -16,7 +16,7 @@ type NetworkPolicyPort struct {
 	EndPort *int `json:"endPort,omitempty" yaml:"endPort,omitempty"`
 
 	// Port represents the port on the given protocol. This can either be a numerical or named port on a pod. If this field is not provided, this matches all port names and numbers. If present, only traffic on the specified protocol AND port will be matched.
-	Port *any `json:"port,omitempty" yaml:"port,omitempty"`
+	Port any `json:"port,omitempty" yaml:"port,omitempty"`
 
 	// Protocol represents the protocol (TCP, UDP, or SCTP) which traffic must match. If not specified, this field defaults to TCP.
 	Protocol *string `json:"protocol,omitempty" yaml:"protocol,omitempty"`

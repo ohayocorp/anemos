@@ -38,5 +38,5 @@ export declare class CSIVolumeSource {
      * VolumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
      * 
      */
-    volumeAttributes?: any
+    volumeAttributes?: Record<string, string>
 }

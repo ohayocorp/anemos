@@ -17,7 +17,7 @@ type DeviceCounterConsumption struct {
 
 	// Counters defines the counters that will be consumed by the device.
 	// The maximum number counters in a device is 32. In addition, the maximum number of all counters in all devices is 1024 (for example, 64 devices with 16 counters each).
-	Counters any `json:"counters" yaml:"counters"`
+	Counters map[string]*Counter `json:"counters" yaml:"counters"`
 }
 
 func NewDeviceCounterConsumption() *DeviceCounterConsumption {

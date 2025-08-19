@@ -33,7 +33,7 @@ type StorageClass struct {
 	MountOptions *[]string `json:"mountOptions,omitempty" yaml:"mountOptions,omitempty"`
 
 	// Parameters holds the parameters for the provisioner that should create volumes of this storage class.
-	Parameters *any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	Parameters map[string]string `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 
 	// Provisioner indicates the type of the provisioner.
 	Provisioner string `json:"provisioner" yaml:"provisioner"`

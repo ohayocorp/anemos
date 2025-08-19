@@ -557,7 +557,7 @@ func (typeInfo *typeInfo) getFieldNameAndType(propertyName string, isOptional bo
 	fieldType, fieldTypeInfo := typeInfo.schemaToType(&propertySchema, true)
 
 	// Make optional primitive fields pointers for proper omitempty behavior.
-	if isOptional && (fieldTypeInfo == nil || fieldTypeInfo.LiteralType != nil) {
+	if isOptional && fieldType != "any" && !strings.HasPrefix(fieldType, "map[") && (fieldTypeInfo == nil || fieldTypeInfo.LiteralType != nil) {
 		fieldType = fmt.Sprintf("*%s", fieldType)
 	}
 
@@ -762,6 +762,16 @@ func (typeInfo *typeInfo) schemaToType(schema *spec.Schema, isGo bool) (string, 
 
 		if schemaType != "object" {
 			panic(fmt.Sprintf("Unsupported schema type: %s for %s", schemaType, schema.ID))
+		}
+	}
+
+	if schema.AdditionalProperties != nil {
+		mapValueType, mapValueTypeInfo := typeInfo.schemaToType(schema.AdditionalProperties.Schema, isGo)
+
+		if isGo {
+			return fmt.Sprintf("map[string]%s", mapValueType), mapValueTypeInfo
+		} else {
+			return fmt.Sprintf("Record<string, %s>", mapValueType), mapValueTypeInfo
 		}
 	}
 

@@ -42,7 +42,7 @@ export declare class DeviceRequestAllocationResult {
      * This field is populated only for devices that allow multiple allocations. All capacity entries are included, even if the consumed amount is zero.
      * 
      */
-    consumedCapacity?: any
+    consumedCapacity?: Record<string, any>
 
 	/**
      * Device references one device instance via its name in the driver's resource pool. It must be a DNS label.

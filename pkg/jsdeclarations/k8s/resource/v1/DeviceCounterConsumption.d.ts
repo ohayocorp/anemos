@@ -1,6 +1,6 @@
 // Auto generated code; DO NOT EDIT.
 
-
+import { Counter } from "./Counter"
 
 /**
  * DeviceCounterConsumption defines a set of counters that a device will consume from a CounterSet.
@@ -22,5 +22,5 @@ export declare class DeviceCounterConsumption {
      * The maximum number counters in a device is 32. In addition, the maximum number of all counters in all devices is 1024 (for example, 64 devices with 16 counters each).
      * 
      */
-    counters: any
+    counters: Record<string, Counter>
 }

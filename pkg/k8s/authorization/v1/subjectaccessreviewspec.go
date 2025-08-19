@@ -13,7 +13,7 @@ import (
 // SubjectAccessReviewSpec is a description of the access request.  Exactly one of ResourceAuthorizationAttributes and NonResourceAuthorizationAttributes must be set
 type SubjectAccessReviewSpec struct {
 	// Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
-	Extra *any `json:"extra,omitempty" yaml:"extra,omitempty"`
+	Extra map[string][]string `json:"extra,omitempty" yaml:"extra,omitempty"`
 
 	// Groups is the groups you're testing for.
 	Groups *[]string `json:"groups,omitempty" yaml:"groups,omitempty"`

@@ -13,19 +13,19 @@ import (
 // LimitRangeItem defines a min/max usage limit for any resource that matches on kind.
 type LimitRangeItem struct {
 	// Default resource requirement limit value by resource name if resource limit is omitted.
-	Default *any `json:"default,omitempty" yaml:"default,omitempty"`
+	Default map[string]any `json:"default,omitempty" yaml:"default,omitempty"`
 
 	// DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.
-	DefaultRequest *any `json:"defaultRequest,omitempty" yaml:"defaultRequest,omitempty"`
+	DefaultRequest map[string]any `json:"defaultRequest,omitempty" yaml:"defaultRequest,omitempty"`
 
 	// Max usage constraints on this kind by resource name.
-	Max *any `json:"max,omitempty" yaml:"max,omitempty"`
+	Max map[string]any `json:"max,omitempty" yaml:"max,omitempty"`
 
 	// MaxLimitRequestRatio if specified, the named resource must have a request and limit that are both non-zero where limit divided by request is less than or equal to the enumerated value; this represents the max burst for the named resource.
-	MaxLimitRequestRatio *any `json:"maxLimitRequestRatio,omitempty" yaml:"maxLimitRequestRatio,omitempty"`
+	MaxLimitRequestRatio map[string]any `json:"maxLimitRequestRatio,omitempty" yaml:"maxLimitRequestRatio,omitempty"`
 
 	// Min usage constraints on this kind by resource name.
-	Min *any `json:"min,omitempty" yaml:"min,omitempty"`
+	Min map[string]any `json:"min,omitempty" yaml:"min,omitempty"`
 
 	// Type of resource that this limit applies to.
 	Type string `json:"type" yaml:"type"`

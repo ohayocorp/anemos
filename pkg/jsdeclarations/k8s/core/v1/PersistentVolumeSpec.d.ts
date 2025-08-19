@@ -61,7 +61,7 @@ export declare class PersistentVolumeSpec {
      * Capacity is the description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
      * 
      */
-    capacity?: any
+    capacity?: Record<string, any>
 
 	/**
      * CephFS represents a Ceph FS mount on the host that shares a pod's lifetime. Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.

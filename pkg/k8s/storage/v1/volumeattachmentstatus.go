@@ -19,7 +19,7 @@ type VolumeAttachmentStatus struct {
 	Attached bool `json:"attached" yaml:"attached"`
 
 	// AttachmentMetadata is populated with any information returned by the attach operation, upon successful attach, that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.
-	AttachmentMetadata *any `json:"attachmentMetadata,omitempty" yaml:"attachmentMetadata,omitempty"`
+	AttachmentMetadata map[string]string `json:"attachmentMetadata,omitempty" yaml:"attachmentMetadata,omitempty"`
 
 	// DetachError represents the last error encountered during detach operation, if any. This field must only be set by the entity completing the detach operation, i.e. the external-attacher.
 	DetachError *VolumeError `json:"detachError,omitempty" yaml:"detachError,omitempty"`

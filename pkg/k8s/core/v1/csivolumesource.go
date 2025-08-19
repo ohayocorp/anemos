@@ -25,7 +25,7 @@ type CSIVolumeSource struct {
 	ReadOnly *bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 
 	// VolumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
-	VolumeAttributes *any `json:"volumeAttributes,omitempty" yaml:"volumeAttributes,omitempty"`
+	VolumeAttributes map[string]string `json:"volumeAttributes,omitempty" yaml:"volumeAttributes,omitempty"`
 }
 
 func NewCSIVolumeSource() *CSIVolumeSource {

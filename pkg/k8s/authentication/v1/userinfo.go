@@ -13,7 +13,7 @@ import (
 // UserInfo holds the information about the user needed to implement the user.Info interface.
 type UserInfo struct {
 	// Any additional information provided by the authenticator.
-	Extra *any `json:"extra,omitempty" yaml:"extra,omitempty"`
+	Extra map[string][]string `json:"extra,omitempty" yaml:"extra,omitempty"`
 
 	// The names of groups this user is a part of.
 	Groups *[]string `json:"groups,omitempty" yaml:"groups,omitempty"`

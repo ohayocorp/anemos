@@ -20,7 +20,7 @@ import (
 type CapacityRequestPolicyRange struct {
 	// Max defines the upper limit for capacity that can be requested.
 	// Max must be less than or equal to the capacity value. Min and requestPolicy.default must be less than or equal to the maximum.
-	Max *any `json:"max,omitempty" yaml:"max,omitempty"`
+	Max any `json:"max,omitempty" yaml:"max,omitempty"`
 
 	// Min specifies the minimum capacity allowed for a consumption request.
 	// Min must be greater than or equal to zero, and less than or equal to the capacity value. requestPolicy.default must be more than or equal to the minimum.
@@ -28,7 +28,7 @@ type CapacityRequestPolicyRange struct {
 
 	// Step defines the step size between valid capacity amounts within the range.
 	// Max (if set) and requestPolicy.default must be a multiple of Step. Min + Step must be less than or equal to the capacity value.
-	Step *any `json:"step,omitempty" yaml:"step,omitempty"`
+	Step any `json:"step,omitempty" yaml:"step,omitempty"`
 }
 
 func NewCapacityRequestPolicyRange() *CapacityRequestPolicyRange {

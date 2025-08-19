@@ -34,7 +34,7 @@ export declare class CertificateSigningRequestSpec {
      * Extra contains extra attributes of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
      * 
      */
-    extra?: any
+    extra?: Record<string, Array<string>>
 
 	/**
      * Groups contains group membership of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.

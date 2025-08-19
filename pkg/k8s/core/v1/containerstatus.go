@@ -13,7 +13,7 @@ import (
 // ContainerStatus contains details for the current status of this container.
 type ContainerStatus struct {
 	// AllocatedResources represents the compute resources allocated for this container by the node. Kubelet sets this value to Container.Resources.Requests upon successful pod admission and after successfully admitting desired pod resize.
-	AllocatedResources *any `json:"allocatedResources,omitempty" yaml:"allocatedResources,omitempty"`
+	AllocatedResources map[string]any `json:"allocatedResources,omitempty" yaml:"allocatedResources,omitempty"`
 
 	// AllocatedResourcesStatus represents the status of various resources allocated for this Pod.
 	AllocatedResourcesStatus []*ResourceStatus `json:"allocatedResourcesStatus,omitempty" yaml:"allocatedResourcesStatus,omitempty"`

@@ -1,6 +1,8 @@
 // Auto generated code; DO NOT EDIT.
 
 import { NodeSelector } from "../../core/v1"
+import { DeviceAttribute } from "./DeviceAttribute"
+import { DeviceCapacity } from "./DeviceCapacity"
 import { DeviceCounterConsumption } from "./DeviceCounterConsumption"
 import { DeviceTaint } from "./DeviceTaint"
 
@@ -34,7 +36,7 @@ export declare class Device {
      * The maximum number of attributes and capacities combined is 32.
      * 
      */
-    attributes?: any
+    attributes?: Record<string, DeviceAttribute>
 
 	/**
      * BindingConditions defines the conditions for proceeding with binding. All of these conditions must be set in the per-device status conditions with a value of True to proceed with binding the pod to the node while scheduling the pod.
@@ -74,7 +76,7 @@ export declare class Device {
      * The maximum number of attributes and capacities combined is 32.
      * 
      */
-    capacity?: any
+    capacity?: Record<string, DeviceCapacity>
 
 	/**
      * ConsumesCounters defines a list of references to sharedCounters and the set of counters that the device will consume from those counter sets.

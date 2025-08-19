@@ -16,7 +16,7 @@ type Secret struct {
 	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
 
 	// Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
-	Data *any `json:"data,omitempty" yaml:"data,omitempty"`
+	Data map[string]string `json:"data,omitempty" yaml:"data,omitempty"`
 
 	// Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
 	Immutable *bool `json:"immutable,omitempty" yaml:"immutable,omitempty"`
@@ -28,7 +28,7 @@ type Secret struct {
 	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 
 	// StringData allows specifying non-binary secret data in string form. It is provided as a write-only input field for convenience. All keys and values are merged into the data field on write, overwriting any existing values. The stringData field is never output when reading from the API.
-	StringData *any `json:"stringData,omitempty" yaml:"stringData,omitempty"`
+	StringData map[string]string `json:"stringData,omitempty" yaml:"stringData,omitempty"`
 
 	// Used to facilitate programmatic handling of secret data. More info: https://kubernetes.io/docs/concepts/configuration/secret/#secret-types
 	Type *string `json:"type,omitempty" yaml:"type,omitempty"`

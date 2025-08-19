@@ -14,7 +14,7 @@ export declare class UserInfo {
      * Any additional information provided by the authenticator.
      * 
      */
-    extra?: any
+    extra?: Record<string, Array<string>>
 
 	/**
      * The names of groups this user is a part of.

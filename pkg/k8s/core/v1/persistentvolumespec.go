@@ -25,7 +25,7 @@ type PersistentVolumeSpec struct {
 	AzureFile *AzureFilePersistentVolumeSource `json:"azureFile,omitempty" yaml:"azureFile,omitempty"`
 
 	// Capacity is the description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
-	Capacity *any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
+	Capacity map[string]any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
 
 	// CephFS represents a Ceph FS mount on the host that shares a pod's lifetime. Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 	Cephfs *CephFSPersistentVolumeSource `json:"cephfs,omitempty" yaml:"cephfs,omitempty"`

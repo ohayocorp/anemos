@@ -37,7 +37,7 @@ type CSIPersistentVolumeSource struct {
 	ReadOnly *bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 
 	// VolumeAttributes of the volume to publish.
-	VolumeAttributes *any `json:"volumeAttributes,omitempty" yaml:"volumeAttributes,omitempty"`
+	VolumeAttributes map[string]string `json:"volumeAttributes,omitempty" yaml:"volumeAttributes,omitempty"`
 
 	// VolumeHandle is the unique volume name returned by the CSI volume plugin’s CreateVolume to refer to the volume on all subsequent calls. Required.
 	VolumeHandle string `json:"volumeHandle" yaml:"volumeHandle"`

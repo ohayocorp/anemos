@@ -15,7 +15,7 @@ import (
 type CounterSet struct {
 	// Counters defines the set of counters for this CounterSet The name of each counter must be unique in that set and must be a DNS label.
 	// The maximum number of counters in all sets is 32.
-	Counters any `json:"counters" yaml:"counters"`
+	Counters map[string]*Counter `json:"counters" yaml:"counters"`
 
 	// Name defines the name of the counter set. It must be a DNS label.
 	Name string `json:"name" yaml:"name"`

@@ -19,7 +19,7 @@ type FlexVolumeSource struct {
 	FsType *string `json:"fsType,omitempty" yaml:"fsType,omitempty"`
 
 	// Options is Optional: this field holds extra command options if any.
-	Options *any `json:"options,omitempty" yaml:"options,omitempty"`
+	Options map[string]string `json:"options,omitempty" yaml:"options,omitempty"`
 
 	// ReadOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
 	ReadOnly *bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`

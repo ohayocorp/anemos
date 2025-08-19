@@ -26,5 +26,5 @@ export declare class CapacityRequirements {
      * If the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim’s status.devices[*].consumedCapacity field.
      * 
      */
-    requests?: any
+    requests?: Record<string, any>
 }

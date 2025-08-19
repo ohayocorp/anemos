@@ -23,7 +23,7 @@ type CertificateSigningRequestSpec struct {
 	ExpirationSeconds *int `json:"expirationSeconds,omitempty" yaml:"expirationSeconds,omitempty"`
 
 	// Extra contains extra attributes of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
-	Extra *any `json:"extra,omitempty" yaml:"extra,omitempty"`
+	Extra map[string][]string `json:"extra,omitempty" yaml:"extra,omitempty"`
 
 	// Groups contains group membership of the user that created the CertificateSigningRequest. Populated by the API server on creation and immutable.
 	Groups *[]string `json:"groups,omitempty" yaml:"groups,omitempty"`

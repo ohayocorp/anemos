@@ -13,7 +13,7 @@ import (
 // ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
 type ObjectMeta struct {
 	// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
-	Annotations *any `json:"annotations,omitempty" yaml:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`
 
 	// Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
 	DeletionGracePeriodSeconds *int `json:"deletionGracePeriodSeconds,omitempty" yaml:"deletionGracePeriodSeconds,omitempty"`
@@ -27,7 +27,7 @@ type ObjectMeta struct {
 	GenerateName *string `json:"generateName,omitempty" yaml:"generateName,omitempty"`
 
 	// Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
-	Labels *any `json:"labels,omitempty" yaml:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`
 
 	// ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
 	ManagedFields []*ManagedFieldsEntry `json:"managedFields,omitempty" yaml:"managedFields,omitempty"`

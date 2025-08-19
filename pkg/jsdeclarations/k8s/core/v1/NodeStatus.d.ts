@@ -28,13 +28,13 @@ export declare class NodeStatus {
      * Allocatable represents the resources of a node that are available for scheduling. Defaults to Capacity.
      * 
      */
-    allocatable?: any
+    allocatable?: Record<string, any>
 
 	/**
      * Capacity represents the total resources of a node. More info: https://kubernetes.io/docs/reference/node/node-status/#capacity
      * 
      */
-    capacity?: any
+    capacity?: Record<string, any>
 
 	/**
      * Conditions is an array of current observed node conditions. More info: https://kubernetes.io/docs/reference/node/node-status/#condition

@@ -18,7 +18,7 @@ export declare class ContainerStatus {
      * AllocatedResources represents the compute resources allocated for this container by the node. Kubelet sets this value to Container.Resources.Requests upon successful pod admission and after successfully admitting desired pod resize.
      * 
      */
-    allocatedResources?: any
+    allocatedResources?: Record<string, any>
 
 	/**
      * AllocatedResourcesStatus represents the status of various resources allocated for this Pod.

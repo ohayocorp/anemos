@@ -13,7 +13,7 @@ import (
 // Overhead structure represents the resource overhead associated with running a pod.
 type Overhead struct {
 	// PodFixed represents the fixed resource overhead associated with running a pod.
-	PodFixed *any `json:"podFixed,omitempty" yaml:"podFixed,omitempty"`
+	PodFixed map[string]any `json:"podFixed,omitempty" yaml:"podFixed,omitempty"`
 }
 
 func NewOverhead() *Overhead {

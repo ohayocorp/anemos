@@ -26,7 +26,7 @@ export declare class FlexPersistentVolumeSource {
      * Options is Optional: this field holds extra command options if any.
      * 
      */
-    options?: any
+    options?: Record<string, string>
 
 	/**
      * ReadOnly is Optional: defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.

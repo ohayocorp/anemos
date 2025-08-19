@@ -16,10 +16,10 @@ type NodeStatus struct {
 	Addresses []*NodeAddress `json:"addresses,omitempty" yaml:"addresses,omitempty"`
 
 	// Allocatable represents the resources of a node that are available for scheduling. Defaults to Capacity.
-	Allocatable *any `json:"allocatable,omitempty" yaml:"allocatable,omitempty"`
+	Allocatable map[string]any `json:"allocatable,omitempty" yaml:"allocatable,omitempty"`
 
 	// Capacity represents the total resources of a node. More info: https://kubernetes.io/docs/reference/node/node-status/#capacity
-	Capacity *any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
+	Capacity map[string]any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
 
 	// Conditions is an array of current observed node conditions. More info: https://kubernetes.io/docs/reference/node/node-status/#condition
 	Conditions []*NodeCondition `json:"conditions,omitempty" yaml:"conditions,omitempty"`

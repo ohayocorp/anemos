@@ -15,7 +15,7 @@ export declare class SubjectAccessReviewSpec {
      * Extra corresponds to the user.Info.GetExtra() method from the authenticator.  Since that is input to the authorizer it needs a reflection here.
      * 
      */
-    extra?: any
+    extra?: Record<string, Array<string>>
 
 	/**
      * Groups is the groups you're testing for.

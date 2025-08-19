@@ -14,11 +14,11 @@ export declare class ResourceQuotaStatus {
      * Hard is the set of enforced hard limits for each named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
      * 
      */
-    hard?: any
+    hard?: Record<string, any>
 
 	/**
      * Used is the current observed total usage of the resource in the namespace.
      * 
      */
-    used?: any
+    used?: Record<string, any>
 }

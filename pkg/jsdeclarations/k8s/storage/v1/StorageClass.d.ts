@@ -53,7 +53,7 @@ export declare class StorageClass {
      * Parameters holds the parameters for the provisioner that should create volumes of this storage class.
      * 
      */
-    parameters?: any
+    parameters?: Record<string, string>
 
 	/**
      * Provisioner indicates the type of the provisioner.

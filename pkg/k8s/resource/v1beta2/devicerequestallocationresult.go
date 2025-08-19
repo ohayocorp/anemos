@@ -27,7 +27,7 @@ type DeviceRequestAllocationResult struct {
 	// ConsumedCapacity tracks the amount of capacity consumed per device as part of the claim request. The consumed amount may differ from the requested amount: it is rounded up to the nearest valid value based on the device’s requestPolicy if applicable (i.e., may not be less than the requested amount).
 	// The total consumed capacity for each device must not exceed the DeviceCapacity's Value.
 	// This field is populated only for devices that allow multiple allocations. All capacity entries are included, even if the consumed amount is zero.
-	ConsumedCapacity *any `json:"consumedCapacity,omitempty" yaml:"consumedCapacity,omitempty"`
+	ConsumedCapacity map[string]any `json:"consumedCapacity,omitempty" yaml:"consumedCapacity,omitempty"`
 
 	// Device references one device instance via its name in the driver's resource pool. It must be a DNS label.
 	Device string `json:"device" yaml:"device"`

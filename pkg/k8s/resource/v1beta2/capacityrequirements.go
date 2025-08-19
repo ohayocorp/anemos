@@ -19,7 +19,7 @@ type CapacityRequirements struct {
 	//   (i.e., the whole device is claimed).
 	// - If a requestPolicy is set, the default consumed capacity is determined according to that policy.
 	// If the device allows multiple allocation, the aggregated amount across all requests must not exceed the capacity value. The consumed capacity, which may be adjusted based on the requestPolicy if defined, is recorded in the resource claim’s status.devices[*].consumedCapacity field.
-	Requests *any `json:"requests,omitempty" yaml:"requests,omitempty"`
+	Requests map[string]any `json:"requests,omitempty" yaml:"requests,omitempty"`
 }
 
 func NewCapacityRequirements() *CapacityRequirements {

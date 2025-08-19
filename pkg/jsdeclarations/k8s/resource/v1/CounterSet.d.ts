@@ -1,6 +1,6 @@
 // Auto generated code; DO NOT EDIT.
 
-
+import { Counter } from "./Counter"
 
 /**
  * CounterSet defines a named set of counters that are available to be used by devices defined in the ResourceSlice.
@@ -18,7 +18,7 @@ export declare class CounterSet {
      * The maximum number of counters in all sets is 32.
      * 
      */
-    counters: any
+    counters: Record<string, Counter>
 
 	/**
      * Name defines the name of the counter set. It must be a DNS label.

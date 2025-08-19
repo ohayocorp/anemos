@@ -14,5 +14,5 @@ export declare class Overhead {
      * PodFixed represents the fixed resource overhead associated with running a pod.
      * 
      */
-    podFixed?: any
+    podFixed?: Record<string, any>
 }

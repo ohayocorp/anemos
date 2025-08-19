@@ -16,7 +16,7 @@ type ResourceFieldSelector struct {
 	ContainerName *string `json:"containerName,omitempty" yaml:"containerName,omitempty"`
 
 	// Specifies the output format of the exposed resources, defaults to "1"
-	Divisor *any `json:"divisor,omitempty" yaml:"divisor,omitempty"`
+	Divisor any `json:"divisor,omitempty" yaml:"divisor,omitempty"`
 
 	// Required: resource to select
 	Resource string `json:"resource" yaml:"resource"`

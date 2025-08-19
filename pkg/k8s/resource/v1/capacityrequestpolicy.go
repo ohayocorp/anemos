@@ -14,7 +14,7 @@ import (
 // Must not set more than one ValidRequestValues.
 type CapacityRequestPolicy struct {
 	// Default specifies how much of this capacity is consumed by a request that does not contain an entry for it in DeviceRequest's Capacity.
-	Default *any `json:"default,omitempty" yaml:"default,omitempty"`
+	Default any `json:"default,omitempty" yaml:"default,omitempty"`
 
 	// ValidRange defines an acceptable quantity value range in consuming requests.
 	// If this field is set, Default must be defined and it must fall within the defined ValidRange.

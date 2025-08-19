@@ -22,7 +22,7 @@ type BasicDevice struct {
 
 	// Attributes defines the set of attributes for this device. The name of each attribute must be unique in that set.
 	// The maximum number of attributes and capacities combined is 32.
-	Attributes *any `json:"attributes,omitempty" yaml:"attributes,omitempty"`
+	Attributes map[string]*DeviceAttribute `json:"attributes,omitempty" yaml:"attributes,omitempty"`
 
 	// BindingConditions defines the conditions for proceeding with binding. All of these conditions must be set in the per-device status conditions with a value of True to proceed with binding the pod to the node while scheduling the pod.
 	// The maximum number of binding conditions is 4.
@@ -42,7 +42,7 @@ type BasicDevice struct {
 
 	// Capacity defines the set of capacities for this device. The name of each capacity must be unique in that set.
 	// The maximum number of attributes and capacities combined is 32.
-	Capacity *any `json:"capacity,omitempty" yaml:"capacity,omitempty"`
+	Capacity map[string]*DeviceCapacity `json:"capacity,omitempty" yaml:"capacity,omitempty"`
 
 	// ConsumesCounters defines a list of references to sharedCounters and the set of counters that the device will consume from those counter sets.
 	// There can only be a single entry per counterSet.

@@ -16,13 +16,13 @@ type MetricTarget struct {
 	AverageUtilization *int `json:"averageUtilization,omitempty" yaml:"averageUtilization,omitempty"`
 
 	// AverageValue is the target value of the average of the metric across all relevant pods (as a quantity)
-	AverageValue *any `json:"averageValue,omitempty" yaml:"averageValue,omitempty"`
+	AverageValue any `json:"averageValue,omitempty" yaml:"averageValue,omitempty"`
 
 	// Type represents whether the metric type is Utilization, Value, or AverageValue
 	Type string `json:"type" yaml:"type"`
 
 	// Value is the target value of the metric (as a quantity).
-	Value *any `json:"value,omitempty" yaml:"value,omitempty"`
+	Value any `json:"value,omitempty" yaml:"value,omitempty"`
 }
 
 func NewMetricTarget() *MetricTarget {

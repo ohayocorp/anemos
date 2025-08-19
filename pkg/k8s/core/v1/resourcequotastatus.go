@@ -13,10 +13,10 @@ import (
 // ResourceQuotaStatus defines the enforced hard limits and observed use.
 type ResourceQuotaStatus struct {
 	// Hard is the set of enforced hard limits for each named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
-	Hard *any `json:"hard,omitempty" yaml:"hard,omitempty"`
+	Hard map[string]any `json:"hard,omitempty" yaml:"hard,omitempty"`
 
 	// Used is the current observed total usage of the resource in the namespace.
-	Used *any `json:"used,omitempty" yaml:"used,omitempty"`
+	Used map[string]any `json:"used,omitempty" yaml:"used,omitempty"`
 }
 
 func NewResourceQuotaStatus() *ResourceQuotaStatus {
