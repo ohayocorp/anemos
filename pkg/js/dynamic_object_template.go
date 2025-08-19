@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
 	"sync"
 	"weak"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/grafana/sobek"
 )
 
@@ -49,7 +51,6 @@ func (weakMap *WeakMap[K, V]) Load(key K) *V {
 type DynamicObjectTemplate struct {
 	jsRuntime          *JsRuntime
 	objectType         reflect.Type
-	sortedKeys         []string
 	functions          []*DynamicFunction
 	goToJsNameMappings map[string]string
 	jsToGoNameMappings map[string][]string
@@ -57,10 +58,26 @@ type DynamicObjectTemplate struct {
 	jsNamespace        string
 	jsName             string
 	objectStore        WeakMap[any, sobek.Object]
+	keysWithOmitEmpty  mapset.Set[string]
 }
 
 func (template *DynamicObjectTemplate) Initialize(module *sobek.Object) {
 	template.jsRuntime.initializeFunctions(module, template.functions, template.prototype)
+
+	for key := range template.jsToGoNameMappings {
+		goNames := template.jsToGoNameMappings[key]
+		for _, goName := range goNames {
+			field, ok := template.objectType.FieldByName(goName)
+			if !ok {
+				continue
+			}
+
+			jsonTag := field.Tag.Get("json")
+			if strings.Contains(jsonTag, "omitempty") {
+				template.keysWithOmitEmpty.Add(key)
+			}
+		}
+	}
 }
 
 func (template *DynamicObjectTemplate) NewObject(backingObject reflect.Value) *sobek.Object {

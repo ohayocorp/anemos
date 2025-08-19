@@ -3,7 +3,7 @@ package js
 import (
 	"errors"
 	"reflect"
-	"slices"
+	"sort"
 
 	"github.com/grafana/sobek"
 )
@@ -110,13 +110,45 @@ func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
 }
 
 func (d *DynamicObject) Has(key string) bool {
-	return slices.Contains(d.template.sortedKeys, key)
+	if d.template.jsToGoNameMappings[key] != nil {
+		return true
+	}
+
+	return d.jsPropertyStore != nil && d.jsPropertyStore[key] != nil
 }
 
 func (d *DynamicObject) Delete(key string) bool {
+	if d.jsPropertyStore != nil {
+		if _, ok := d.jsPropertyStore[key]; ok {
+			delete(d.jsPropertyStore, key)
+			return true
+		}
+	}
+
 	return false
 }
 
 func (d *DynamicObject) Keys() []string {
-	return d.template.sortedKeys
+	keys := make([]string, 0, len(d.template.jsToGoNameMappings)+len(d.jsPropertyStore))
+
+	for key := range d.template.jsToGoNameMappings {
+		includeKey := true
+
+		if d.template.keysWithOmitEmpty.Contains(key) {
+			value := d.Get(key)
+			includeKey = value != sobek.Undefined() && value != sobek.Null()
+		}
+
+		if includeKey {
+			keys = append(keys, key)
+		}
+	}
+
+	for key := range d.jsPropertyStore {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	return keys
 }

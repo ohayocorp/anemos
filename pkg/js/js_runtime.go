@@ -257,6 +257,7 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 		goToJsNameMappings: make(map[string]string),
 		jsToGoNameMappings: make(map[string][]string),
 		prototype:          jsRuntime.Runtime.NewObject(),
+		keysWithOmitEmpty:  mapset.NewSet[string](),
 	}
 
 	jsRuntime.templates[objectType] = template
