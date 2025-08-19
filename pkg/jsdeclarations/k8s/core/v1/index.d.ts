@@ -147,7 +147,6 @@ export * from './PodResourceClaimStatus';
 export * from './PodSchedulingGate';
 export * from './PodSecurityContext';
 export * from './PodSpec';
-export * from './PodStatus';
 export * from './PodTemplate';
 export * from './PodTemplateList';
 export * from './PodTemplateSpec';

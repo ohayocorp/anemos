@@ -540,12 +540,8 @@ func isExcludedType(typeInfo *typeInfo) bool {
 		return true
 	}
 
-	switch fmt.Sprintf("%s/%s", typeInfo.PackagePath, typeInfo.Name) {
-	case "apimachinery/meta/v1/WatchEvent":
-		return true
-	}
-
-	return false
+	identifier := fmt.Sprintf("%s/%s", typeInfo.PackagePath, typeInfo.Name)
+	return excludedTypes.Contains(identifier)
 }
 
 // getFieldNameAndType determines the Go field name and type for a property.
@@ -881,3 +877,8 @@ func (typeInfo *typeInfo) getYamlTag(propertyName string, isOptional bool) strin
 
 	return fmt.Sprintf(`yaml:"%s"`, yamlTag)
 }
+
+var excludedTypes = mapset.NewSet(
+	"apimachinery/meta/v1/WatchEvent",
+	"core/v1/PodStatus",
+)

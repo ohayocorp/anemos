@@ -404,7 +404,6 @@ func RegisterK8S(jsRuntime *js.JsRuntime) {
 	corev1.RegisterPodSchedulingGate(jsRuntime)
 	corev1.RegisterPodSecurityContext(jsRuntime)
 	corev1.RegisterPodSpec(jsRuntime)
-	corev1.RegisterPodStatus(jsRuntime)
 	corev1.RegisterPodTemplate(jsRuntime)
 	corev1.RegisterPodTemplateList(jsRuntime)
 	corev1.RegisterPodTemplateSpec(jsRuntime)
