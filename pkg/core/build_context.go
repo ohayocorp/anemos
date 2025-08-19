@@ -25,6 +25,7 @@ type AddDocumentOptions struct {
 	Path          string
 	Yaml          *string
 	Root          *Mapping
+	Object        any
 	DocumentGroup *string
 }
 
@@ -64,11 +65,7 @@ func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions)
 		js.Throw(fmt.Errorf("path cannot be empty"))
 	}
 
-	if options.Root != nil && options.Yaml != nil {
-		js.Throw(fmt.Errorf("cannot specify both root and yaml"))
-	}
-
-	if options.Root == nil && options.Yaml == nil {
+	if options.Root == nil && options.Yaml == nil && options.Object == nil {
 		js.Throw(fmt.Errorf("content must be specified"))
 	}
 
@@ -76,8 +73,11 @@ func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions)
 
 	if options.Root != nil {
 		document = NewDocumentWithRoot(options.Path, options.Root)
-	} else {
+	} else if options.Yaml != nil {
 		document = NewDocumentWithYaml(options.Path, *options.Yaml)
+	} else if options.Object != nil {
+		yaml := SerializeToYaml(options.Object)
+		document = NewDocumentWithYaml(options.Path, yaml)
 	}
 
 	context.addDocument(options.DocumentGroup, document)
@@ -239,6 +239,7 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Field("Path"),
 		js.Field("Yaml").JsName("content"),
 		js.Field("Root").JsName("content"),
+		js.Field("Object").JsName("content"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewAddDocumentOptions)),
 	)
