@@ -11,6 +11,7 @@ require (
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dominikbraun/graph v0.23.0
 	github.com/go-logr/logr v1.4.3
+	github.com/go-openapi/spec v0.21.0
 	github.com/grafana/sobek v0.0.0-20250723111835-dd8a13f0d439
 	github.com/ohayocorp/sobek_nodejs v0.0.0-20250711162509-e11a98f75dcf
 	github.com/sergi/go-diff v1.4.0

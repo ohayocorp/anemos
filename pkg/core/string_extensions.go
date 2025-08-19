@@ -16,6 +16,11 @@ func Indent(text string, numberOfSpaces int) string {
 	return indent(text, numberOfSpaces, " ")
 }
 
+// Indents the each line with given number of tabs except the first line.
+func IndentTab(text string, numberOfTabs int) string {
+	return indent(text, numberOfTabs, "\t")
+}
+
 func indent(text string, repeat int, indentation string) string {
 	var builder strings.Builder
 	fullIndentation := strings.Repeat(indentation, repeat)

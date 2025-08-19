@@ -97,7 +97,12 @@ func createTypeDeclarations(program *AnemosProgram, outputDir string) error {
 				return nil
 			}
 
-			indexContents += fmt.Sprintf("export * from './%s';\n", path)
+			if d.Name() == "k8s" {
+				indexContents += fmt.Sprintf("export * as k8s from './%s';\n", path)
+			} else {
+				indexContents += fmt.Sprintf("export * from './%s';\n", path)
+			}
+
 			return fs.SkipDir
 		}
 
