@@ -122,7 +122,6 @@ export * from './PersistentVolumeClaim';
 export * from './PersistentVolumeClaimCondition';
 export * from './PersistentVolumeClaimList';
 export * from './PersistentVolumeClaimSpec';
-export * from './PersistentVolumeClaimStatus';
 export * from './PersistentVolumeClaimTemplate';
 export * from './PersistentVolumeClaimVolumeSource';
 export * from './PersistentVolumeList';

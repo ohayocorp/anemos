@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { ScaleSpec } from "./ScaleSpec"
-import { ScaleStatus } from "./ScaleStatus"
 
 /**
  * Scale represents a scaling request for a resource.
@@ -35,10 +34,4 @@ export declare class Scale {
      * 
      */
     spec?: ScaleSpec
-
-	/**
-     * Status is the current status of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status. Read-only.
-     * 
-     */
-    status?: ScaleStatus
 }

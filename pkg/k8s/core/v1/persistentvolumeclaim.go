@@ -23,9 +23,6 @@ type PersistentVolumeClaim struct {
 
 	// Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 	Spec *PersistentVolumeClaimSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status represents the current information/status of a persistent volume claim. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-	Status *PersistentVolumeClaimStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewPersistentVolumeClaim() *PersistentVolumeClaim {
@@ -47,7 +44,6 @@ func RegisterPersistentVolumeClaim(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)),
 		js.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)),

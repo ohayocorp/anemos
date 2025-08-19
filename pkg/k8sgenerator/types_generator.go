@@ -128,7 +128,7 @@ func generateType(typeInfo *typeInfo) error {
 	for _, propertyName := range fieldNames {
 		description := typeInfo.Schema.Properties[propertyName].Description
 		// Skip system-populated fields since they are not user-modifiable.
-		if strings.Contains(description, "Populated by the system") {
+		if strings.Contains(description, "Populated by the system") || strings.Contains(description, "Read-only.") {
 			continue
 		}
 
@@ -880,5 +880,7 @@ func (typeInfo *typeInfo) getYamlTag(propertyName string, isOptional bool) strin
 
 var excludedTypes = mapset.NewSet(
 	"apimachinery/meta/v1/WatchEvent",
+	"autoscaling/v1/ScaleStatus",
+	"core/v1/PersistentVolumeClaimStatus",
 	"core/v1/PodStatus",
 )

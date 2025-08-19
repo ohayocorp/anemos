@@ -15,9 +15,6 @@ type ObjectMeta struct {
 	// Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
 	Annotations map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`
 
-	// Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
-	DeletionGracePeriodSeconds *int `json:"deletionGracePeriodSeconds,omitempty" yaml:"deletionGracePeriodSeconds,omitempty"`
-
 	// Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
 	Finalizers *[]string `json:"finalizers,omitempty" yaml:"finalizers,omitempty"`
 
@@ -58,7 +55,6 @@ func NewObjectMetaWithSpec(spec *ObjectMeta) *ObjectMeta {
 func RegisterObjectMeta(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[ObjectMeta]()).JsNamespace("k8s.apimachinery.meta.v1").Fields(
 		js.Field("Annotations"),
-		js.Field("DeletionGracePeriodSeconds"),
 		js.Field("Finalizers"),
 		js.Field("GenerateName"),
 		js.Field("Labels"),

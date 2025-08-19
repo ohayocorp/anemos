@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { PersistentVolumeClaimSpec } from "./PersistentVolumeClaimSpec"
-import { PersistentVolumeClaimStatus } from "./PersistentVolumeClaimStatus"
 
 /**
  * PersistentVolumeClaim is a user's request for and claim to a persistent volume
@@ -35,10 +34,4 @@ export declare class PersistentVolumeClaim {
      * 
      */
     spec?: PersistentVolumeClaimSpec
-
-	/**
-     * Status represents the current information/status of a persistent volume claim. Read-only. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-     * 
-     */
-    status?: PersistentVolumeClaimStatus
 }

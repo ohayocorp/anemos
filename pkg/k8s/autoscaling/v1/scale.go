@@ -23,9 +23,6 @@ type Scale struct {
 
 	// Spec defines the behavior of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
 	Spec *ScaleSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status is the current status of the scale. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status. Read-only.
-	Status *ScaleStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewScale() *Scale {
@@ -47,7 +44,6 @@ func RegisterScale(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewScale)),
 		js.Constructor(reflect.ValueOf(NewScaleWithSpec)),
