@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { CertificateSigningRequestSpec } from "./CertificateSigningRequestSpec"
-import { CertificateSigningRequestStatus } from "./CertificateSigningRequestStatus"
 
 /**
  * CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.
@@ -41,10 +40,4 @@ export declare class CertificateSigningRequest {
      * 
      */
     spec: CertificateSigningRequestSpec
-
-	/**
-     * Status contains information about whether the request is approved or denied, and the certificate issued by the signer, or the failure condition indicating signer failure.
-     * 
-     */
-    status?: CertificateSigningRequestStatus
 }

@@ -23,9 +23,6 @@ type Deployment struct {
 
 	// Specification of the desired behavior of the Deployment.
 	Spec *DeploymentSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Most recently observed status of the Deployment.
-	Status *DeploymentStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewDeployment() *Deployment {
@@ -47,7 +44,6 @@ func RegisterDeployment(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewDeployment)),
 		js.Constructor(reflect.ValueOf(NewDeploymentWithSpec)),

@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { SubjectAccessReviewSpec } from "./SubjectAccessReviewSpec"
-import { SubjectAccessReviewStatus } from "./SubjectAccessReviewStatus"
 
 /**
  * SubjectAccessReview checks whether or not a user or group can perform an action.
@@ -35,10 +34,4 @@ export declare class SubjectAccessReview {
      * 
      */
     spec: SubjectAccessReviewSpec
-
-	/**
-     * Status is filled in by the server and indicates whether the request is allowed or not
-     * 
-     */
-    status?: SubjectAccessReviewStatus
 }

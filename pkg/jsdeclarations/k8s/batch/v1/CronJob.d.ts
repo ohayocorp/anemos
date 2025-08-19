@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { CronJobSpec } from "./CronJobSpec"
-import { CronJobStatus } from "./CronJobStatus"
 
 /**
  * CronJob represents the configuration of a single cron job.
@@ -40,5 +39,5 @@ export declare class CronJob {
      * Current status of a cron job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
      * 
      */
-    status?: CronJobStatus
+    status?: any
 }

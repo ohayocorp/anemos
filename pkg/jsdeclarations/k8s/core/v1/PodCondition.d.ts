@@ -41,12 +41,6 @@ export declare class PodCondition {
     reason?: string
 
 	/**
-     * Status is the status of the condition. Can be True, False, Unknown. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
-     * 
-     */
-    status: string
-
-	/**
      * Type is the type of the condition. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
      * 
      */

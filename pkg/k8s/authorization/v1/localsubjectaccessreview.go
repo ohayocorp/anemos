@@ -23,9 +23,6 @@ type LocalSubjectAccessReview struct {
 
 	// Spec holds information about the request being evaluated.  spec.namespace must be equal to the namespace you made the request against.  If empty, it is defaulted.
 	Spec *SubjectAccessReviewSpec `json:"spec" yaml:"spec"`
-
-	// Status is filled in by the server and indicates whether the request is allowed or not
-	Status *SubjectAccessReviewStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewLocalSubjectAccessReview() *LocalSubjectAccessReview {
@@ -47,7 +44,6 @@ func RegisterLocalSubjectAccessReview(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewLocalSubjectAccessReview)),
 		js.Constructor(reflect.ValueOf(NewLocalSubjectAccessReviewWithSpec)),

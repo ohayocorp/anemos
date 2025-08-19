@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { HorizontalPodAutoscalerSpec } from "./HorizontalPodAutoscalerSpec"
-import { HorizontalPodAutoscalerStatus } from "./HorizontalPodAutoscalerStatus"
 
 /**
  * Configuration of a horizontal pod autoscaler.
@@ -35,10 +34,4 @@ export declare class HorizontalPodAutoscaler {
      * 
      */
     spec?: HorizontalPodAutoscalerSpec
-
-	/**
-     * Status is the current information about the autoscaler.
-     * 
-     */
-    status?: HorizontalPodAutoscalerStatus
 }

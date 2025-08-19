@@ -23,9 +23,6 @@ type ResourceQuota struct {
 
 	// Spec defines the desired quota. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *ResourceQuotaSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status defines the actual enforced quota and its current usage. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *ResourceQuotaStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewResourceQuota() *ResourceQuota {
@@ -47,7 +44,6 @@ func RegisterResourceQuota(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewResourceQuota)),
 		js.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)),

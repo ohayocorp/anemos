@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { SelfSubjectAccessReviewSpec } from "./SelfSubjectAccessReviewSpec"
-import { SubjectAccessReviewStatus } from "./SubjectAccessReviewStatus"
 
 /**
  * SelfSubjectAccessReview checks whether or the current user can perform an action.  Not filling in a spec.namespace means "in all namespaces".  Self is a special case, because users should always be able to check whether they can perform an action
@@ -35,10 +34,4 @@ export declare class SelfSubjectAccessReview {
      * 
      */
     spec: SelfSubjectAccessReviewSpec
-
-	/**
-     * Status is filled in by the server and indicates whether the request is allowed or not
-     * 
-     */
-    status?: SubjectAccessReviewStatus
 }

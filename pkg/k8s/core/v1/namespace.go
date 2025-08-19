@@ -23,9 +23,6 @@ type Namespace struct {
 
 	// Spec defines the behavior of the Namespace. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *NamespaceSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status describes the current status of a Namespace. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *NamespaceStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewNamespace() *Namespace {
@@ -47,7 +44,6 @@ func RegisterNamespace(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewNamespace)),
 		js.Constructor(reflect.ValueOf(NewNamespaceWithSpec)),

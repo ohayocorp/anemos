@@ -21,9 +21,6 @@ type ReplicaSetCondition struct {
 	// The reason for the condition's last transition.
 	Reason *string `json:"reason,omitempty" yaml:"reason,omitempty"`
 
-	// Status of the condition, one of True, False, Unknown.
-	Status string `json:"status" yaml:"status"`
-
 	// Type of replica set condition.
 	Type string `json:"type" yaml:"type"`
 }
@@ -42,7 +39,6 @@ func RegisterReplicaSetCondition(jsRuntime *js.JsRuntime) {
 		js.Field("LastTransitionTime"),
 		js.Field("Message"),
 		js.Field("Reason"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewReplicaSetCondition)),

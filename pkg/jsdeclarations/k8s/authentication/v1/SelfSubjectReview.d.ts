@@ -1,7 +1,6 @@
 // Auto generated code; DO NOT EDIT.
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
-import { SelfSubjectReviewStatus } from "./SelfSubjectReviewStatus"
 
 /**
  * SelfSubjectReview contains the user information that the kube-apiserver has about the user making this request. When using impersonation, users will receive the user info of the user being impersonated.  If impersonation or request header authentication is used, any extra keys will have their case ignored and returned as lowercase.
@@ -28,10 +27,4 @@ export declare class SelfSubjectReview {
      * 
      */
     metadata?: ObjectMeta
-
-	/**
-     * Status is filled in by the server with the user attributes.
-     * 
-     */
-    status?: SelfSubjectReviewStatus
 }

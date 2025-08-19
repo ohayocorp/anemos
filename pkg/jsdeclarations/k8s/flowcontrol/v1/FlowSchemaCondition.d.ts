@@ -29,12 +29,6 @@ export declare class FlowSchemaCondition {
     reason?: string
 
 	/**
-     * `status` is the status of the condition. Can be True, False, Unknown. Required.
-     * 
-     */
-    status?: string
-
-	/**
      * `type` is the type of the condition. Required.
      * 
      */

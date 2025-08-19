@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { JobSpec } from "./JobSpec"
-import { JobStatus } from "./JobStatus"
 
 /**
  * Job represents the configuration of a single job.
@@ -40,5 +39,5 @@ export declare class Job {
      * Current status of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
      * 
      */
-    status?: JobStatus
+    status?: any
 }

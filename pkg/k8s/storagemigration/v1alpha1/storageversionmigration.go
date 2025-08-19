@@ -23,9 +23,6 @@ type StorageVersionMigration struct {
 
 	// Specification of the migration.
 	Spec *StorageVersionMigrationSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status of the migration.
-	Status *StorageVersionMigrationStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewStorageVersionMigration() *StorageVersionMigration {
@@ -47,7 +44,6 @@ func RegisterStorageVersionMigration(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewStorageVersionMigration)),
 		js.Constructor(reflect.ValueOf(NewStorageVersionMigrationWithSpec)),

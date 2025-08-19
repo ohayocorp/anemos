@@ -23,9 +23,6 @@ type SubjectAccessReview struct {
 
 	// Spec holds information about the request being evaluated
 	Spec *SubjectAccessReviewSpec `json:"spec" yaml:"spec"`
-
-	// Status is filled in by the server and indicates whether the request is allowed or not
-	Status *SubjectAccessReviewStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewSubjectAccessReview() *SubjectAccessReview {
@@ -47,7 +44,6 @@ func RegisterSubjectAccessReview(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewSubjectAccessReview)),
 		js.Constructor(reflect.ValueOf(NewSubjectAccessReviewWithSpec)),

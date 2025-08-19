@@ -25,7 +25,7 @@ type CronJob struct {
 	Spec *CronJobSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 
 	// Current status of a cron job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *CronJobStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Status any `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewCronJob() *CronJob {

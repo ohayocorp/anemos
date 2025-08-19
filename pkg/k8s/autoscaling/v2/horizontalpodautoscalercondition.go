@@ -21,9 +21,6 @@ type HorizontalPodAutoscalerCondition struct {
 	// Reason is the reason for the condition's last transition.
 	Reason *string `json:"reason,omitempty" yaml:"reason,omitempty"`
 
-	// Status is the status of the condition (True, False, Unknown)
-	Status string `json:"status" yaml:"status"`
-
 	// Type describes the current condition
 	Type string `json:"type" yaml:"type"`
 }
@@ -42,7 +39,6 @@ func RegisterHorizontalPodAutoscalerCondition(jsRuntime *js.JsRuntime) {
 		js.Field("LastTransitionTime"),
 		js.Field("Message"),
 		js.Field("Reason"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerCondition)),

@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { NamespaceSpec } from "./NamespaceSpec"
-import { NamespaceStatus } from "./NamespaceStatus"
 
 /**
  * Namespace provides a scope for Names. Use of multiple namespaces is optional.
@@ -35,10 +34,4 @@ export declare class Namespace {
      * 
      */
     spec?: NamespaceSpec
-
-	/**
-     * Status describes the current status of a Namespace. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-     * 
-     */
-    status?: NamespaceStatus
 }

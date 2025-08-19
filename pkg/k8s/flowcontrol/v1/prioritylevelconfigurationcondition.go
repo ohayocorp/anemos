@@ -21,9 +21,6 @@ type PriorityLevelConfigurationCondition struct {
 	// `reason` is a unique, one-word, CamelCase reason for the condition's last transition.
 	Reason *string `json:"reason,omitempty" yaml:"reason,omitempty"`
 
-	// `status` is the status of the condition. Can be True, False, Unknown. Required.
-	Status *string `json:"status,omitempty" yaml:"status,omitempty"`
-
 	// `type` is the type of the condition. Required.
 	Type *string `json:"type,omitempty" yaml:"type,omitempty"`
 }
@@ -42,7 +39,6 @@ func RegisterPriorityLevelConfigurationCondition(jsRuntime *js.JsRuntime) {
 		js.Field("LastTransitionTime"),
 		js.Field("Message"),
 		js.Field("Reason"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationCondition)),

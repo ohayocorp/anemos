@@ -24,9 +24,6 @@ type ResourceClaim struct {
 
 	// Spec describes what is being requested and how to configure it. The spec is immutable.
 	Spec *ResourceClaimSpec `json:"spec" yaml:"spec"`
-
-	// Status describes whether the claim is ready to use and what has been allocated.
-	Status *ResourceClaimStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewResourceClaim() *ResourceClaim {
@@ -48,7 +45,6 @@ func RegisterResourceClaim(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewResourceClaim)),
 		js.Constructor(reflect.ValueOf(NewResourceClaimWithSpec)),

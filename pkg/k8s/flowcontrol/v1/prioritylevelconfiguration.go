@@ -23,9 +23,6 @@ type PriorityLevelConfiguration struct {
 
 	// `spec` is the specification of the desired behavior of a "request-priority". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *PriorityLevelConfigurationSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// `status` is the current status of a "request-priority". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *PriorityLevelConfigurationStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewPriorityLevelConfiguration() *PriorityLevelConfiguration {
@@ -47,7 +44,6 @@ func RegisterPriorityLevelConfiguration(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)),
 		js.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)),

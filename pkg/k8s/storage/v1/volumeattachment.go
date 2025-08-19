@@ -24,9 +24,6 @@ type VolumeAttachment struct {
 
 	// Spec represents specification of the desired attach/detach volume behavior. Populated by the Kubernetes system.
 	Spec *VolumeAttachmentSpec `json:"spec" yaml:"spec"`
-
-	// Status represents status of the VolumeAttachment request. Populated by the entity completing the attach or detach operation, i.e. the external-attacher.
-	Status *VolumeAttachmentStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewVolumeAttachment() *VolumeAttachment {
@@ -48,7 +45,6 @@ func RegisterVolumeAttachment(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewVolumeAttachment)),
 		js.Constructor(reflect.ValueOf(NewVolumeAttachmentWithSpec)),

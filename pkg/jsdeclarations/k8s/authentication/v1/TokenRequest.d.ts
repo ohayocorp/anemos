@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { TokenRequestSpec } from "./TokenRequestSpec"
-import { TokenRequestStatus } from "./TokenRequestStatus"
 
 /**
  * TokenRequest requests a token for a given service account.
@@ -35,10 +34,4 @@ export declare class TokenRequest {
      * 
      */
     spec: TokenRequestSpec
-
-	/**
-     * Status is filled in by the server and indicates whether the token can be authenticated.
-     * 
-     */
-    status?: TokenRequestStatus
 }

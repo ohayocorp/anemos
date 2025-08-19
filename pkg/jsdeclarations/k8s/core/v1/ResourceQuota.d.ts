@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { ResourceQuotaSpec } from "./ResourceQuotaSpec"
-import { ResourceQuotaStatus } from "./ResourceQuotaStatus"
 
 /**
  * ResourceQuota sets aggregate quota restrictions enforced per namespace
@@ -35,10 +34,4 @@ export declare class ResourceQuota {
      * 
      */
     spec?: ResourceQuotaSpec
-
-	/**
-     * Status defines the actual enforced quota and its current usage. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-     * 
-     */
-    status?: ResourceQuotaStatus
 }

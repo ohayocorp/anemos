@@ -27,9 +27,6 @@ type PodCondition struct {
 	// Unique, one-word, CamelCase reason for the condition's last transition.
 	Reason *string `json:"reason,omitempty" yaml:"reason,omitempty"`
 
-	// Status is the status of the condition. Can be True, False, Unknown. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
-	Status string `json:"status" yaml:"status"`
-
 	// Type is the type of the condition. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-conditions
 	Type string `json:"type" yaml:"type"`
 }
@@ -50,7 +47,6 @@ func RegisterPodCondition(jsRuntime *js.JsRuntime) {
 		js.Field("Message"),
 		js.Field("ObservedGeneration"),
 		js.Field("Reason"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPodCondition)),

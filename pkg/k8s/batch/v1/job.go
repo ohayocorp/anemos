@@ -25,7 +25,7 @@ type Job struct {
 	Spec *JobSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
 
 	// Current status of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *JobStatus `json:"status,omitempty" yaml:"status,omitempty"`
+	Status any `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewJob() *Job {

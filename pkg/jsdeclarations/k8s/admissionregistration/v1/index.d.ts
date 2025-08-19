@@ -19,7 +19,6 @@ export * from './ValidatingAdmissionPolicyBindingList';
 export * from './ValidatingAdmissionPolicyBindingSpec';
 export * from './ValidatingAdmissionPolicyList';
 export * from './ValidatingAdmissionPolicySpec';
-export * from './ValidatingAdmissionPolicyStatus';
 export * from './ValidatingWebhook';
 export * from './ValidatingWebhookConfiguration';
 export * from './ValidatingWebhookConfigurationList';

@@ -7,4 +7,3 @@ export * from './ParentReference';
 export * from './ServiceCIDR';
 export * from './ServiceCIDRList';
 export * from './ServiceCIDRSpec';
-export * from './ServiceCIDRStatus';

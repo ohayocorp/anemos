@@ -35,12 +35,6 @@ export declare class JobCondition {
     reason?: string
 
 	/**
-     * Status of the condition, one of True, False, Unknown.
-     * 
-     */
-    status: string
-
-	/**
      * Type of job condition, Complete or Failed.
      * 
      */

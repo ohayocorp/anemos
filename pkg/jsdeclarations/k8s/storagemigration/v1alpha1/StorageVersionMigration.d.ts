@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { StorageVersionMigrationSpec } from "./StorageVersionMigrationSpec"
-import { StorageVersionMigrationStatus } from "./StorageVersionMigrationStatus"
 
 /**
  * StorageVersionMigration represents a migration of stored data to the latest storage version.
@@ -35,10 +34,4 @@ export declare class StorageVersionMigration {
      * 
      */
     spec?: StorageVersionMigrationSpec
-
-	/**
-     * Status of the migration.
-     * 
-     */
-    status?: StorageVersionMigrationStatus
 }

@@ -35,12 +35,6 @@ export declare class CertificateSigningRequestCondition {
     reason?: string
 
 	/**
-     * Status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be "False" or "Unknown".
-     * 
-     */
-    status: string
-
-	/**
      * Type of the condition. Known conditions are "Approved", "Denied", and "Failed".
      * 
      * An "Approved" condition is added via the /approval subresource, indicating the request was approved and should be issued by the signer.

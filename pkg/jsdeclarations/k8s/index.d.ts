@@ -2,7 +2,6 @@
 
 export * as admissionregistration from './admissionregistration';
 export * as apimachinery from './apimachinery';
-export * as apiserverinternal from './apiserverinternal';
 export * as apps from './apps';
 export * as authentication from './authentication';
 export * as authorization from './authorization';

@@ -23,9 +23,6 @@ type HorizontalPodAutoscaler struct {
 
 	// Spec is the specification for the behaviour of the autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
 	Spec *HorizontalPodAutoscalerSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status is the current information about the autoscaler.
-	Status *HorizontalPodAutoscalerStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewHorizontalPodAutoscaler() *HorizontalPodAutoscaler {
@@ -47,7 +44,6 @@ func RegisterHorizontalPodAutoscaler(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)),
 		js.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)),

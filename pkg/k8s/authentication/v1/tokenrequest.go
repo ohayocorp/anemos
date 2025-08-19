@@ -23,9 +23,6 @@ type TokenRequest struct {
 
 	// Spec holds information about the request being evaluated
 	Spec *TokenRequestSpec `json:"spec" yaml:"spec"`
-
-	// Status is filled in by the server and indicates whether the token can be authenticated.
-	Status *TokenRequestStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewTokenRequest() *TokenRequest {
@@ -47,7 +44,6 @@ func RegisterTokenRequest(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewTokenRequest)),
 		js.Constructor(reflect.ValueOf(NewTokenRequestWithSpec)),

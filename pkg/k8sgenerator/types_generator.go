@@ -115,20 +115,27 @@ func generateTypes() error {
 // It extracts field information from the OpenAPI schema, applying proper naming
 // conventions, type mappings, and tags for serialization.
 func generateType(typeInfo *typeInfo) error {
-	fieldNames := []string{}
+	propertyNames := []string{}
 	fields := []string{}
 	jsFields := []string{}
 	jsRegistrationFields := []string{}
 
 	for propertyName := range typeInfo.Schema.Properties {
-		fieldNames = append(fieldNames, propertyName)
+		propertyNames = append(propertyNames, propertyName)
 	}
-	sort.Strings(fieldNames)
+	sort.Strings(propertyNames)
 
-	for _, propertyName := range fieldNames {
+	for _, propertyName := range propertyNames {
 		description := typeInfo.Schema.Properties[propertyName].Description
-		// Skip system-populated fields since they are not user-modifiable.
-		if strings.Contains(description, "Populated by the system") || strings.Contains(description, "Read-only.") {
+
+		excludeField := false
+		for _, keywords := range excludeByDescription {
+			if strings.Contains(description, keywords) {
+				excludeField = true
+				break
+			}
+		}
+		if excludeField {
 			continue
 		}
 
@@ -540,6 +547,10 @@ func isExcludedType(typeInfo *typeInfo) bool {
 		return true
 	}
 
+	if strings.HasPrefix(typeInfo.PackagePath, "apiserverinternal") {
+		return true
+	}
+
 	identifier := fmt.Sprintf("%s/%s", typeInfo.PackagePath, typeInfo.Name)
 	return excludedTypes.Contains(identifier)
 }
@@ -878,9 +889,87 @@ func (typeInfo *typeInfo) getYamlTag(propertyName string, isOptional bool) strin
 	return fmt.Sprintf(`yaml:"%s"`, yamlTag)
 }
 
+// Skip system-populated fields since they are not user-modifiable.
+var excludeByDescription = []string{
+	"Populated by the system",
+	"Read-only.",
+	"Status is filled in by the server",
+	"status is the current",
+	"current status of",
+	"status contains",
+	"Status defines",
+	"status represents",
+	"observed status of",
+	"Status describes",
+	"status of the",
+	"Status of the",
+}
+
 var excludedTypes = mapset.NewSet(
+	"admissionregistration/v1/ValidatingAdmissionPolicyStatus",
+	"apimachinery/meta/v1/Condition",
+	"apimachinery/meta/v1/Status",
 	"apimachinery/meta/v1/WatchEvent",
+	"apps/v1/DaemonSetStatus",
+	"apps/v1/DeploymentStatus",
+	"apps/v1/ReplicaSetStatus",
+	"apps/v1/StatefulSetStatus",
+	"authentication/v1/SelfSubjectReviewStatus",
+	"authentication/v1/TokenRequestStatus",
+	"authentication/v1/TokenReviewStatus",
+	"authorization/v1/SubjectAccessReviewStatus",
+	"authorization/v1/SubjectRulesReviewStatus",
+	"autoscaling/v1/HorizontalPodAutoscalerStatus",
 	"autoscaling/v1/ScaleStatus",
+	"autoscaling/v2/ContainerResourceMetricStatus",
+	"autoscaling/v2/ExternalMetricStatus",
+	"autoscaling/v2/HorizontalPodAutoscalerStatus",
+	"autoscaling/v2/MetricStatus",
+	"autoscaling/v2/MetricValueStatus",
+	"autoscaling/v2/ObjectMetricStatus",
+	"autoscaling/v2/PodsMetricStatus",
+	"autoscaling/v2/ResourceMetricStatus",
+	"batch/v1/CronJobStatus",
+	"batch/v1/JobStatus",
+	"certificates/v1/CertificateSigningRequestStatus",
+	"certificates/v1alpha1/PodCertificateRequestStatus",
+	"core/v1/ComponentStatus",
+	"core/v1/ComponentStatusList",
+	"core/v1/ContainerStatus",
+	"core/v1/LoadBalancerIngress",
+	"core/v1/LoadBalancerStatus",
+	"core/v1/ModifyVolumeStatus",
+	"core/v1/NamespaceStatus",
+	"core/v1/NodeConfigStatus",
+	"core/v1/NodeStatus",
+	"core/v1/NodeSwapStatus",
+	"core/v1/NodeSystemInfo",
 	"core/v1/PersistentVolumeClaimStatus",
+	"core/v1/PersistentVolumeStatus",
+	"core/v1/PodExtendedResourceClaimStatus",
+	"core/v1/PodResourceClaimStatus",
 	"core/v1/PodStatus",
+	"core/v1/PortStatus",
+	"core/v1/ReplicationControllerStatus",
+	"core/v1/ResourceQuotaStatus",
+	"core/v1/ResourceStatus",
+	"core/v1/ServiceStatus",
+	"core/v1/VolumeMountStatus",
+	"flowcontrol/v1/FlowSchemaStatus",
+	"flowcontrol/v1/PriorityLevelConfigurationStatus",
+	"networking/v1/IngressLoadBalancerIngress",
+	"networking/v1/IngressLoadBalancerStatus",
+	"networking/v1/IngressPortStatus",
+	"networking/v1/IngressStatus",
+	"networking/v1/ServiceCIDRStatus",
+	"networking/v1beta1/ServiceCIDRStatus",
+	"policy/v1/PodDisruptionBudgetStatus",
+	"resource/v1/AllocatedDeviceStatus",
+	"resource/v1/ResourceClaimStatus",
+	"resource/v1beta1/AllocatedDeviceStatus",
+	"resource/v1beta1/ResourceClaimStatus",
+	"resource/v1beta2/AllocatedDeviceStatus",
+	"resource/v1beta2/ResourceClaimStatus",
+	"storage/v1/VolumeAttachmentStatus",
+	"storagemigration/v1alpha1/StorageVersionMigrationStatus",
 )

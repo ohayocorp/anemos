@@ -29,12 +29,6 @@ export declare class ReplicaSetCondition {
     reason?: string
 
 	/**
-     * Status of the condition, one of True, False, Unknown.
-     * 
-     */
-    status: string
-
-	/**
      * Type of replica set condition.
      * 
      */

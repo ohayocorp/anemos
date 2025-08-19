@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { DaemonSetSpec } from "./DaemonSetSpec"
-import { DaemonSetStatus } from "./DaemonSetStatus"
 
 /**
  * DaemonSet represents the configuration of a daemon set.

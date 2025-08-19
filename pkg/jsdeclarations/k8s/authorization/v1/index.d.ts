@@ -13,5 +13,3 @@ export * from './SelfSubjectRulesReview';
 export * from './SelfSubjectRulesReviewSpec';
 export * from './SubjectAccessReview';
 export * from './SubjectAccessReviewSpec';
-export * from './SubjectAccessReviewStatus';
-export * from './SubjectRulesReviewStatus';

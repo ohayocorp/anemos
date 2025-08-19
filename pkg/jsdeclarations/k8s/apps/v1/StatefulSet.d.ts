@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { StatefulSetSpec } from "./StatefulSetSpec"
-import { StatefulSetStatus } from "./StatefulSetStatus"
 
 /**
  * StatefulSet represents a set of pods with consistent identities. Identities are defined as:
@@ -41,10 +40,4 @@ export declare class StatefulSet {
      * 
      */
     spec?: StatefulSetSpec
-
-	/**
-     * Status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.
-     * 
-     */
-    status?: StatefulSetStatus
 }

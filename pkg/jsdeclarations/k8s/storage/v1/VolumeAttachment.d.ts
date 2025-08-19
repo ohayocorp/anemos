@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { VolumeAttachmentSpec } from "./VolumeAttachmentSpec"
-import { VolumeAttachmentStatus } from "./VolumeAttachmentStatus"
 
 /**
  * VolumeAttachment captures the intent to attach or detach the specified volume to/from the specified node.
@@ -37,10 +36,4 @@ export declare class VolumeAttachment {
      * 
      */
     spec: VolumeAttachmentSpec
-
-	/**
-     * Status represents status of the VolumeAttachment request. Populated by the entity completing the attach or detach operation, i.e. the external-attacher.
-     * 
-     */
-    status?: VolumeAttachmentStatus
 }

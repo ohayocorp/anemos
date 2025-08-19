@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { NodeSpec } from "./NodeSpec"
-import { NodeStatus } from "./NodeStatus"
 
 /**
  * Node is a worker node in Kubernetes. Each node will have a unique identifier in the cache (i.e. in etcd).

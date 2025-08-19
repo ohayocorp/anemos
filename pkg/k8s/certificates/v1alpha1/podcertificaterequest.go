@@ -24,9 +24,6 @@ type PodCertificateRequest struct {
 
 	// Spec contains the details about the certificate being requested.
 	Spec *PodCertificateRequestSpec `json:"spec" yaml:"spec"`
-
-	// Status contains the issued certificate, and a standard set of conditions.
-	Status *PodCertificateRequestStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewPodCertificateRequest() *PodCertificateRequest {
@@ -48,7 +45,6 @@ func RegisterPodCertificateRequest(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPodCertificateRequest)),
 		js.Constructor(reflect.ValueOf(NewPodCertificateRequestWithSpec)),

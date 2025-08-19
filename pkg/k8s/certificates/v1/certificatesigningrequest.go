@@ -27,9 +27,6 @@ type CertificateSigningRequest struct {
 
 	// Spec contains the certificate request, and is immutable after creation. Only the request, signerName, expirationSeconds, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users.
 	Spec *CertificateSigningRequestSpec `json:"spec" yaml:"spec"`
-
-	// Status contains information about whether the request is approved or denied, and the certificate issued by the signer, or the failure condition indicating signer failure.
-	Status *CertificateSigningRequestStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewCertificateSigningRequest() *CertificateSigningRequest {
@@ -51,7 +48,6 @@ func RegisterCertificateSigningRequest(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewCertificateSigningRequest)),
 		js.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)),

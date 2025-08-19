@@ -24,9 +24,6 @@ type CertificateSigningRequestCondition struct {
 	// Reason indicates a brief reason for the request state
 	Reason *string `json:"reason,omitempty" yaml:"reason,omitempty"`
 
-	// Status of the condition, one of True, False, Unknown. Approved, Denied, and Failed conditions may not be "False" or "Unknown".
-	Status string `json:"status" yaml:"status"`
-
 	// Type of the condition. Known conditions are "Approved", "Denied", and "Failed".
 	// An "Approved" condition is added via the /approval subresource, indicating the request was approved and should be issued by the signer.
 	// A "Denied" condition is added via the /approval subresource, indicating the request was denied and should not be issued by the signer.
@@ -51,7 +48,6 @@ func RegisterCertificateSigningRequestCondition(jsRuntime *js.JsRuntime) {
 		js.Field("LastUpdateTime"),
 		js.Field("Message"),
 		js.Field("Reason"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewCertificateSigningRequestCondition)),

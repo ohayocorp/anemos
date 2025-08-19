@@ -23,9 +23,6 @@ type PodDisruptionBudget struct {
 
 	// Specification of the desired behavior of the PodDisruptionBudget.
 	Spec *PodDisruptionBudgetSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Most recently observed status of the PodDisruptionBudget.
-	Status *PodDisruptionBudgetStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewPodDisruptionBudget() *PodDisruptionBudget {
@@ -47,7 +44,6 @@ func RegisterPodDisruptionBudget(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewPodDisruptionBudget)),
 		js.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)),

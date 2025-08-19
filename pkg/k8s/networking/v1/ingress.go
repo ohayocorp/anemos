@@ -23,9 +23,6 @@ type Ingress struct {
 
 	// Spec is the desired state of the Ingress. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *IngressSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status is the current state of the Ingress. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *IngressStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewIngress() *Ingress {
@@ -47,7 +44,6 @@ func RegisterIngress(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewIngress)),
 		js.Constructor(reflect.ValueOf(NewIngressWithSpec)),

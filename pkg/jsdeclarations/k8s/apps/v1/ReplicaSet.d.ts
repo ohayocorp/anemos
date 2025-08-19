@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { ReplicaSetSpec } from "./ReplicaSetSpec"
-import { ReplicaSetStatus } from "./ReplicaSetStatus"
 
 /**
  * ReplicaSet ensures that a specified number of pod replicas are running at any given time.

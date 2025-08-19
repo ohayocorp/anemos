@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { ReplicationControllerSpec } from "./ReplicationControllerSpec"
-import { ReplicationControllerStatus } from "./ReplicationControllerStatus"
 
 /**
  * ReplicationController represents the configuration of a replication controller.

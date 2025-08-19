@@ -23,9 +23,6 @@ type SelfSubjectRulesReview struct {
 
 	// Spec holds information about the request being evaluated.
 	Spec *SelfSubjectRulesReviewSpec `json:"spec" yaml:"spec"`
-
-	// Status is filled in by the server and indicates the set of actions a user can perform.
-	Status *SubjectRulesReviewStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewSelfSubjectRulesReview() *SelfSubjectRulesReview {
@@ -47,7 +44,6 @@ func RegisterSelfSubjectRulesReview(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewSelfSubjectRulesReview)),
 		js.Constructor(reflect.ValueOf(NewSelfSubjectRulesReviewWithSpec)),

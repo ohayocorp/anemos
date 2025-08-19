@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { ResourceClaimSpec } from "./ResourceClaimSpec"
-import { ResourceClaimStatus } from "./ResourceClaimStatus"
 
 /**
  * ResourceClaim describes a request for access to resources in the cluster, for use by workloads. For example, if a workload needs an accelerator device with specific properties, this is how that request is expressed. The status stanza tracks whether this claim has been satisfied and what specific resources have been allocated.
@@ -37,10 +36,4 @@ export declare class ResourceClaim {
      * 
      */
     spec: ResourceClaimSpec
-
-	/**
-     * Status describes whether the claim is ready to use and what has been allocated.
-     * 
-     */
-    status?: ResourceClaimStatus
 }

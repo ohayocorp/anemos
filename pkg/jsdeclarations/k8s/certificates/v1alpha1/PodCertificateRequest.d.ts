@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { PodCertificateRequestSpec } from "./PodCertificateRequestSpec"
-import { PodCertificateRequestStatus } from "./PodCertificateRequestStatus"
 
 /**
  * PodCertificateRequest encodes a pod requesting a certificate from a given signer.
@@ -37,10 +36,4 @@ export declare class PodCertificateRequest {
      * 
      */
     spec: PodCertificateRequestSpec
-
-	/**
-     * Status contains the issued certificate, and a standard set of conditions.
-     * 
-     */
-    status?: PodCertificateRequestStatus
 }

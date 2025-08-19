@@ -20,9 +20,6 @@ type SelfSubjectReview struct {
 
 	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Status is filled in by the server with the user attributes.
-	Status *SelfSubjectReviewStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewSelfSubjectReview() *SelfSubjectReview {
@@ -43,7 +40,6 @@ func RegisterSelfSubjectReview(jsRuntime *js.JsRuntime) {
 		js.Field("ApiVersion"),
 		js.Field("Kind"),
 		js.Field("Metadata"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewSelfSubjectReview)),
 		js.Constructor(reflect.ValueOf(NewSelfSubjectReviewWithSpec)),

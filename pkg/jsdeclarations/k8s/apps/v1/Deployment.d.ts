@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { DeploymentSpec } from "./DeploymentSpec"
-import { DeploymentStatus } from "./DeploymentStatus"
 
 /**
  * Deployment enables declarative updates for Pods and ReplicaSets.
@@ -35,10 +34,4 @@ export declare class Deployment {
      * 
      */
     spec?: DeploymentSpec
-
-	/**
-     * Most recently observed status of the Deployment.
-     * 
-     */
-    status?: DeploymentStatus
 }

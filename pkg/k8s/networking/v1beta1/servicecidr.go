@@ -23,9 +23,6 @@ type ServiceCIDR struct {
 
 	// Spec is the desired state of the ServiceCIDR. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *ServiceCIDRSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status represents the current state of the ServiceCIDR. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *ServiceCIDRStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewServiceCIDR() *ServiceCIDR {
@@ -47,7 +44,6 @@ func RegisterServiceCIDR(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewServiceCIDR)),
 		js.Constructor(reflect.ValueOf(NewServiceCIDRWithSpec)),

@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { SubjectAccessReviewSpec } from "./SubjectAccessReviewSpec"
-import { SubjectAccessReviewStatus } from "./SubjectAccessReviewStatus"
 
 /**
  * LocalSubjectAccessReview checks whether or not a user or group can perform an action in a given namespace. Having a namespace scoped resource makes it much easier to grant namespace scoped policy that includes permissions checking.
@@ -35,10 +34,4 @@ export declare class LocalSubjectAccessReview {
      * 
      */
     spec: SubjectAccessReviewSpec
-
-	/**
-     * Status is filled in by the server and indicates whether the request is allowed or not
-     * 
-     */
-    status?: SubjectAccessReviewStatus
 }

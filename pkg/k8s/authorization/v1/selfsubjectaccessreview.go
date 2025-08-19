@@ -23,9 +23,6 @@ type SelfSubjectAccessReview struct {
 
 	// Spec holds information about the request being evaluated.  user and groups must be empty
 	Spec *SelfSubjectAccessReviewSpec `json:"spec" yaml:"spec"`
-
-	// Status is filled in by the server and indicates whether the request is allowed or not
-	Status *SubjectAccessReviewStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewSelfSubjectAccessReview() *SelfSubjectAccessReview {
@@ -47,7 +44,6 @@ func RegisterSelfSubjectAccessReview(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewSelfSubjectAccessReview)),
 		js.Constructor(reflect.ValueOf(NewSelfSubjectAccessReviewWithSpec)),

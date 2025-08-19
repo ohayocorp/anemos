@@ -29,12 +29,6 @@ export declare class HorizontalPodAutoscalerCondition {
     reason?: string
 
 	/**
-     * Status is the status of the condition (True, False, Unknown)
-     * 
-     */
-    status: string
-
-	/**
      * Type describes the current condition
      * 
      */

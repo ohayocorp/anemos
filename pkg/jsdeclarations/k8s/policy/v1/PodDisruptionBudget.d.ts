@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { PodDisruptionBudgetSpec } from "./PodDisruptionBudgetSpec"
-import { PodDisruptionBudgetStatus } from "./PodDisruptionBudgetStatus"
 
 /**
  * PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
@@ -35,10 +34,4 @@ export declare class PodDisruptionBudget {
      * 
      */
     spec?: PodDisruptionBudgetSpec
-
-	/**
-     * Most recently observed status of the PodDisruptionBudget.
-     * 
-     */
-    status?: PodDisruptionBudgetStatus
 }

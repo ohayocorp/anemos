@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { PriorityLevelConfigurationSpec } from "./PriorityLevelConfigurationSpec"
-import { PriorityLevelConfigurationStatus } from "./PriorityLevelConfigurationStatus"
 
 /**
  * PriorityLevelConfiguration represents the configuration of a priority level.
@@ -35,10 +34,4 @@ export declare class PriorityLevelConfiguration {
      * 
      */
     spec?: PriorityLevelConfigurationSpec
-
-	/**
-     * `status` is the current status of a "request-priority". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-     * 
-     */
-    status?: PriorityLevelConfigurationStatus
 }

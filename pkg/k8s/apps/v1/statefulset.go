@@ -26,9 +26,6 @@ type StatefulSet struct {
 
 	// Spec defines the desired identities of pods in this set.
 	Spec *StatefulSetSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Status is the current status of Pods in this StatefulSet. This data may be out of date by some window of time.
-	Status *StatefulSetStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewStatefulSet() *StatefulSet {
@@ -50,7 +47,6 @@ func RegisterStatefulSet(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewStatefulSet)),
 		js.Constructor(reflect.ValueOf(NewStatefulSetWithSpec)),

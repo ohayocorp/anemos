@@ -1,6 +1,5 @@
 // Auto generated code; DO NOT EDIT.
 
-export * from './AllocatedDeviceStatus';
 export * from './AllocationResult';
 export * from './BasicDevice';
 export * from './CELDeviceSelector';
@@ -34,7 +33,6 @@ export * from './ResourceClaim';
 export * from './ResourceClaimConsumerReference';
 export * from './ResourceClaimList';
 export * from './ResourceClaimSpec';
-export * from './ResourceClaimStatus';
 export * from './ResourceClaimTemplate';
 export * from './ResourceClaimTemplateList';
 export * from './ResourceClaimTemplateSpec';

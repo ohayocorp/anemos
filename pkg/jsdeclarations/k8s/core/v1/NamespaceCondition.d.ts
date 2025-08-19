@@ -29,12 +29,6 @@ export declare class NamespaceCondition {
     reason?: string
 
 	/**
-     * Status of the condition, one of True, False, Unknown.
-     * 
-     */
-    status: string
-
-	/**
      * Type of namespace controller condition.
      * 
      */

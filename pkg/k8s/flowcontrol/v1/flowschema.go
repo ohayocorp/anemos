@@ -23,9 +23,6 @@ type FlowSchema struct {
 
 	// `spec` is the specification of the desired behavior of a FlowSchema. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	Spec *FlowSchemaSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// `status` is the current status of a FlowSchema. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *FlowSchemaStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 func NewFlowSchema() *FlowSchema {
@@ -47,7 +44,6 @@ func RegisterFlowSchema(jsRuntime *js.JsRuntime) {
 		js.Field("Kind"),
 		js.Field("Metadata"),
 		js.Field("Spec"),
-		js.Field("Status"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewFlowSchema)),
 		js.Constructor(reflect.ValueOf(NewFlowSchemaWithSpec)),

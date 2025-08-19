@@ -5,4 +5,3 @@ export * from './MigrationCondition';
 export * from './StorageVersionMigration';
 export * from './StorageVersionMigrationList';
 export * from './StorageVersionMigrationSpec';
-export * from './StorageVersionMigrationStatus';

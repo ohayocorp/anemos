@@ -35,12 +35,6 @@ export declare class NodeCondition {
     reason?: string
 
 	/**
-     * Status of the condition, one of True, False, Unknown.
-     * 
-     */
-    status: string
-
-	/**
      * Type of node condition.
      * 
      */

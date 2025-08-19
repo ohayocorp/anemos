@@ -16,7 +16,6 @@ export * from './VolumeAttachment';
 export * from './VolumeAttachmentList';
 export * from './VolumeAttachmentSource';
 export * from './VolumeAttachmentSpec';
-export * from './VolumeAttachmentStatus';
 export * from './VolumeAttributesClass';
 export * from './VolumeAttributesClassList';
 export * from './VolumeError';

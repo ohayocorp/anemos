@@ -18,9 +18,6 @@ type ComponentCondition struct {
 	// Message about the condition for a component. For example, information about a health check.
 	Message *string `json:"message,omitempty" yaml:"message,omitempty"`
 
-	// Status of the condition for a component. Valid values for "Healthy": "True", "False", or "Unknown".
-	Status string `json:"status" yaml:"status"`
-
 	// Type of condition for a component. Valid value: "Healthy"
 	Type string `json:"type" yaml:"type"`
 }
@@ -38,7 +35,6 @@ func RegisterComponentCondition(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[ComponentCondition]()).JsNamespace("k8s.core.v1").Fields(
 		js.Field("Error"),
 		js.Field("Message"),
-		js.Field("Status"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewComponentCondition)),

@@ -2,7 +2,6 @@
 
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 import { TokenReviewSpec } from "./TokenReviewSpec"
-import { TokenReviewStatus } from "./TokenReviewStatus"
 
 /**
  * TokenReview attempts to authenticate a token to a known user. Note: TokenReview requests may be cached by the webhook token authenticator plugin in the kube-apiserver.
@@ -35,10 +34,4 @@ export declare class TokenReview {
      * 
      */
     spec: TokenReviewSpec
-
-	/**
-     * Status is filled in by the server and indicates whether the request can be authenticated.
-     * 
-     */
-    status?: TokenReviewStatus
 }

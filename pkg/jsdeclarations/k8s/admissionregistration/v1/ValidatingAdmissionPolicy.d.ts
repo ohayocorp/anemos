@@ -1,7 +1,6 @@
 // Auto generated code; DO NOT EDIT.
 
 import { ValidatingAdmissionPolicySpec } from "./ValidatingAdmissionPolicySpec"
-import { ValidatingAdmissionPolicyStatus } from "./ValidatingAdmissionPolicyStatus"
 import { ObjectMeta } from "../../apimachinery/meta/v1"
 
 /**
