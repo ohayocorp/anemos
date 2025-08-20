@@ -5,6 +5,7 @@ import (
 	"path"
 	"reflect"
 
+	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"gopkg.in/yaml.v3"
 )
@@ -115,6 +116,14 @@ func (document *Document) ProvisionBefore(other *Document) {
 	}
 
 	document.Dependencies.RunBefore(other)
+}
+
+func (document *Document) Get(jsRuntime *js.JsRuntime, key string) any {
+	return document.root.Get(jsRuntime, key)
+}
+
+func (document *Document) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
+	return document.root.Set(jsRuntime, key, value)
 }
 
 func registerYamlDocument(jsRuntime *js.JsRuntime) {

@@ -396,31 +396,8 @@ func jsToSequence(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Sequence, erro
 			continue
 		}
 
-		i, err := jsRuntime.MarshalToGo(value, reflect.TypeFor[int]())
-		if err == nil {
-			sequence.AddValue(fmt.Sprintf("%d", i.Interface().(int)))
-			continue
-		}
-
-		f, err := jsRuntime.MarshalToGo(value, reflect.TypeFor[float64]())
-		if err == nil {
-			sequence.AddValue(fmt.Sprintf("%f", f.Interface().(float64)))
-			continue
-		}
-
-		b, err := jsRuntime.MarshalToGo(value, reflect.TypeFor[bool]())
-		if err == nil {
-			sequence.AddValue(fmt.Sprintf("%t", b.Interface().(bool)))
-			continue
-		}
-
-		str, err := jsRuntime.MarshalToGo(value, reflect.TypeFor[string]())
-		if err == nil {
-			stringValue := str.Interface().(string)
-			scalar := sequence.AddValue(stringValue)
-
-			SetScalarNodeStyle(scalar, stringValue)
-
+		if scalar := tryGetScalar(jsRuntime, value); scalar != nil {
+			sequence.AddScalar(scalar)
 			continue
 		}
 

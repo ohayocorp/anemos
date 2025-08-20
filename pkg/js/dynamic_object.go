@@ -8,6 +8,11 @@ import (
 	"github.com/grafana/sobek"
 )
 
+type DynamicObjectCustomGetterSetter interface {
+	Get(jsRuntime *JsRuntime, key string) any
+	Set(jsRuntime *JsRuntime, key string, value sobek.Value) bool
+}
+
 type DynamicObject struct {
 	jsRuntime       *JsRuntime
 	template        *DynamicObjectTemplate
@@ -63,7 +68,23 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 		return sobek.Null()
 	}
 
-	return template.prototype.Get(originalKey)
+	if dynamicGetterSetter, ok := d.backingObject.Interface().(DynamicObjectCustomGetterSetter); ok {
+		if value := dynamicGetterSetter.Get(d.jsRuntime, originalKey); value != nil {
+			result, err := d.jsRuntime.MarshalToJs(reflect.ValueOf(value))
+			if err != nil {
+				panic(d.jsRuntime.Runtime.ToValue(err))
+			}
+
+			return result
+		}
+	}
+
+	prototypeValue := template.prototype.Get(originalKey)
+	if prototypeValue != sobek.Undefined() {
+		return prototypeValue
+	}
+
+	return sobek.Undefined()
 }
 
 func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
@@ -99,6 +120,12 @@ func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
 
 	if len(marshalErrors) == len(mappedKeys) {
 		panic(d.jsRuntime.Runtime.ToValue(errors.Join(marshalErrors...)))
+	}
+
+	if dynamicGetterSetter, ok := backingObject.Interface().(DynamicObjectCustomGetterSetter); ok {
+		if ok := dynamicGetterSetter.Set(d.jsRuntime, originalKey, value); ok {
+			return true
+		}
 	}
 
 	if d.jsPropertyStore == nil {

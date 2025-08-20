@@ -297,13 +297,6 @@ func (mapping *Mapping) GetMapping(key string) *Mapping {
 
 		if contentKey.Value == key {
 			if contentValue.Kind != yaml.MappingNode {
-				if !isEmptyScalar(contentValue) {
-					slog.Debug(
-						"yaml node for key ${key} is not mapping, but ${kind}",
-						slog.String("key", key),
-						slog.String("kind", getYamlNodeKind(contentValue)))
-				}
-
 				return nil
 			}
 
@@ -326,13 +319,6 @@ func (mapping *Mapping) GetSequence(key string) *Sequence {
 
 		if contentKey.Value == key {
 			if contentValue.Kind != yaml.SequenceNode {
-				if !isEmptyScalar(contentValue) {
-					slog.Debug(
-						"yaml node for key ${key} is not sequence, but ${kind}",
-						slog.String("key", key),
-						slog.String("kind", getYamlNodeKind(contentValue)))
-				}
-
 				return nil
 			}
 
@@ -355,12 +341,6 @@ func (mapping *Mapping) GetScalar(key string) *Scalar {
 
 		if contentKey.Value == key {
 			if contentValue.Kind != yaml.ScalarNode {
-				slog.Debug(
-					"yaml node for key ${key} is not scalar, but ${kind}",
-					slog.String("key", key),
-					slog.String("kind", getYamlNodeKind(contentValue)),
-				)
-
 				return nil
 			}
 
@@ -596,31 +576,8 @@ func jsToMapping(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Mapping, error)
 			continue
 		}
 
-		i, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[int]())
-		if err == nil {
-			mapping.SetValue(key, fmt.Sprintf("%d", i.Interface().(int)))
-			continue
-		}
-
-		f, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[float64]())
-		if err == nil {
-			mapping.SetValue(key, fmt.Sprintf("%f", f.Interface().(float64)))
-			continue
-		}
-
-		b, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[bool]())
-		if err == nil {
-			mapping.SetValue(key, fmt.Sprintf("%t", b.Interface().(bool)))
-			continue
-		}
-
-		str, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[string]())
-		if err == nil {
-			stringValue := str.Interface().(string)
-			scalar := mapping.SetValue(key, stringValue)
-
-			SetScalarNodeStyle(scalar, stringValue)
-
+		if scalar := tryGetScalar(jsRuntime, jsRuntime.ToSobekValue(value)); scalar != nil {
+			mapping.SetScalar(key, scalar)
 			continue
 		}
 
@@ -640,6 +597,41 @@ func jsToMapping(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Mapping, error)
 	}
 
 	return mapping, nil
+}
+
+func (m *Mapping) Get(jsRuntime *js.JsRuntime, key string) any {
+	mapping := m.GetMapping(key)
+	if mapping != nil {
+		return mapping
+	}
+
+	sequence := m.GetSequence(key)
+	if sequence != nil {
+		return sequence
+	}
+
+	return m.GetScalar(key)
+}
+
+func (m *Mapping) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
+	mapping, err := jsToMapping(jsRuntime, value)
+	if err == nil {
+		m.SetMapping(key, mapping)
+		return true
+	}
+
+	sequence, err := jsToSequence(jsRuntime, value)
+	if err == nil {
+		m.SetSequence(key, sequence)
+		return true
+	}
+
+	if scalar := tryGetScalar(jsRuntime, value); scalar != nil {
+		m.SetScalar(key, scalar)
+		return true
+	}
+
+	return false
 }
 
 func registerYamlMapping(jsRuntime *js.JsRuntime) {

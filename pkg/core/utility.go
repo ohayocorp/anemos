@@ -3,10 +3,12 @@ package core
 import (
 	"cmp"
 	"fmt"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
 
+	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"gopkg.in/yaml.v3"
 )
@@ -42,6 +44,35 @@ func cloneYamlNode(node *yaml.Node) *yaml.Node {
 	}
 
 	return deserialized
+}
+
+func tryGetScalar(jsRuntime *js.JsRuntime, value sobek.Value) *Scalar {
+	i, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[int]())
+	if err == nil {
+		return NewScalarFromIntValue(i.Interface().(int))
+	}
+
+	f, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[float64]())
+	if err == nil {
+		return NewScalarFromFloatValue(f.Interface().(float64))
+	}
+
+	b, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[bool]())
+	if err == nil {
+		return NewScalarFromBoolValue(b.Interface().(bool))
+	}
+
+	str, err := jsRuntime.MarshalToGo(jsRuntime.ToSobekValue(value), reflect.TypeFor[string]())
+	if err == nil {
+		stringValue := str.Interface().(string)
+		scalar := NewScalarFromStringValue(stringValue)
+
+		SetScalarNodeStyle(scalar, stringValue)
+
+		return scalar
+	}
+
+	return nil
 }
 
 func SetScalarNodeStyle(scalar *Scalar, value string) {
