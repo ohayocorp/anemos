@@ -108,6 +108,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 
 			template.jsToGoNameMappings[field.jsName] = append(template.jsToGoNameMappings[field.jsName], f.Name)
 			template.goToJsNameMappings[f.Name] = field.jsName
+			template.exportedFields.Add(field.fieldName)
 		}
 
 		for _, method := range typeRegistration.methods {

@@ -9,7 +9,8 @@ import (
 )
 
 type DynamicObjectCustomGetterSetter interface {
-	Get(jsRuntime *JsRuntime, key string) any
+	GetKeys(jsRuntime *JsRuntime) []string
+	Get(jsRuntime *JsRuntime, key string) (any, bool)
 	Set(jsRuntime *JsRuntime, key string, value sobek.Value) bool
 }
 
@@ -69,7 +70,7 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 	}
 
 	if dynamicGetterSetter, ok := d.backingObject.Interface().(DynamicObjectCustomGetterSetter); ok {
-		if value := dynamicGetterSetter.Get(d.jsRuntime, originalKey); value != nil {
+		if value, ok := dynamicGetterSetter.Get(d.jsRuntime, originalKey); ok {
 			result, err := d.jsRuntime.MarshalToJs(reflect.ValueOf(value))
 			if err != nil {
 				panic(d.jsRuntime.Runtime.ToValue(err))
@@ -80,11 +81,11 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 	}
 
 	prototypeValue := template.prototype.Get(originalKey)
-	if prototypeValue != sobek.Undefined() {
+	if prototypeValue != nil && prototypeValue != sobek.Undefined() {
 		return prototypeValue
 	}
 
-	return sobek.Undefined()
+	return nil
 }
 
 func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
@@ -159,6 +160,10 @@ func (d *DynamicObject) Keys() []string {
 	keys := make([]string, 0, len(d.template.jsToGoNameMappings)+len(d.jsPropertyStore))
 
 	for key := range d.template.jsToGoNameMappings {
+		if !d.template.exportedFields.Contains(key) {
+			continue
+		}
+
 		includeKey := true
 
 		if d.template.keysWithOmitEmpty.Contains(key) {
@@ -173,6 +178,10 @@ func (d *DynamicObject) Keys() []string {
 
 	for key := range d.jsPropertyStore {
 		keys = append(keys, key)
+	}
+
+	if dynamicGetterSetter, ok := d.backingObject.Interface().(DynamicObjectCustomGetterSetter); ok {
+		keys = append(keys, dynamicGetterSetter.GetKeys(d.jsRuntime)...)
 	}
 
 	sort.Strings(keys)

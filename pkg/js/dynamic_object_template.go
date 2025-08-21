@@ -54,11 +54,24 @@ type DynamicObjectTemplate struct {
 	functions          []*DynamicFunction
 	goToJsNameMappings map[string]string
 	jsToGoNameMappings map[string][]string
+	exportedFields     mapset.Set[string]
 	prototype          *sobek.Object
 	jsNamespace        string
 	jsName             string
 	objectStore        WeakMap[any, sobek.Object]
 	keysWithOmitEmpty  mapset.Set[string]
+}
+
+func NewDynamicObjectTemplate(jsRuntime *JsRuntime, objectType reflect.Type) *DynamicObjectTemplate {
+	return &DynamicObjectTemplate{
+		jsRuntime:          jsRuntime,
+		objectType:         objectType,
+		goToJsNameMappings: make(map[string]string),
+		jsToGoNameMappings: make(map[string][]string),
+		exportedFields:     mapset.NewSet[string](),
+		prototype:          jsRuntime.Runtime.NewObject(),
+		keysWithOmitEmpty:  mapset.NewSet[string](),
+	}
 }
 
 func (template *DynamicObjectTemplate) Initialize(module *sobek.Object) {

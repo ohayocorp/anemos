@@ -136,6 +136,10 @@ func jsToScalar(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Scalar, error) {
 	return NewScalarFromStringValue(value.Interface().(string)), nil
 }
 
+func (scalar *Scalar) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
+	return jsRuntime.ToSobekValue(scalar.GetValue())
+}
+
 func registerYamlScalar(jsRuntime *js.JsRuntime) {
 	jsRuntime.Variable("YamlStyle", "Plain", reflect.ValueOf(yaml.TaggedStyle))
 	jsRuntime.Variable("YamlStyle", "SingleQuoted", reflect.ValueOf(yaml.SingleQuotedStyle))
@@ -151,6 +155,7 @@ func registerYamlScalar(jsRuntime *js.JsRuntime) {
 		js.Method("SetValueFloat").JsName("setValue"),
 		js.Method("SetValueBool").JsName("setValue"),
 		js.Method("SetStyle"),
+		js.Method("ToJSON"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEmptyScalar)),
 		js.Constructor(reflect.ValueOf(NewScalarFromStringValue)),

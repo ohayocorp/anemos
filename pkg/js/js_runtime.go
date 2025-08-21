@@ -251,15 +251,7 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 		return template
 	}
 
-	template := &DynamicObjectTemplate{
-		jsRuntime:          jsRuntime,
-		objectType:         objectType,
-		goToJsNameMappings: make(map[string]string),
-		jsToGoNameMappings: make(map[string][]string),
-		prototype:          jsRuntime.Runtime.NewObject(),
-		keysWithOmitEmpty:  mapset.NewSet[string](),
-	}
-
+	template := NewDynamicObjectTemplate(jsRuntime, objectType)
 	jsRuntime.templates[objectType] = template
 
 	return template

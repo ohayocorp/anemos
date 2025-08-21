@@ -13,6 +13,7 @@ import (
 )
 
 var _ sort.Interface = &Mapping{}
+var _ js.DynamicObjectCustomGetterSetter = &Mapping{}
 
 // Mapping wraps a [yaml.Node] with kind [yaml.MappingNode] and provides convenience methods for YAML modification.
 type Mapping struct {
@@ -599,18 +600,34 @@ func jsToMapping(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Mapping, error)
 	return mapping, nil
 }
 
-func (m *Mapping) Get(jsRuntime *js.JsRuntime, key string) any {
+func (m *Mapping) GetKeys(jsRuntime *js.JsRuntime) []string {
+	mappingKeys := m.Keys()
+	keys := make([]string, 0, m.Length())
+
+	for _, key := range mappingKeys {
+		keys = append(keys, key.GetValue())
+	}
+
+	return keys
+}
+
+func (m *Mapping) Get(jsRuntime *js.JsRuntime, key string) (any, bool) {
 	mapping := m.GetMapping(key)
 	if mapping != nil {
-		return mapping
+		return mapping, true
 	}
 
 	sequence := m.GetSequence(key)
 	if sequence != nil {
-		return sequence
+		return sequence, true
 	}
 
-	return m.GetScalar(key)
+	scalar := m.GetScalar(key)
+	if scalar != nil {
+		return scalar.GetValue(), true
+	}
+
+	return nil, false
 }
 
 func (m *Mapping) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
@@ -632,6 +649,33 @@ func (m *Mapping) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bo
 	}
 
 	return false
+}
+
+func (mapping *Mapping) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
+	object := jsRuntime.Runtime.NewObject()
+
+	for _, keyScalar := range mapping.Keys() {
+		key := keyScalar.GetValue()
+
+		if childMapping := mapping.GetMapping(key); childMapping != nil {
+			object.Set(key, childMapping.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		if childSequence := mapping.GetSequence(key); childSequence != nil {
+			object.Set(key, childSequence.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		if childScalar := mapping.GetScalar(key); childScalar != nil {
+			object.Set(key, childScalar.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		js.Throw(fmt.Errorf("key %s does not correspond to a mapping, sequence or scalar", key))
+	}
+
+	return object
 }
 
 func registerYamlMapping(jsRuntime *js.JsRuntime) {
@@ -669,6 +713,7 @@ func registerYamlMapping(jsRuntime *js.JsRuntime) {
 		js.Method("SetValueFloat").JsName("set"),
 		js.Method("SetValueBool").JsName("set"),
 		js.Method("SortByKey"),
+		js.Method("ToJSON"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEmptyMapping)),
 		js.Constructor(reflect.ValueOf(jsToMapping)),

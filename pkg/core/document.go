@@ -10,6 +10,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var _ js.DynamicObjectCustomGetterSetter = &Document{}
+
 // Document corresponds to a single YAML document. Note that even though a YAML file can contain multiple documents,
 // each one of these documents is represented by a separate Document object.
 //
@@ -146,12 +148,26 @@ func (document *Document) ProvisionBefore(other *Document) {
 	document.Dependencies.RunBefore(other)
 }
 
-func (document *Document) Get(jsRuntime *js.JsRuntime, key string) any {
+func (document *Document) GetKeys(jsRuntime *js.JsRuntime) []string {
+	return document.root.GetKeys(jsRuntime)
+}
+
+func (document *Document) Get(jsRuntime *js.JsRuntime, key string) (any, bool) {
 	return document.root.Get(jsRuntime, key)
 }
 
 func (document *Document) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
 	return document.root.Set(jsRuntime, key, value)
+}
+
+func (document *Document) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
+	object := jsRuntime.Runtime.NewObject()
+	root := document.root.ToJSON(jsRuntime, dummy)
+
+	object.Set("path", document.Path)
+	object.Set("content", root)
+
+	return jsRuntime.ToSobekValue(object)
 }
 
 func registerYamlDocument(jsRuntime *js.JsRuntime) {
@@ -164,6 +180,7 @@ func registerYamlDocument(jsRuntime *js.JsRuntime) {
 		js.Method("GetRoot"),
 		js.Method("ProvisionAfter"),
 		js.Method("ProvisionBefore"),
+		js.Method("ToJSON"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEmptyDocument)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithRoot)),

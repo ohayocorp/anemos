@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"reflect"
 	"slices"
+	"strconv"
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"gopkg.in/yaml.v3"
 )
+var _ js.DynamicObjectCustomGetterSetter = &Sequence{}
 
 // Sequence wraps a [yaml.Node] with kind [yaml.SequenceNode] and provides convenience methods for YAML modification.
 type Sequence struct {
@@ -71,8 +73,8 @@ func (sequence *Sequence) Clear() {
 	sequence.YamlNode.Content = nil
 }
 
-// Returns the child at given index as [Mapping]. Throws if the child is not a [Mapping] or index
-// is out of bounds.
+// Returns the child at given index as [Mapping]. Throws if the index is out of bounds.
+// Returns nil if the child is not a [Mapping].
 func (sequence *Sequence) GetMapping(index int) *Mapping {
 	yamlNode := sequence.YamlNode
 	contents := yamlNode.Content
@@ -82,11 +84,16 @@ func (sequence *Sequence) GetMapping(index int) *Mapping {
 	}
 
 	result := contents[index]
+
+	if result.Kind != yaml.MappingNode {
+		return nil
+	}
+
 	return NewMapping(result)
 }
 
-// Returns the child at given index as [Sequence]. Throws if the child is not a [Sequence] or index
-// is out of bounds.
+// Returns the child at given index as [Sequence]. Throws if the index is out of bounds.
+// Returns nil if the child is not a [Sequence].
 func (sequence *Sequence) GetSequence(index int) *Sequence {
 	yamlNode := sequence.YamlNode
 	contents := yamlNode.Content
@@ -96,11 +103,16 @@ func (sequence *Sequence) GetSequence(index int) *Sequence {
 	}
 
 	result := contents[index]
+
+	if result.Kind != yaml.SequenceNode {
+		return nil
+	}
+
 	return NewSequence(result)
 }
 
-// Returns the child at given index as [Scalar]. Throws if the child is not a [Scalar] or index
-// is out of bounds.
+// Returns the child at given index as [Scalar]. Throws if the index is out of bounds.
+// Returns nil if the child is not a [Scalar].
 func (sequence *Sequence) GetScalar(index int) *Scalar {
 	yamlNode := sequence.YamlNode
 	contents := yamlNode.Content
@@ -110,6 +122,11 @@ func (sequence *Sequence) GetScalar(index int) *Scalar {
 	}
 
 	result := contents[index]
+
+	if result.Kind != yaml.ScalarNode {
+		return nil
+	}
+
 	return NewScalar(result)
 }
 
@@ -419,6 +436,90 @@ func jsToSequence(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Sequence, erro
 	return sequence, nil
 }
 
+func (s *Sequence) GetKeys(jsRuntime *js.JsRuntime) []string {
+	return []string{}
+}
+
+func (s *Sequence) Get(jsRuntime *js.JsRuntime, key string) (any, bool) {
+	index, err := strconv.Atoi(key)
+	if err != nil {
+		return nil, false
+	}
+
+	if index < 0 || index >= s.Length() {
+		js.Throw(fmt.Errorf("index %d is out of bounds, length: %d", index, s.Length()))
+		return nil, false
+	}
+
+	mapping := s.GetMapping(index)
+	if mapping != nil {
+		return mapping, true
+	}
+
+	sequence := s.GetSequence(index)
+	if sequence != nil {
+		return sequence, true
+	}
+
+	scalar := s.GetScalar(index)
+	if scalar != nil {
+		return scalar.GetValue(), true
+	}
+
+	return nil, false
+}
+
+func (s *Sequence) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
+	index, err := strconv.Atoi(key)
+	if err != nil {
+		return false
+	}
+
+	mapping, err := jsToMapping(jsRuntime, value)
+	if err == nil {
+		s.SetMapping(index, mapping)
+		return true
+	}
+
+	sequence, err := jsToSequence(jsRuntime, value)
+	if err == nil {
+		s.SetSequence(index, sequence)
+		return true
+	}
+
+	if scalar := tryGetScalar(jsRuntime, value); scalar != nil {
+		s.SetScalar(index, scalar)
+		return true
+	}
+
+	return false
+}
+
+func (sequence *Sequence) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
+	array := jsRuntime.Runtime.NewArray()
+
+	for i := 0; i < sequence.Length(); i++ {
+		if childMapping := sequence.GetMapping(i); childMapping != nil {
+			array.Set(strconv.Itoa(i), childMapping.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		if childSequence := sequence.GetSequence(i); childSequence != nil {
+			array.Set(strconv.Itoa(i), childSequence.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		if childScalar := sequence.GetScalar(i); childScalar != nil {
+			array.Set(strconv.Itoa(i), childScalar.ToJSON(jsRuntime, dummy))
+			continue
+		}
+
+		js.Throw(fmt.Errorf("unknown child type at index %d", i))
+	}
+
+	return array
+}
+
 func registerYamlSequence(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Sequence]()).Methods(
 		js.Method("AddMapping").JsName("add"),
@@ -449,6 +550,7 @@ func registerYamlSequence(jsRuntime *js.JsRuntime) {
 		js.Method("Contains"),
 		js.Method("Clear"),
 		js.Method("Clone"),
+		js.Method("ToJSON"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEmptySequence)),
 		js.Constructor(reflect.ValueOf(jsToSequence)),
