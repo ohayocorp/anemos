@@ -56,30 +56,9 @@ func (context *BuildContext) AddDocument(document *Document) {
 	context.addDocument(nil, document)
 }
 
+// Adds given document to the document group with the given path and content. Creates the document group if it doesn't exist.
 func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions) {
-	if options == nil {
-		js.Throw(fmt.Errorf("options cannot be nil"))
-	}
-
-	if options.Path == "" {
-		js.Throw(fmt.Errorf("path cannot be empty"))
-	}
-
-	if options.Root == nil && options.Yaml == nil && options.Object == nil {
-		js.Throw(fmt.Errorf("content must be specified"))
-	}
-
-	var document *Document
-
-	if options.Root != nil {
-		document = NewDocumentWithRoot(options.Path, options.Root)
-	} else if options.Yaml != nil {
-		document = NewDocumentWithYaml(options.Path, *options.Yaml)
-	} else if options.Object != nil {
-		yaml := SerializeToYaml(options.Object)
-		document = NewDocumentWithYaml(options.Path, yaml)
-	}
-
+	document := NewDocumentWithOptions(options)
 	context.addDocument(options.DocumentGroup, document)
 }
 

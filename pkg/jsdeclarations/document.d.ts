@@ -17,6 +17,9 @@ export declare class Document {
     /** Creates a new document with the given path and root. The root must be a {@link Mapping} or an {@link Object}. */
     constructor(path: string, root: Mapping | Object);
 
+    /** Creates a new document with the given path and content. If the content is a string, it must be valid YAML. */
+    constructor(options: { path: string; content: string | Mapping | Object; });
+
     /** The file path to the document. May contain multiple segments separated by slashes. */
     path: string;
 

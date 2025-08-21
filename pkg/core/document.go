@@ -58,6 +58,34 @@ func NewDocumentWithYaml(path string, yamlContent string) *Document {
 	return NewDocumentWithRoot(path, ParseMapping(yamlContent))
 }
 
+// Retuns a new [Document] with the given content. Doesn't act on document group, it just creates the document.
+func NewDocumentWithOptions(options *AddDocumentOptions) *Document {
+	if options == nil {
+		js.Throw(fmt.Errorf("options cannot be nil"))
+	}
+
+	if options.Path == "" {
+		js.Throw(fmt.Errorf("path cannot be empty"))
+	}
+
+	if options.Root == nil && options.Yaml == nil && options.Object == nil {
+		js.Throw(fmt.Errorf("content must be specified"))
+	}
+
+	var document *Document
+
+	if options.Root != nil {
+		document = NewDocumentWithRoot(options.Path, options.Root)
+	} else if options.Yaml != nil {
+		document = NewDocumentWithYaml(options.Path, *options.Yaml)
+	} else if options.Object != nil {
+		yaml := SerializeToYaml(options.Object)
+		document = NewDocumentWithYaml(options.Path, yaml)
+	}
+
+	return document
+}
+
 // Retuns a new [Document] with the content set to the given yaml node. Panics if the
 // yaml node is nil or its type is not [yaml.DocumentNode].
 func NewDocument(path string, yamlNode *yaml.Node) *Document {
@@ -140,5 +168,6 @@ func registerYamlDocument(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewEmptyDocument)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithRoot)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithYaml)),
+		js.Constructor(reflect.ValueOf(NewDocumentWithOptions)),
 	).DisableObjectMapping()
 }
