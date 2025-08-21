@@ -10,6 +10,8 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 	"gopkg.in/yaml.v3"
 )
+
+var _ js.Iterator = &Sequence{}
 var _ js.DynamicObjectCustomGetterSetter = &Sequence{}
 
 // Sequence wraps a [yaml.Node] with kind [yaml.SequenceNode] and provides convenience methods for YAML modification.
@@ -518,6 +520,28 @@ func (sequence *Sequence) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Va
 	}
 
 	return array
+}
+
+func (sequence *Sequence) Next(jsRuntime *js.JsRuntime, index int) js.IteratorResult {
+	if index < 0 || index >= sequence.Length() {
+		return js.IteratorResult{Done: true}
+	}
+
+	var value any
+	if mapping := sequence.GetMapping(index); mapping != nil {
+		value = mapping
+	} else if seq := sequence.GetSequence(index); seq != nil {
+		value = seq
+	} else {
+		value = sequence.GetValue(index)
+	}
+
+	result, err := jsRuntime.MarshalToJs(reflect.ValueOf(value))
+	if err != nil {
+		js.Throw(err)
+	}
+
+	return js.IteratorResult{Value: result, Done: false}
 }
 
 func registerYamlSequence(jsRuntime *js.JsRuntime) {

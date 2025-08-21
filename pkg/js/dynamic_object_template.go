@@ -12,6 +12,15 @@ import (
 	"github.com/grafana/sobek"
 )
 
+type IteratorResult struct {
+	Value sobek.Value
+	Done  bool
+}
+
+type Iterator interface {
+	Next(jsRuntime *JsRuntime, index int) IteratorResult
+}
+
 // WeakMap copied from: https://github.com/golang/go/issues/43615#issuecomment-2985815833
 type WeakMap[K comparable, V any] struct {
 	internalMap sync.Map
@@ -117,7 +126,33 @@ func (template *DynamicObjectTemplate) NewObject(backingObject reflect.Value) *s
 	}
 
 	object := template.jsRuntime.Runtime.NewDynamicObject(dynamicObject)
-	object.SetPrototype(template.prototype)
+
+	if iterable, ok := backingObject.Interface().(Iterator); ok {
+		prototype := template.jsRuntime.Runtime.NewObject()
+		prototype.SetPrototype(template.prototype)
+
+		prototype.SetSymbol(sobek.SymIterator, func() *sobek.Object {
+			index := 0
+
+			iterator := template.jsRuntime.Runtime.NewObject()
+			iterator.Set("next", func() *sobek.Object {
+				result := iterable.Next(template.jsRuntime, index)
+				index++
+
+				objectResult := template.jsRuntime.Runtime.NewObject()
+				objectResult.Set("value", result.Value)
+				objectResult.Set("done", result.Done)
+
+				return objectResult
+			})
+
+			return iterator
+		})
+
+		object.SetPrototype(prototype)
+	} else {
+		object.SetPrototype(template.prototype)
+	}
 
 	template.objectStore.Store(backingObjectSelf, object)
 
