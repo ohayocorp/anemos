@@ -24,7 +24,13 @@ type TypeRegistration struct {
 	methods              []*MethodRegistration
 	constructors         []*ConstructorRegistration
 	extensionMethods     []*ExtensionMethodRegistration
+	aliases              []*TypeAlias
 	disableObjectMapping bool
+}
+
+type TypeAlias struct {
+	jsNamespace string
+	jsName      string
 }
 
 type FunctionRegistration struct {
@@ -168,6 +174,17 @@ func (jsRuntime *JsRuntime) registerTypes() {
 			}
 
 			template.functions = append(template.functions, function)
+
+			for _, alias := range typeRegistration.aliases {
+				function := &DynamicFunction{
+					jsNamespace:  alias.jsNamespace,
+					jsName:       alias.jsName,
+					functionType: jsConstructor,
+					function:     constructor.function,
+				}
+
+				template.functions = append(template.functions, function)
+			}
 		}
 	}
 }
@@ -217,6 +234,17 @@ func (jsRuntime *JsRuntime) Type(objectType reflect.Type) *TypeRegistration {
 	}
 
 	jsRuntime.typeRegistrations[objectType] = t
+
+	return t
+}
+
+func (t *TypeRegistration) Alias(namespace, name string) *TypeRegistration {
+	alias := &TypeAlias{
+		jsNamespace: namespace,
+		jsName:      name,
+	}
+
+	t.aliases = append(t.aliases, alias)
 
 	return t
 }
