@@ -137,7 +137,7 @@ func jsToScalar(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Scalar, error) {
 }
 
 func (scalar *Scalar) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
-	return jsRuntime.ToSobekValue(scalar.GetValue())
+	return jsRuntime.Runtime.ToValue(scalar.GetValue())
 }
 
 func registerYamlScalar(jsRuntime *js.JsRuntime) {

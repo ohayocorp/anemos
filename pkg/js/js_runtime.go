@@ -193,14 +193,6 @@ func (jsRuntime *JsRuntime) GetEnv(key string) *string {
 	return &valueString
 }
 
-func (jsRuntime *JsRuntime) ToSobekValue(object any) sobek.Value {
-	return jsRuntime.Runtime.ToValue(object)
-}
-
-func (jsRuntime *JsRuntime) ToSobekObject(value sobek.Value) *sobek.Object {
-	return value.ToObject(jsRuntime.Runtime)
-}
-
 func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
 	if script == nil || script.Contents == "" {
 		return fmt.Errorf("no script provided to run")

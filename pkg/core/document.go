@@ -167,7 +167,7 @@ func (document *Document) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Va
 	object.Set("path", document.Path)
 	object.Set("content", root)
 
-	return jsRuntime.ToSobekValue(object)
+	return jsRuntime.Runtime.ToValue(object)
 }
 
 func registerYamlDocument(jsRuntime *js.JsRuntime) {

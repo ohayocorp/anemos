@@ -564,7 +564,7 @@ func jsToMapping(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Mapping, error)
 	}
 
 	mapping := NewEmptyMapping()
-	object := jsRuntime.ToSobekObject(jsValue)
+	object := jsValue.ToObject(jsRuntime.Runtime)
 	objectMap := objectMarshalled.Interface().(map[string]any)
 
 	for _, key := range object.Keys() {
@@ -573,18 +573,18 @@ func jsToMapping(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*Mapping, error)
 			continue
 		}
 
-		if scalar := tryGetScalar(jsRuntime, jsRuntime.ToSobekValue(value)); scalar != nil {
+		if scalar := tryGetScalar(jsRuntime, jsRuntime.Runtime.ToValue(value)); scalar != nil {
 			mapping.SetScalar(key, scalar)
 			continue
 		}
 
-		seq, err := jsToSequence(jsRuntime, jsRuntime.ToSobekValue(value))
+		seq, err := jsToSequence(jsRuntime, jsRuntime.Runtime.ToValue(value))
 		if err == nil {
 			mapping.SetSequence(key, seq)
 			continue
 		}
 
-		child, err := jsToMapping(jsRuntime, jsRuntime.ToSobekValue(value))
+		child, err := jsToMapping(jsRuntime, jsRuntime.Runtime.ToValue(value))
 		if err == nil {
 			mapping.SetMapping(key, child)
 			continue
