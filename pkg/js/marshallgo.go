@@ -31,7 +31,7 @@ func (jsRuntime *JsRuntime) MarshalToGo(jsArg sobek.Value, expectedType reflect.
 		return reflect.ValueOf(jsArg), nil
 	}
 
-	ok, result, err := jsRuntime.tryConvert(expectedType, jsType, jsArg)
+	ok, result, err := jsRuntime.tryConvert(expectedType, jsArg)
 	if ok {
 		return result, err
 	}
@@ -478,7 +478,7 @@ func (jsRuntime *JsRuntime) marshalToGoString(jsArg sobek.Value, expectedType re
 	return result, nil
 }
 
-func (jsRuntime *JsRuntime) tryConvert(expectedType reflect.Type, jsType reflect.Type, jsArg sobek.Value) (bool, reflect.Value, error) {
+func (jsRuntime *JsRuntime) tryConvert(expectedType reflect.Type, jsArg sobek.Value) (bool, reflect.Value, error) {
 	conversions, ok := jsRuntime.typeConversions[expectedType]
 	if !ok {
 		return false, reflect.Value{}, nil

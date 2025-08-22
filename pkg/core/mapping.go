@@ -282,10 +282,6 @@ func (mapping *Mapping) Clear() {
 	mapping.YamlNode.Content = nil
 }
 
-func isEmptyScalar(yamlNode *yaml.Node) bool {
-	return yamlNode.Kind == yaml.ScalarNode && yamlNode.Value == ""
-}
-
 // Returns the [Mapping] corresponding to the given key. Returns nil if the key doesn't exist
 // or it doesn't correspond to a [Mapping].
 func (mapping *Mapping) GetMapping(key string) *Mapping {
