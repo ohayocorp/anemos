@@ -78,4 +78,10 @@ export declare class BuildContext {
 
     /** Returns the first document that has the given path. Returns null if no document is found. */
     getDocument(path: string): Document | null;
+
+    /** Returns true if the target environment is development. */
+    isDevelopment(): boolean;
+
+    /** Returns true if the target environment is production. */
+    isProduction(): boolean;
 }

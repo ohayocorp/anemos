@@ -193,6 +193,14 @@ func (context *BuildContext) GetComponentWithIdentifier(identifier string) *Comp
 	return nil
 }
 
+func (context *BuildContext) IsDevelopment() bool {
+	return context.BuilderOptions.Environment.Type == EnvironmentTypeDevelopment
+}
+
+func (context *BuildContext) IsProduction() bool {
+	return context.BuilderOptions.Environment.Type == EnvironmentTypeProduction
+}
+
 func registerBuildContext(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[BuildContext]()).Fields(
 		js.Field("BuilderOptions"),
@@ -211,6 +219,8 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Method("GetDocument"),
 		js.Method("GetDocumentWithPath").JsName("getDocument"),
 		js.Method("RemoveDocumentGroup"),
+		js.Method("IsDevelopment"),
+		js.Method("IsProduction"),
 	)
 
 	jsRuntime.Type(reflect.TypeFor[AddDocumentOptions]()).Fields(
