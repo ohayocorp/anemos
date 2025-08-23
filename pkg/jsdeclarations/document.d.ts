@@ -20,6 +20,12 @@ export declare class Document {
     /** Creates a new document with the given path and content. If the content is a string, it must be valid YAML. */
     constructor(options: { path: string; content: string | Mapping | Object; });
 
+    /**
+     * This declaration allows setting and getting custom properties on the document without TypeScript
+     * compiler errors.
+     */
+    [customProperties: string]: any;
+
     /** The file path to the document. May contain multiple segments separated by slashes. */
     path: string;
 

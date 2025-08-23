@@ -20,6 +20,12 @@ export declare class Mapping {
     constructor(object: Object);
 
     /**
+     * This declaration allows setting and getting custom properties on the mapping without TypeScript
+     * compiler errors.
+     */
+    [customProperties: string]: any;
+
+    /**
      * Returns the {@link Mapping} corresponding to the given key. Returns null if the key doesn't
      * exist or it doesn't correspond to a {@link Mapping}.
      */
