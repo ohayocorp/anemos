@@ -182,7 +182,7 @@ func applyJavaScriptFile(context *applyContext, script string) error {
 			return []byte(script), nil
 		}
 
-		return js.SourceLoader(path)
+		return js.SourceLoader(jsRuntime, path)
 	})(jsRuntime.Registry)
 
 	setVariables(jsRuntime, context)

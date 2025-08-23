@@ -1,8 +1,10 @@
 package js
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,6 +27,7 @@ type JsRuntime struct {
 	Registry               *require.Registry
 	Runtime                *sobek.Runtime
 	Flags                  map[string]string
+	embeddedModules        []*EmbeddedModule
 	variableRegistrations  []*VariableRegistration
 	functionRegistrations  []*FunctionRegistration
 	typeRegistrations      map[reflect.Type]*TypeRegistration
@@ -37,6 +40,11 @@ type JsRuntime struct {
 type JsScript struct {
 	Contents string
 	FilePath string
+}
+
+type EmbeddedModule struct {
+	ModulePath string
+	Files      fs.FS
 }
 
 func (jsRuntime *JsRuntime) CheckInsideTheMainScriptDirectory(filePath string) error {
@@ -84,6 +92,13 @@ func ResolvePath(path string, mayNotExist bool) (string, error) {
 }
 
 func pathResolver(jsRuntime *JsRuntime, base, path string) string {
+	for _, module := range jsRuntime.embeddedModules {
+		if strings.HasPrefix(path, module.ModulePath) {
+			// Module will be loaded from embedded modules, base path is ignored.
+			return path
+		}
+	}
+
 	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
 		return path
 	}
@@ -119,7 +134,7 @@ func pathResolver(jsRuntime *JsRuntime, base, path string) string {
 	return require.DefaultPathResolver(base, path)
 }
 
-func SourceLoader(path string) ([]byte, error) {
+func SourceLoader(jsRuntime *JsRuntime, path string) ([]byte, error) {
 	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") {
 		// Download the file from the URL.
 		response, err := http.Get(path)
@@ -129,6 +144,47 @@ func SourceLoader(path string) ([]byte, error) {
 		defer response.Body.Close()
 
 		return io.ReadAll(response.Body)
+	}
+
+	for _, module := range jsRuntime.embeddedModules {
+		pathClean := filepath.Clean(path)
+		modulePathClean := filepath.Clean(module.ModulePath)
+
+		relativePath, err := filepath.Rel(modulePathClean, pathClean)
+		if err != nil {
+			continue
+		}
+
+		relativePath = filepath.ToSlash(relativePath)
+
+		if relativePath == "." || relativePath == ".." || strings.HasPrefix(relativePath, "../") || strings.HasPrefix(relativePath, "./") {
+			continue
+		}
+
+		// Remove the module identifier from the path and get the file from embedded filesystem.
+		result, err := module.Files.Open(relativePath)
+		defer func() {
+			if result != nil {
+				result.Close()
+			}
+		}()
+
+		// Goja expects ModuleFileDoesNotExistError if the file doesn't exist to continue searching for the module.
+		if errors.Is(err, fs.ErrNotExist) {
+			return nil, require.ModuleFileDoesNotExistError
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		// Read the file contents from the embedded filesystem.
+		data, err := io.ReadAll(result)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read embedded file %s: %w", relativePath, err)
+		}
+
+		return data, nil
 	}
 
 	if runtime.GOOS == "windows" {
@@ -155,7 +211,11 @@ func NewJsRuntime() (*JsRuntime, error) {
 	}
 
 	registry := &require.Registry{}
-	require.WithLoader(SourceLoader)(registry)
+
+	require.WithLoader(func(path string) ([]byte, error) {
+		return SourceLoader(jsRuntime, path)
+	})(registry)
+
 	require.WithPathResolver(func(base, path string) string {
 		return pathResolver(jsRuntime, base, path)
 	})(registry)
@@ -191,6 +251,10 @@ func (jsRuntime *JsRuntime) GetEnv(key string) *string {
 
 	valueString := value.String()
 	return &valueString
+}
+
+func (jsRuntime *JsRuntime) AddEmbeddedModule(module *EmbeddedModule) {
+	jsRuntime.embeddedModules = append(jsRuntime.embeddedModules, module)
 }
 
 func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
