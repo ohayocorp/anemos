@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Anemos",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "${workspaceFolder}/build.sh"
+            ],
+            "windows": {
+                "command": "powershell",
+                "args": [
+                    "${workspaceFolder}\\build.ps1"
+                ],
+            },
+            "presentation": {
+                "reveal": "never"
+            },
+            "group": "build"
+        },
+        {
+            "label": "Compile JavaScript Library",
+            "type": "shell",
+            "command": "tsc",
+            "args": [
+                "-p",
+                "pkg/jslib/tsconfig.json"
+            ],
+            "presentation": {
+                "reveal": "never"
+            }
+        }
+    ]
+}

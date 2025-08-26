@@ -132,9 +132,12 @@ func (component *component) writeDocument(context *core.BuildContext, document *
 		}
 	}
 
-	yaml := core.SerializeToYaml(document)
+	yaml, err := core.SerializeSobekObjectToYaml(context.JsRuntime, document.Object)
+	if err != nil {
+		js.Throw(fmt.Errorf("can't serialize document to yaml, %v", err))
+	}
 
-	err := os.WriteFile(filePath, []byte(yaml), os.ModePerm)
+	err = os.WriteFile(filePath, []byte(yaml), os.ModePerm)
 	if err != nil {
 		js.Throw(fmt.Errorf("can't write file %s, %v", filePath, err))
 	}

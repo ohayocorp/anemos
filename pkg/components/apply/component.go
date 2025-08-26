@@ -98,6 +98,16 @@ func (component *component) apply(context *core.BuildContext) {
 			continue
 		}
 
+		documentYamls := make([]string, 0, len(documents))
+		for _, document := range documents {
+			yaml, err := core.SerializeSobekObjectToYaml(context.JsRuntime, document.Object)
+			if err != nil {
+				js.Throw(fmt.Errorf("failed to serialize document to YAML: %w", err))
+			}
+
+			documentYamls = append(documentYamls, yaml)
+		}
+
 		switch provisioner.Type {
 		case core.ProvisionerTypeApply:
 			applySetName := getApplySetName(documentGroup)
@@ -108,11 +118,11 @@ func (component *component) apply(context *core.BuildContext) {
 			slog.Debug("Document apply order:")
 
 			for _, document := range documents {
-				slog.Debug("  ${path}", slog.String("path", document.Path))
+				slog.Debug("  ${path}", slog.String("path", document.GetPath()))
 			}
 
 			err := kubernetesClient.Apply(
-				documents,
+				documentYamls,
 				applySetName,
 				"",
 				options.SkipConfirmation,
@@ -131,7 +141,7 @@ func (component *component) apply(context *core.BuildContext) {
 
 			numberOfAppliedChanges++
 		case core.ProvisionerTypeWait:
-			err = kubernetesClient.WaitDocuments(documents, status.CurrentStatus, options.Timeout)
+			err = kubernetesClient.WaitDocuments(documentYamls, status.CurrentStatus, options.Timeout)
 			if err != nil {
 				js.Throw(fmt.Errorf("failed to wait for Kubernetes manifests: %w", err))
 			}
@@ -187,13 +197,13 @@ func getSortedDocuments(documentGroup *core.DocumentGroup) []*core.Document {
 	// First, sort the documents by their path. Subsequent sorts will preserve this order
 	// for the documents that do not have a specific dependency.
 	sort.SliceStable(documents, func(i, j int) bool {
-		return documents[i].Path < documents[j].Path
+		return documents[i].GetPath() < documents[j].GetPath()
 	})
 
 	// Next, sort the documents by their kind. Use the pre-defined order from Helm.
 	sort.SliceStable(documents, func(i, j int) bool {
-		iKind := documents[i].GetKind()
-		jKind := documents[j].GetKind()
+		iKind := core.SobekObjectGetString(documents[i].Object, "kind")
+		jKind := core.SobekObjectGetString(documents[j].Object, "kind")
 
 		if iKind == nil && jKind == nil {
 			return true
@@ -215,7 +225,7 @@ func getSortedDocuments(documentGroup *core.DocumentGroup) []*core.Document {
 	d := core.DependencyGraph[*core.Document]{
 		Elements: documents,
 		IdentifierGetter: func(d *core.Document) string {
-			return d.Path
+			return d.GetPath()
 		},
 		DependenciesGetter: func(d *core.Document) *core.Dependencies[*core.Document] {
 			return d.Dependencies

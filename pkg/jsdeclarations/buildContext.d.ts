@@ -1,15 +1,8 @@
-import { Document } from "./document";
-import { Mapping } from "./mapping";
+import { Document, NewDocumentOptions } from "./document";
 import { Component } from "./component";
 import { BuilderOptions } from "./builderOptions";
 import { KubernetesResourceInfo } from "./kubernetesResourceInfo";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
-
-export declare class AddDocumentOptions {
-    path: string;
-    content: string | Mapping | object;
-    documentGroup?: string;
-}
 
 export declare class BuildContext {
     private constructor();
@@ -37,7 +30,7 @@ export declare class BuildContext {
      * Checks for an existing {@link DocumentGroup} with the same name as `options.documentGroup` and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(options: AddDocumentOptions): void;
+    addDocument(options: NewDocumentOptions): void;
 
     /** Adds given group to the document groups list. */
     addDocumentGroup(documentGroup: DocumentGroup): void;

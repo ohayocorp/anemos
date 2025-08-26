@@ -71,11 +71,11 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 	}
 
 	if apply {
-		runtime.Flags[components.JsRuntimeMetadataBuilderApply] = "true"
+		runtime.Flags[core.JsRuntimeMetadataBuilderApply] = "true"
 	}
 
 	if skipConfirmation {
-		runtime.Flags[components.JsRuntimeMetadataBuilderSkipConfirmation] = "true"
+		runtime.Flags[core.JsRuntimeMetadataBuilderSkipConfirmation] = "true"
 	}
 
 	scriptContents, err := os.ReadFile(jsFile)

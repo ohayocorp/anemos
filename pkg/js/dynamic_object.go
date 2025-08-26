@@ -3,6 +3,7 @@ package js
 import (
 	"errors"
 	"reflect"
+	"slices"
 	"sort"
 
 	"github.com/grafana/sobek"
@@ -27,6 +28,11 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 
 	if backingObject.Kind() == reflect.Ptr {
 		backingObject = backingObject.Elem()
+	}
+
+	jsObject := getSobekObject(d.backingObject)
+	if jsObject != nil {
+		return jsObject.Get(originalKey)
 	}
 
 	mappedKeys, ok := template.jsToGoNameMappings[originalKey]
@@ -92,6 +98,12 @@ func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
 	template := d.template
 	backingObject := d.backingObject
 
+	jsObject := getSobekObject(d.backingObject)
+	if jsObject != nil {
+		err := jsObject.Set(originalKey, value)
+		return err == nil
+	}
+
 	mappedKeys, ok := template.jsToGoNameMappings[originalKey]
 	if !ok {
 		mappedKeys = []string{originalKey}
@@ -138,14 +150,17 @@ func (d *DynamicObject) Set(originalKey string, value sobek.Value) bool {
 }
 
 func (d *DynamicObject) Has(key string) bool {
-	if d.template.jsToGoNameMappings[key] != nil {
-		return true
-	}
-
-	return d.jsPropertyStore != nil && d.jsPropertyStore[key] != nil
+	keys := d.Keys()
+	return slices.Contains(keys, key)
 }
 
 func (d *DynamicObject) Delete(key string) bool {
+	jsObject := getSobekObject(d.backingObject)
+	if jsObject != nil {
+		err := jsObject.Delete(key)
+		return err == nil
+	}
+
 	if d.jsPropertyStore != nil {
 		if _, ok := d.jsPropertyStore[key]; ok {
 			delete(d.jsPropertyStore, key)
@@ -157,6 +172,11 @@ func (d *DynamicObject) Delete(key string) bool {
 }
 
 func (d *DynamicObject) Keys() []string {
+	jsObject := getSobekObject(d.backingObject)
+	if jsObject != nil {
+		return jsObject.GetOwnPropertyNames()
+	}
+
 	keys := make([]string, 0, len(d.template.jsToGoNameMappings)+len(d.jsPropertyStore))
 
 	for key := range d.template.jsToGoNameMappings {

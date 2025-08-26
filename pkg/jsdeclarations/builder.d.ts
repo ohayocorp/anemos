@@ -1,7 +1,7 @@
 import { Component } from "./component";
-import { BuildContext, AddDocumentOptions } from "./buildContext";
+import { BuildContext } from "./buildContext";
 import { BuilderOptions, EnvironmentType, KubernetesDistribution, Version } from "./builderOptions";
-import { Document } from "./document";
+import { Document, NewDocumentOptions } from "./document";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
 import { Step, steps } from "./step";
 
@@ -48,7 +48,7 @@ export declare class Builder {
      * Checks for an existing {@link DocumentGroup} with the same name as `options.documentGroup` and adds the document to it if it exists.
      * Creates a new {@link DocumentGroup} if it doesn't exist.
      */
-    addDocument(options: AddDocumentOptions): void;
+    addDocument(options: NewDocumentOptions): void;
 
     /**
      * Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.

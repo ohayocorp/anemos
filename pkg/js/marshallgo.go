@@ -14,6 +14,14 @@ func (jsRuntime *JsRuntime) MarshalToGo(jsArg sobek.Value, expectedType reflect.
 		return jsRuntime.marshalToGoNil(expectedType)
 	}
 
+	if expectedType == reflect.TypeFor[*sobek.Object]() {
+		return jsRuntime.marshalToSobekObject(jsArg)
+	}
+
+	if expectedType == reflect.TypeFor[sobek.Value]() {
+		return reflect.ValueOf(jsArg), nil
+	}
+
 	jsType := jsArg.ExportType()
 	if jsType == reflect.TypeFor[DynamicObject]() || jsType == reflect.TypeFor[*DynamicObject]() {
 		return jsRuntime.marshalToGoDynamicObject(jsArg, expectedType)
@@ -141,6 +149,32 @@ func (jsRuntime *JsRuntime) marshalToGoDynamicArray(jsArg sobek.Value, expectedT
 	}
 
 	return backingSlice, nil
+}
+
+func (jsRuntime *JsRuntime) marshalToSobekObject(jsArg sobek.Value) (reflect.Value, error) {
+	// If the object is a dynamic object and it has a backing object that contains a JavaScript
+	// object, then return it.
+	var backingObject reflect.Value
+
+	if dynamicObject, ok := jsArg.Export().(DynamicObject); ok {
+		backingObject = dynamicObject.backingObject
+	} else if dynamicObject, ok := jsArg.Export().(*DynamicObject); ok {
+		backingObject = dynamicObject.backingObject
+	}
+
+	if backingObject.IsValid() {
+		object := getSobekObject(backingObject)
+		if object != nil {
+			return reflect.ValueOf(object), nil
+		}
+	}
+
+	object, ok := jsArg.(*sobek.Object)
+	if !ok {
+		object = jsArg.ToObject(jsRuntime.Runtime)
+	}
+
+	return reflect.ValueOf(object), nil
 }
 
 func (jsRuntime *JsRuntime) marshalToGoMap(jsArg sobek.Value, expectedType reflect.Type) (reflect.Value, error) {
@@ -525,4 +559,60 @@ func (jsRuntime *JsRuntime) tryConvert(expectedType reflect.Type, jsArg sobek.Va
 	}
 
 	return false, reflect.Value{}, nil
+}
+
+// getSobekObject returns the first embedded *sobek.Object found in value, searching recursively. If value
+// itself is a *sobek.Object, it will be returned directly.
+func getSobekObject(value reflect.Value) *sobek.Object {
+	if value.Type() == sobekObjectPointerType {
+		object, _ := value.Interface().(*sobek.Object)
+		return object
+	}
+
+	// Unwrap pointers and interfaces.
+	for value.IsValid() && (value.Kind() == reflect.Ptr || value.Kind() == reflect.Interface) {
+		if value.IsNil() {
+			return nil
+		}
+		value = value.Elem()
+	}
+
+	if !value.IsValid() || value.Kind() != reflect.Struct {
+		return nil
+	}
+
+	valueType := value.Type()
+	for i := 0; i < valueType.NumField(); i++ {
+		field := valueType.Field(i)
+		if !field.Anonymous {
+			continue
+		}
+
+		// Direct match on *sobek.Object.
+		if field.Type == sobekObjectPointerType {
+			fieldValue := value.Field(i)
+			if !fieldValue.IsValid() || fieldValue.IsNil() {
+				return nil
+			}
+			object, _ := fieldValue.Interface().(*sobek.Object)
+			return object
+		}
+
+		// Recurse into embedded structs.
+		fieldValue := value.Field(i)
+		underlyingValue := fieldValue
+		if underlyingValue.Kind() == reflect.Ptr || underlyingValue.Kind() == reflect.Interface {
+			if underlyingValue.IsNil() {
+				continue
+			}
+			underlyingValue = underlyingValue.Elem()
+		}
+		if underlyingValue.IsValid() && underlyingValue.Kind() == reflect.Struct {
+			if obj := getSobekObject(underlyingValue); obj != nil {
+				return obj
+			}
+		}
+	}
+
+	return nil
 }

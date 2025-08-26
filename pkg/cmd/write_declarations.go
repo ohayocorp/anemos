@@ -63,61 +63,84 @@ func writeDeclarations(program *AnemosProgram, output string) error {
 }
 
 func createTypeDeclarations(program *AnemosProgram, outputDir string) error {
-	declarations, err := fs.Sub(pkg.TypeDeclarations, "jsdeclarations")
+	indexBuilder := &strings.Builder{}
+
+	err := copyDeclarations(pkg.TypeDeclarations, outputDir, indexBuilder)
 	if err != nil {
 		return err
 	}
 
-	err = os.CopyFS(outputDir, declarations)
+	// Append library type declarations to index.d.ts file
+	err = copyDeclarations(pkg.LibTypeDeclarations, outputDir, indexBuilder)
 	if err != nil {
-		return fmt.Errorf("failed to copy type declarations to %s: %w", outputDir, err)
+		return err
 	}
 
 	for _, extraDeclarations := range program.ExtraJsDeclarations {
-		err = os.CopyFS(outputDir, extraDeclarations)
+		err = copyDeclarations(extraDeclarations, outputDir, indexBuilder)
 		if err != nil {
 			return fmt.Errorf("failed to copy extra declarations to %s: %w", outputDir, err)
 		}
 	}
 
-	indexContents := ""
-
-	fs.WalkDir(os.DirFS(outputDir), ".", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if d.Name() == "nodejs.d.ts" {
-			indexContents += fmt.Sprintf("import './%s';\n", path)
-			return nil
-		}
-
-		if d.IsDir() {
-			if path == "." {
-				return nil
-			}
-
-			if d.Name() == "k8s" {
-				indexContents += fmt.Sprintf("export * as k8s from './%s';\n", path)
-			} else {
-				indexContents += fmt.Sprintf("export * from './%s';\n", path)
-			}
-
-			return fs.SkipDir
-		}
-
-		if strings.HasSuffix(path, ".d.ts") {
-			indexContents += fmt.Sprintf("export * from './%s';\n", strings.TrimSuffix(path, ".d.ts"))
-		}
-
-		return nil
-	})
-
 	indexFile := filepath.Join(outputDir, "index.d.ts")
-	err = os.WriteFile(indexFile, []byte(indexContents), 0666)
+
+	err = os.WriteFile(indexFile, []byte(indexBuilder.String()), 0666)
 	if err != nil {
 		return fmt.Errorf("failed to write index file: %s, %w", indexFile, err)
 	}
 
 	return nil
+}
+
+func copyDeclarations(files fs.FS, outputDir string, indexBuilder *strings.Builder) error {
+	indexContents, err := copyExcludeIndex(outputDir, files)
+	if err != nil {
+		return err
+	}
+
+	indexBuilder.WriteString(indexContents)
+	indexBuilder.WriteString("\n")
+
+	return nil
+}
+
+func copyExcludeIndex(outputDir string, files fs.FS) (string, error) {
+	indexContents := ""
+
+	// Walk the source FS and copy files, overwriting any existing ones.
+	err := fs.WalkDir(files, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		target := filepath.Join(outputDir, path)
+
+		if d.IsDir() {
+			// Ensure the directory exists.
+			return os.MkdirAll(target, 0777)
+		}
+
+		// Ensure the parent directory exists.
+		if err := os.MkdirAll(filepath.Dir(target), 0777); err != nil {
+			return err
+		}
+
+		// Read the file from the source FS.
+		b, err := fs.ReadFile(files, path)
+		if err != nil {
+			return err
+		}
+
+		// Don't write the index.d.ts file as multiple index files will be merged afterwards.
+		if path == "index.d.ts" {
+			indexContents = string(b)
+			return nil
+		}
+
+		// Write the file, truncating if it already exists.
+		return os.WriteFile(target, b, 0666)
+	})
+
+	return indexContents, err
 }

@@ -15,6 +15,7 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg"
 	"github.com/ohayocorp/sobek_nodejs/console"
 	"github.com/ohayocorp/sobek_nodejs/process"
 	"github.com/ohayocorp/sobek_nodejs/require"
@@ -363,6 +364,11 @@ func (jsRuntime *JsRuntime) initialize() error {
 		}
 
 		jsRuntime.initializeFunctions(rootObject, jsRuntime.functions, nil)
+
+		err := jsRuntime.initializeLib(rootObject)
+		if err != nil {
+			panic(err)
+		}
 	})
 
 	return nil
@@ -405,4 +411,33 @@ func (jsRuntime *JsRuntime) getNamespace(rootObject *sobek.Object, namespace str
 	}
 
 	return currentNamespace, nil
+}
+
+func (jsRuntime *JsRuntime) initializeLib(exports *sobek.Object) error {
+	jsRuntime.AddEmbeddedModule(&EmbeddedModule{
+		ModulePath: PackageName,
+		Files:      pkg.LibJavaScript,
+	})
+
+	libIndexJs, err := fs.ReadFile(pkg.LibJavaScript, "index.js")
+	if err != nil {
+		return fmt.Errorf("failed to read lib index.js: %w", err)
+	}
+
+	err = jsRuntime.Runtime.Set("exports", exports)
+	if err != nil {
+		return fmt.Errorf("failed to set exports: %w", err)
+	}
+
+	_, err = jsRuntime.Runtime.RunString(string(libIndexJs))
+	if err != nil {
+		return fmt.Errorf("failed to run lib index.js: %w", err)
+	}
+
+	_, err = jsRuntime.Runtime.RunString("delete exports;")
+	if err != nil {
+		return fmt.Errorf("failed to delete exports: %w", err)
+	}
+
+	return nil
 }

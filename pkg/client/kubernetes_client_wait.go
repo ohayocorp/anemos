@@ -128,12 +128,11 @@ func statusObserver(initialObjects object.ObjMetadataSet, cancel context.CancelF
 	}
 }
 
-func (client *KubernetesClient) WaitDocuments(documents []*core.Document, sts status.Status, timeout time.Duration) error {
+func (client *KubernetesClient) WaitDocuments(documents []string, sts status.Status, timeout time.Duration) error {
 	// Create a buffer to store serialized documents.
 	buffer := bytes.NewBuffer(nil)
 	for _, document := range documents {
-		serializedDocument := core.SerializeToYaml(document)
-		fmt.Fprintf(buffer, "---\n%s\n", serializedDocument)
+		fmt.Fprintf(buffer, "---\n%s\n", document)
 	}
 
 	namespace, _, err := client.Factory.ToRawKubeConfigLoader().Namespace()

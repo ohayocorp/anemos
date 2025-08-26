@@ -7,7 +7,14 @@ import (
 	"github.com/grafana/sobek"
 )
 
+var sobekObjectPointerType = reflect.TypeFor[*sobek.Object]()
+
 func (jsRuntime *JsRuntime) MarshalToJs(object reflect.Value) (sobek.Value, error) {
+	if object.Type() == sobekObjectPointerType {
+		object, _ := object.Interface().(*sobek.Object)
+		return object, nil
+	}
+
 	underlyingKind := object.Kind()
 	underlyingObject := object
 

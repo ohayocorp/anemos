@@ -323,9 +323,7 @@ func loadOptionsFromFile(filePath string) (map[string]interface{}, error) {
 		}
 	}
 
-	options := core.ParseYaml[map[string]any](string(data))
-
-	return options, nil
+	return core.ParseYaml[map[string]any](string(data))
 }
 
 func setVariables(jsRuntime *js.JsRuntime, context *applyContext) {

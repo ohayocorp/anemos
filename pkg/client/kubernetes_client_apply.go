@@ -55,7 +55,7 @@ func (e NoChangesError) Error() string {
 }
 
 func (client *KubernetesClient) Apply(
-	documents []*core.Document,
+	documents []string,
 	applySetParentName string,
 	applySetParentNamespace string,
 	skipConfirmation bool,
@@ -121,8 +121,7 @@ func (client *KubernetesClient) Apply(
 	// Create a buffer to store serialized documents.
 	buffer := bytes.NewBuffer(nil)
 	for _, document := range documents {
-		serializedDocument := core.SerializeToYaml(document)
-		fmt.Fprintf(buffer, "---\n%s\n", serializedDocument)
+		fmt.Fprintf(buffer, "---\n%s\n", document)
 	}
 
 	// Configure builder and get objects.

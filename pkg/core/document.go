@@ -4,132 +4,150 @@ import (
 	"fmt"
 	"path"
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
-	"gopkg.in/yaml.v3"
 )
 
-var _ js.DynamicObjectCustomGetterSetter = &Document{}
+type NewDocumentOptions struct {
+	Yaml          *string
+	Object        *sobek.Object
+	Path          *string
+	DocumentGroup *string
+}
 
-// Document corresponds to a single YAML document. Note that even though a YAML file can contain multiple documents,
-// each one of these documents is represented by a separate Document object.
-//
-// Document objects can be created with the methods below. These methods ensure that the kind of the yaml node is [yaml.DocumentNode].
-//   - [NewDocument]
-//   - [NewEmptyDocument]
-//   - [ParseDocument]
-//   - [ParseTemplateAsDocument]
-//
-// Although the root of the document can be any kind of node, only [Mapping] is supported.
 type Document struct {
-	Path         string
+	*sobek.Object
+
+	path         *string
 	Group        *DocumentGroup
 	Dependencies *Dependencies[*Document]
-
-	YamlNode *yaml.Node
-	root     *Mapping
 }
 
-// Retuns a new [Document] with the root set to an empty mapping.
-func NewEmptyDocument(path string) *Document {
-	root := NewEmptyMapping()
-	return NewDocumentWithRoot(path, root)
+func NewNewDocumentOptions() *NewDocumentOptions {
+	return &NewDocumentOptions{}
 }
 
-// Retuns a new [Document] with the root set to the given mapping.
-func NewDocumentWithRoot(path string, root *Mapping) *Document {
-	yamlNode := NewYamlDocumentNode()
+func NewDocument(jsRuntime *js.JsRuntime) *Document {
+	content := jsRuntime.Runtime.NewObject()
+	return NewDocumentWithContent(content)
+}
 
-	document := &Document{
-		Path:         path,
-		YamlNode:     yamlNode,
-		Dependencies: NewDependencies[*Document](),
-		root:         root,
+func NewDocumentWithYaml(jsRuntime *js.JsRuntime, yaml string) (*Document, error) {
+	content, err := Parse(jsRuntime, yaml)
+	if err != nil {
+		return nil, err
 	}
 
-	document.YamlNode.Content = []*yaml.Node{
-		root.YamlNode,
+	return NewDocumentWithContent(content), nil
+}
+
+func NewDocumentWithContent(content *sobek.Object) *Document {
+	document := &Document{
+		Object:       content,
+		Dependencies: NewDependencies[*Document](),
 	}
 
 	return document
 }
 
-// Retuns a new [Document] by parsing the given YAML.
-func NewDocumentWithYaml(path string, yamlContent string) *Document {
-	return NewDocumentWithRoot(path, ParseMapping(yamlContent))
-}
-
-// Retuns a new [Document] with the given content. Doesn't act on document group, it just creates the document.
-func NewDocumentWithOptions(options *AddDocumentOptions) *Document {
+func NewDocumentWithOptions(jsRuntime *js.JsRuntime, options *NewDocumentOptions) (*Document, error) {
 	if options == nil {
-		js.Throw(fmt.Errorf("options cannot be nil"))
+		return nil, fmt.Errorf("options cannot be nil")
 	}
 
-	if options.Path == "" {
-		js.Throw(fmt.Errorf("path cannot be empty"))
-	}
-
-	if options.Root == nil && options.Yaml == nil && options.Object == nil {
-		js.Throw(fmt.Errorf("content must be specified"))
+	if options.Yaml == nil && options.Object == nil {
+		return nil, fmt.Errorf("content must be specified")
 	}
 
 	var document *Document
+	var err error
 
-	if options.Root != nil {
-		document = NewDocumentWithRoot(options.Path, options.Root)
-	} else if options.Yaml != nil {
-		document = NewDocumentWithYaml(options.Path, *options.Yaml)
+	if options.Yaml != nil {
+		document, err = NewDocumentWithYaml(jsRuntime, *options.Yaml)
+		if err != nil {
+			return nil, err
+		}
 	} else if options.Object != nil {
-		yaml := SerializeToYaml(options.Object)
-		document = NewDocumentWithYaml(options.Path, yaml)
+		document = NewDocumentWithContent(options.Object)
 	}
 
-	return document
+	document.SetPath(options.Path)
+
+	return document, nil
 }
 
-// Retuns a new [Document] with the content set to the given yaml node. Panics if the
-// yaml node is nil or its type is not [yaml.DocumentNode].
-func NewDocument(path string, yamlNode *yaml.Node) *Document {
-	if yamlNode == nil {
-		panic(fmt.Errorf("passed yaml node is nil"))
+func SobekObjectGetString(object *sobek.Object, key string) *string {
+	value := object.Get(key)
+	if value == nil {
+		return nil
 	}
 
-	if yamlNode.Kind != yaml.DocumentNode {
-		panic(fmt.Errorf("yaml node is not document, but %s", getYamlNodeKind(yamlNode)))
-	}
+	result := value.String()
 
-	root := NewMapping(yamlNode.Content[0])
-
-	return NewDocumentWithRoot(path, root)
+	return &result
 }
 
-// Retuns a new [Document] with the content set to an empty yaml node with type [yaml.DocumentNode].
-func NewYamlDocumentNode() *yaml.Node {
-	return &yaml.Node{
-		Kind:  yaml.DocumentNode,
-		Style: yaml.TaggedStyle,
+func SobekObjectGetStringChain(object *sobek.Object, keys ...string) *string {
+	var property *sobek.Object
+
+	for i, key := range keys {
+		if i == len(keys)-1 {
+			break
+		}
+
+		property = object.Get(key).(*sobek.Object)
+		if property == nil {
+			return nil
+		}
 	}
+
+	return SobekObjectGetString(property, keys[len(keys)-1])
+}
+
+// Returns the file path of the document. May contain multiple segments separated by slashes.
+func (document *Document) GetPath() string {
+	path := document.path
+	if path == nil {
+		kind := SobekObjectGetString(document.Object, "kind")
+		name := SobekObjectGetStringChain(document.Object, "metadata", "name")
+
+		if kind != nil && name != nil {
+			p := fmt.Sprintf("%s-%s.yaml", strings.ToLower(*kind), *name)
+			path = &p
+		}
+	}
+
+	if path == nil {
+		p := "document.yaml"
+
+		if document.Group != nil {
+			index := slices.Index(document.Group.Documents, document)
+			p = fmt.Sprintf("document-%d.yaml", index+1)
+		}
+
+		path = &p
+	}
+
+	return *path
+}
+
+// Sets the file path of the document. May contain multiple segments separated by slashes.
+func (document *Document) SetPath(path *string) {
+	document.path = path
 }
 
 // Returns the path to write the document. Adds group path as base directory if it is not nil.
 func (document *Document) FullPath() string {
+	documentPath := document.GetPath()
+
 	if document.Group == nil {
-		return document.Path
+		return documentPath
 	}
 
-	return path.Join(document.Group.Path, document.Path)
-}
-
-// Returns a clone of the document.
-func (document *Document) Clone() *Document {
-	clone := cloneYamlNode(document.YamlNode)
-	return NewDocument(document.Path, clone)
-}
-
-// Return the root of the document as a [Mapping].
-func (document *Document) GetRoot() *Mapping {
-	return document.root
+	return path.Join(document.Group.Path, documentPath)
 }
 
 func (document *Document) ProvisionAfter(other *Document) {
@@ -148,43 +166,38 @@ func (document *Document) ProvisionBefore(other *Document) {
 	document.Dependencies.RunBefore(other)
 }
 
-func (document *Document) GetKeys(jsRuntime *js.JsRuntime) []string {
-	return document.root.GetKeys(jsRuntime)
-}
-
-func (document *Document) Get(jsRuntime *js.JsRuntime, key string) (any, bool) {
-	return document.root.Get(jsRuntime, key)
-}
-
-func (document *Document) Set(jsRuntime *js.JsRuntime, key string, value sobek.Value) bool {
-	return document.root.Set(jsRuntime, key, value)
-}
-
 func (document *Document) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Value {
 	object := jsRuntime.Runtime.NewObject()
-	root := document.root.ToJSON(jsRuntime, dummy)
 
-	object.Set("path", document.Path)
-	object.Set("content", root)
+	object.Set("path", document.GetPath())
+	object.Set("content", document.Object)
 
 	return jsRuntime.Runtime.ToValue(object)
 }
 
-func registerYamlDocument(jsRuntime *js.JsRuntime) {
+func registerDocument(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Document]()).Fields(
-		js.Field("Path"),
 		js.Field("Group"),
 	).Methods(
-		js.Method("Clone"),
+		js.Method("GetPath"),
+		js.Method("SetPath"),
 		js.Method("FullPath"),
-		js.Method("GetRoot"),
 		js.Method("ProvisionAfter"),
 		js.Method("ProvisionBefore"),
 		js.Method("ToJSON"),
 	).Constructors(
-		js.Constructor(reflect.ValueOf(NewEmptyDocument)),
-		js.Constructor(reflect.ValueOf(NewDocumentWithRoot)),
+		js.Constructor(reflect.ValueOf(NewDocument)),
+		js.Constructor(reflect.ValueOf(NewDocumentWithContent)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithYaml)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithOptions)),
-	).DisableObjectMapping()
+	)
+
+	jsRuntime.Type(reflect.TypeFor[NewDocumentOptions]()).Fields(
+		js.Field("DocumentGroup"),
+		js.Field("Path"),
+		js.Field("Yaml").JsName("content"),
+		js.Field("Object").JsName("content"),
+	).Constructors(
+		js.Constructor(reflect.ValueOf(NewNewDocumentOptions)),
+	)
 }

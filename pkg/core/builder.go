@@ -10,8 +10,14 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
+)
+
+const (
+	JsRuntimeMetadataBuilderApply            = "builder/apply"
+	JsRuntimeMetadataBuilderSkipConfirmation = "builder/skipConfirmation"
 )
 
 // Builder is a collection of components.
@@ -20,27 +26,6 @@ type Builder struct {
 	Options    *BuilderOptions
 
 	jsRuntime *js.JsRuntime
-}
-
-// Creates a new [Builder] instance with default options.
-func NewBuilder(jsRuntime *js.JsRuntime) *Builder {
-	return NewBuilderWithOptions(nil, jsRuntime)
-}
-
-// Creates a new [Builder] instance with given options.
-func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Builder {
-	if options == nil {
-		options = &BuilderOptions{}
-	}
-
-	builder := &Builder{
-		Options:   options,
-		jsRuntime: jsRuntime,
-	}
-
-	builder.sanitizeBuilderOptions(builder.Options)
-
-	return builder
 }
 
 // Appends given component to the list of components.
@@ -92,9 +77,9 @@ func (builder *Builder) AddDocument(document *Document) {
 	})
 }
 
-func (builder *Builder) AddDocumentWithOptions(options *AddDocumentOptions) {
+func (builder *Builder) AddDocumentWithOptions(jsRuntime *js.JsRuntime, options *NewDocumentOptions) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
-		context.AddDocumentWithOptions(options)
+		context.AddDocumentWithOptions(jsRuntime, options)
 	})
 }
 
@@ -327,10 +312,66 @@ func (builder *Builder) sanitizeBuilderOptions(options *BuilderOptions) {
 	}
 }
 
+// Creates a new [Builder] instance with default options.
+func NewBuilder(jsRuntime *js.JsRuntime) *Builder {
+	return NewBuilderWithOptions(nil, jsRuntime)
+}
+
+// Creates a new [Builder] instance with given options.
+func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Builder {
+	if options == nil {
+		options = &BuilderOptions{}
+	}
+
+	builder := &Builder{
+		Options:   options,
+		jsRuntime: jsRuntime,
+	}
+
+	builder.sanitizeBuilderOptions(builder.Options)
+
+	builderJs, err := jsRuntime.MarshalToJs(reflect.ValueOf(builder))
+	if err != nil {
+		panic(fmt.Errorf("failed to marshal builder to JS: %w", err))
+	}
+
+	runtime := jsRuntime.Runtime
+	runtime.Set("__anemos__builder", builderJs)
+	runtime.Set("__anemos__flags__apply", jsRuntime.Flags[JsRuntimeMetadataBuilderApply] == "true")
+	runtime.Set("__anemos__flags__skipConfirmation", jsRuntime.Flags[JsRuntimeMetadataBuilderSkipConfirmation] == "true")
+
+	_, err = runtime.RunScript("builderDefaults.js", `
+		__anemos__builder.deleteOutputDirectory();
+		__anemos__builder.writeDocuments();
+
+		if (__anemos__flags__apply) {
+			const applyOptions = {
+				skipConfirmation: __anemos__flags__skipConfirmation
+			};
+
+			__anemos__builder.apply(applyOptions);
+		}
+
+		delete __anemos__builder;
+		`)
+
+	if err != nil {
+		panic(fmt.Errorf("failed to initialize builder defaults: %w", err))
+	}
+
+	return builder
+}
+
+func NewBuilderVersionDistributionEnvironmentType(version *semver.Version, distribution KubernetesDistribution, environment EnvironmentType, jsRuntime *js.JsRuntime) *Builder {
+	options := NewBuilderOptions(
+		NewKubernetesCluster(version, distribution),
+		NewEnvironment(string(environment), environment),
+	)
+
+	return NewBuilderWithOptions(options, jsRuntime)
+}
+
 func registerBuilder(jsRuntime *js.JsRuntime) {
-	// Don't register constructor here as we want to add default components and referencing
-	// them here will cause circular dependency issues.
-	// Instead, we will register the constructor in the components/builder_constructor.go file.
 	jsRuntime.Type(reflect.TypeFor[Builder]()).Fields(
 		js.Field("Components"),
 		js.Field("Options"),
@@ -350,5 +391,9 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("OnModify"),
 		js.Method("OnSpecifyProvisionerDependencies"),
 		js.Method("Build"),
+	).Constructors(
+		js.Constructor(reflect.ValueOf(NewBuilder)),
+		js.Constructor(reflect.ValueOf(NewBuilderWithOptions)),
+		js.Constructor(reflect.ValueOf(NewBuilderVersionDistributionEnvironmentType)),
 	)
 }

@@ -21,18 +21,6 @@ type BuildContext struct {
 	currentComponent *Component
 }
 
-type AddDocumentOptions struct {
-	Path          string
-	Yaml          *string
-	Root          *Mapping
-	Object        any
-	DocumentGroup *string
-}
-
-func NewAddDocumentOptions() *AddDocumentOptions {
-	return &AddDocumentOptions{}
-}
-
 func (context *BuildContext) addDocument(documentGroupPath *string, document *Document) {
 	if document == nil {
 		js.Throw(fmt.Errorf("document cannot be nil"))
@@ -57,9 +45,15 @@ func (context *BuildContext) AddDocument(document *Document) {
 }
 
 // Adds given document to the document group with the given path and content. Creates the document group if it doesn't exist.
-func (context *BuildContext) AddDocumentWithOptions(options *AddDocumentOptions) {
-	document := NewDocumentWithOptions(options)
+func (context *BuildContext) AddDocumentWithOptions(jsRuntime *js.JsRuntime, options *NewDocumentOptions) error {
+	document, err := NewDocumentWithOptions(jsRuntime, options)
+	if err != nil {
+		return err
+	}
+
 	context.addDocument(options.DocumentGroup, document)
+
+	return nil
 }
 
 // Adds given group to the document groups list.
@@ -221,15 +215,5 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Method("RemoveDocumentGroup"),
 		js.Method("IsDevelopment"),
 		js.Method("IsProduction"),
-	)
-
-	jsRuntime.Type(reflect.TypeFor[AddDocumentOptions]()).Fields(
-		js.Field("DocumentGroup"),
-		js.Field("Path"),
-		js.Field("Yaml").JsName("content"),
-		js.Field("Root").JsName("content"),
-		js.Field("Object").JsName("content"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewAddDocumentOptions)),
 	)
 }
