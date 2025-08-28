@@ -92,14 +92,15 @@ func SobekObjectGetString(object *sobek.Object, key string) *string {
 
 func SobekObjectGetStringChain(object *sobek.Object, keys ...string) *string {
 	var property *sobek.Object
+	var ok bool
 
 	for i, key := range keys {
 		if i == len(keys)-1 {
 			break
 		}
 
-		property = object.Get(key).(*sobek.Object)
-		if property == nil {
+		property, ok = object.Get(key).(*sobek.Object)
+		if !ok || property == nil {
 			return nil
 		}
 	}
