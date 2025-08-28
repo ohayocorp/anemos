@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// Service is a named abstraction of software service (for example, mysql) consisting of local port (for example 3306) that the proxy listens on, and the selector that determines which pods will answer requests sent through the proxy.
-type Service struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec defines the behavior of a service. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *ServiceSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewService(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Service")
+	return document
 }
 
-func NewService() *Service {
-	return &Service{}
-}
-
-func NewServiceWithSpec(spec *Service) *Service {
-	version := "v1"
-	kind := "Service"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewServiceWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Service")
+	return document
 }
 
 func RegisterService(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Service]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewService)),
-		js.Constructor(reflect.ValueOf(NewServiceWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsNamespace("k8s.core.v1").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsNamespace("k8s.core.v1").JsName("Service")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsNamespace("k8s").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsNamespace("k8s").JsName("Service")
+	
 }

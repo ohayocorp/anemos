@@ -5,55 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ConfigMap holds configuration data for pods to consume.
-type ConfigMap struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// BinaryData contains the binary data. Each key must consist of alphanumeric characters, '-', '_' or '.'. BinaryData can contain byte sequences that are not in the UTF-8 range. The keys stored in BinaryData must not overlap with the ones in the Data field, this is enforced during validation process. Using this field will require 1.10+ apiserver and kubelet.
-	BinaryData map[string]string `json:"binaryData,omitempty" yaml:"binaryData,omitempty"`
-
-	// Data contains the configuration data. Each key must consist of alphanumeric characters, '-', '_' or '.'. Values with non-UTF-8 byte sequences must use the BinaryData field. The keys stored in Data must not overlap with the keys in the BinaryData field, this is enforced during validation process.
-	Data map[string]string `json:"data,omitempty" yaml:"data,omitempty"`
-
-	// Immutable, if set to true, ensures that data stored in the ConfigMap cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
-	Immutable *bool `json:"immutable,omitempty" yaml:"immutable,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
+func NewConfigMap(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ConfigMap")
+	return document
 }
 
-func NewConfigMap() *ConfigMap {
-	return &ConfigMap{}
-}
-
-func NewConfigMapWithSpec(spec *ConfigMap) *ConfigMap {
-	version := "v1"
-	kind := "ConfigMap"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewConfigMapWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ConfigMap")
+	return document
 }
 
 func RegisterConfigMap(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ConfigMap]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("BinaryData"),
-		js.Field("Data"),
-		js.Field("Immutable"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewConfigMap)),
-		js.Constructor(reflect.ValueOf(NewConfigMapWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsNamespace("k8s.core.v1").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsNamespace("k8s.core.v1").JsName("ConfigMap")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsNamespace("k8s").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsNamespace("k8s").JsName("ConfigMap")
+	
 }

@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// IngressClass represents the class of the Ingress, referenced by the Ingress Spec. The `ingressclass.kubernetes.io/is-default-class` annotation can be used to indicate that an IngressClass should be considered default. When a single IngressClass resource has this annotation set to true, new Ingress resources without a class specified will be assigned this default class.
-type IngressClass struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec is the desired state of the IngressClass. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *IngressClassSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewIngressClass(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "IngressClass")
+	return document
 }
 
-func NewIngressClass() *IngressClass {
-	return &IngressClass{}
-}
-
-func NewIngressClassWithSpec(spec *IngressClass) *IngressClass {
-	version := "v1"
-	kind := "IngressClass"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewIngressClassWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "IngressClass")
+	return document
 }
 
 func RegisterIngressClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[IngressClass]()).JsNamespace("k8s.networking.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewIngressClass)),
-		js.Constructor(reflect.ValueOf(NewIngressClassWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressClass)).JsNamespace("k8s.networking.v1").JsName("IngressClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressClassWithSpec)).JsNamespace("k8s.networking.v1").JsName("IngressClass")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressClass)).JsNamespace("k8s").JsName("IngressClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressClassWithSpec)).JsNamespace("k8s").JsName("IngressClass")
+	
 }

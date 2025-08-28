@@ -7,8 +7,6 @@ export * from './HPAScalingPolicy';
 export * from './HPAScalingRules';
 export * from './HorizontalPodAutoscaler';
 export * from './HorizontalPodAutoscalerBehavior';
-export * from './HorizontalPodAutoscalerCondition';
-export * from './HorizontalPodAutoscalerList';
 export * from './HorizontalPodAutoscalerSpec';
 export * from './MetricIdentifier';
 export * from './MetricSpec';

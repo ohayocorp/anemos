@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ReplicationController represents the configuration of a replication controller.
-type ReplicationController struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// If the Labels of a ReplicationController are empty, they are defaulted to be the same as the Pod(s) that the replication controller manages. Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec defines the specification of the desired behavior of the replication controller. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *ReplicationControllerSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewReplicationController(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ReplicationController")
+	return document
 }
 
-func NewReplicationController() *ReplicationController {
-	return &ReplicationController{}
-}
-
-func NewReplicationControllerWithSpec(spec *ReplicationController) *ReplicationController {
-	version := "v1"
-	kind := "ReplicationController"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewReplicationControllerWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ReplicationController")
+	return document
 }
 
 func RegisterReplicationController(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ReplicationController]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewReplicationController)),
-		js.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsNamespace("k8s.core.v1").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsNamespace("k8s.core.v1").JsName("ReplicationController")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsNamespace("k8s").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsNamespace("k8s").JsName("ReplicationController")
+	
 }

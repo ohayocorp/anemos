@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// NetworkPolicy describes what network traffic is allowed for a set of Pods
-type NetworkPolicy struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec represents the specification of the desired behavior for this NetworkPolicy.
-	Spec *NetworkPolicySpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewNetworkPolicy(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "NetworkPolicy")
+	return document
 }
 
-func NewNetworkPolicy() *NetworkPolicy {
-	return &NetworkPolicy{}
-}
-
-func NewNetworkPolicyWithSpec(spec *NetworkPolicy) *NetworkPolicy {
-	version := "v1"
-	kind := "NetworkPolicy"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewNetworkPolicyWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "NetworkPolicy")
+	return document
 }
 
 func RegisterNetworkPolicy(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[NetworkPolicy]()).JsNamespace("k8s.networking.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewNetworkPolicy)),
-		js.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsNamespace("k8s.networking.v1").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsNamespace("k8s.networking.v1").JsName("NetworkPolicy")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsNamespace("k8s").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsNamespace("k8s").JsName("NetworkPolicy")
+	
 }

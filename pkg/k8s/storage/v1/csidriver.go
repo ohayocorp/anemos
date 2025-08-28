@@ -5,47 +5,27 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// CSIDriver captures information about a Container Storage Interface (CSI) volume driver deployed on the cluster. Kubernetes attach detach controller uses this object to determine whether attach is required. Kubelet uses this object to determine whether pod information needs to be passed on mount. CSIDriver objects are non-namespaced.
-type CSIDriver struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object metadata. metadata.Name indicates the name of the CSI driver that this object refers to; it MUST be the same name returned by the CSI GetPluginName() call for that driver. The driver name must be 63 characters or less, beginning and ending with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec represents the specification of the CSI Driver.
-	Spec *CSIDriverSpec `json:"spec" yaml:"spec"`
+func NewCSIDriver(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "CSIDriver")
+	return document
 }
 
-func NewCSIDriver() *CSIDriver {
-	return &CSIDriver{}
-}
-
-func NewCSIDriverWithSpec(spec *CSIDriver) *CSIDriver {
-	version := "v1"
-	kind := "CSIDriver"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewCSIDriverWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "CSIDriver")
+	return document
 }
 
 func RegisterCSIDriver(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[CSIDriver]()).JsNamespace("k8s.storage.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewCSIDriver)),
-		js.Constructor(reflect.ValueOf(NewCSIDriverWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriver)).JsNamespace("k8s.storage.v1").JsName("CSIDriver")
+	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriverWithSpec)).JsNamespace("k8s.storage.v1").JsName("CSIDriver")
+	
 }

@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// PersistentVolumeClaim is a user's request for and claim to a persistent volume
-type PersistentVolumeClaim struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-	Spec *PersistentVolumeClaimSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewPersistentVolumeClaim(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PersistentVolumeClaim")
+	return document
 }
 
-func NewPersistentVolumeClaim() *PersistentVolumeClaim {
-	return &PersistentVolumeClaim{}
-}
-
-func NewPersistentVolumeClaimWithSpec(spec *PersistentVolumeClaim) *PersistentVolumeClaim {
-	version := "v1"
-	kind := "PersistentVolumeClaim"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPersistentVolumeClaimWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PersistentVolumeClaim")
+	return document
 }
 
 func RegisterPersistentVolumeClaim(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[PersistentVolumeClaim]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)),
-		js.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsNamespace("k8s.core.v1").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsNamespace("k8s.core.v1").JsName("PersistentVolumeClaim")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsNamespace("k8s").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsNamespace("k8s").JsName("PersistentVolumeClaim")
+	
 }

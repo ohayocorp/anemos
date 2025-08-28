@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// Ingress is a collection of rules that allow inbound connections to reach the endpoints defined by a backend. An Ingress can be configured to give services externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting etc.
-type Ingress struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec is the desired state of the Ingress. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *IngressSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewIngress(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Ingress")
+	return document
 }
 
-func NewIngress() *Ingress {
-	return &Ingress{}
-}
-
-func NewIngressWithSpec(spec *Ingress) *Ingress {
-	version := "v1"
-	kind := "Ingress"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewIngressWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Ingress")
+	return document
 }
 
 func RegisterIngress(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Ingress]()).JsNamespace("k8s.networking.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewIngress)),
-		js.Constructor(reflect.ValueOf(NewIngressWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsNamespace("k8s.networking.v1").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsNamespace("k8s.networking.v1").JsName("Ingress")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsNamespace("k8s").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsNamespace("k8s").JsName("Ingress")
+	
 }

@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// PriorityLevelConfiguration represents the configuration of a priority level.
-type PriorityLevelConfiguration struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// `metadata` is the standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// `spec` is the specification of the desired behavior of a "request-priority". More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *PriorityLevelConfigurationSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewPriorityLevelConfiguration(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PriorityLevelConfiguration")
+	return document
 }
 
-func NewPriorityLevelConfiguration() *PriorityLevelConfiguration {
-	return &PriorityLevelConfiguration{}
-}
-
-func NewPriorityLevelConfigurationWithSpec(spec *PriorityLevelConfiguration) *PriorityLevelConfiguration {
-	version := "v1"
-	kind := "PriorityLevelConfiguration"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPriorityLevelConfigurationWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PriorityLevelConfiguration")
+	return document
 }
 
 func RegisterPriorityLevelConfiguration(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[PriorityLevelConfiguration]()).JsNamespace("k8s.flowcontrol.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)),
-		js.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsNamespace("k8s.flowcontrol.v1").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsNamespace("k8s.flowcontrol.v1").JsName("PriorityLevelConfiguration")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsNamespace("k8s").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsNamespace("k8s").JsName("PriorityLevelConfiguration")
+	
 }

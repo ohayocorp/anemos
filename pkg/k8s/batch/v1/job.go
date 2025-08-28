@@ -5,51 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// Job represents the configuration of a single job.
-type Job struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Specification of the desired behavior of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *JobSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
-
-	// Current status of a job. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status any `json:"status,omitempty" yaml:"status,omitempty"`
+func NewJob(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Job")
+	return document
 }
 
-func NewJob() *Job {
-	return &Job{}
-}
-
-func NewJobWithSpec(spec *Job) *Job {
-	version := "v1"
-	kind := "Job"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewJobWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Job")
+	return document
 }
 
 func RegisterJob(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Job]()).JsNamespace("k8s.batch.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-		js.Field("Status"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewJob)),
-		js.Constructor(reflect.ValueOf(NewJobWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsNamespace("k8s.batch.v1").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsNamespace("k8s.batch.v1").JsName("Job")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsNamespace("k8s").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsNamespace("k8s").JsName("Job")
+	
 }

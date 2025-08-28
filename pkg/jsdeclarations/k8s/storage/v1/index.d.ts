@@ -1,22 +1,7 @@
 // Auto generated code; DO NOT EDIT.
 
 export * from './CSIDriver';
-export * from './CSIDriverList';
 export * from './CSIDriverSpec';
-export * from './CSINode';
-export * from './CSINodeDriver';
-export * from './CSINodeList';
-export * from './CSINodeSpec';
-export * from './CSIStorageCapacity';
-export * from './CSIStorageCapacityList';
 export * from './StorageClass';
-export * from './StorageClassList';
 export * from './TokenRequest';
-export * from './VolumeAttachment';
-export * from './VolumeAttachmentList';
-export * from './VolumeAttachmentSource';
-export * from './VolumeAttachmentSpec';
 export * from './VolumeAttributesClass';
-export * from './VolumeAttributesClassList';
-export * from './VolumeError';
-export * from './VolumeNodeResources';

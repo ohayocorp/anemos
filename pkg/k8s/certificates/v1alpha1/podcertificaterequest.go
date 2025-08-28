@@ -5,48 +5,27 @@ package v1alpha1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// PodCertificateRequest encodes a pod requesting a certificate from a given signer.
-// Kubelets use this API to implement podCertificate projected volumes
-type PodCertificateRequest struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Metadata contains the object metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec contains the details about the certificate being requested.
-	Spec *PodCertificateRequestSpec `json:"spec" yaml:"spec"`
+func NewPodCertificateRequest(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1alpha1")
+	document.Set("kind", "PodCertificateRequest")
+	return document
 }
 
-func NewPodCertificateRequest() *PodCertificateRequest {
-	return &PodCertificateRequest{}
-}
-
-func NewPodCertificateRequestWithSpec(spec *PodCertificateRequest) *PodCertificateRequest {
-	version := "v1alpha1"
-	kind := "PodCertificateRequest"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPodCertificateRequestWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1alpha1")
+	document.Set("kind", "PodCertificateRequest")
+	return document
 }
 
 func RegisterPodCertificateRequest(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[PodCertificateRequest]()).JsNamespace("k8s.certificates.v1alpha1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPodCertificateRequest)),
-		js.Constructor(reflect.ValueOf(NewPodCertificateRequestWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequest)).JsNamespace("k8s.certificates.v1alpha1").JsName("PodCertificateRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequestWithSpec)).JsNamespace("k8s.certificates.v1alpha1").JsName("PodCertificateRequest")
+	
 }

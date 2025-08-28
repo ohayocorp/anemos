@@ -1,27 +1,17 @@
 // Auto generated code; DO NOT EDIT.
 
-export * from './ControllerRevision';
-export * from './ControllerRevisionList';
 export * from './DaemonSet';
-export * from './DaemonSetCondition';
-export * from './DaemonSetList';
 export * from './DaemonSetSpec';
 export * from './DaemonSetUpdateStrategy';
 export * from './Deployment';
-export * from './DeploymentCondition';
-export * from './DeploymentList';
 export * from './DeploymentSpec';
 export * from './DeploymentStrategy';
 export * from './ReplicaSet';
-export * from './ReplicaSetCondition';
-export * from './ReplicaSetList';
 export * from './ReplicaSetSpec';
 export * from './RollingUpdateDaemonSet';
 export * from './RollingUpdateDeployment';
 export * from './RollingUpdateStatefulSetStrategy';
 export * from './StatefulSet';
-export * from './StatefulSetCondition';
-export * from './StatefulSetList';
 export * from './StatefulSetOrdinals';
 export * from './StatefulSetPersistentVolumeClaimRetentionPolicy';
 export * from './StatefulSetSpec';

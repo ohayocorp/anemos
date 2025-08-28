@@ -5,56 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// RuntimeClass defines a class of container runtime supported in the cluster. The RuntimeClass is used to determine which container runtime is used to run all containers in a pod. RuntimeClasses are manually defined by a user or cluster provisioner, and referenced in the PodSpec. The Kubelet is responsible for resolving the RuntimeClassName reference before running the pod.  For more details, see https://kubernetes.io/docs/concepts/containers/runtime-class/
-type RuntimeClass struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Handler specifies the underlying runtime and configuration that the CRI implementation will use to handle pods of this class. The possible values are specific to the node & CRI configuration.  It is assumed that all handlers are available on every node, and handlers of the same name are equivalent on every node. For example, a handler called "runc" might specify that the runc OCI runtime (using native Linux containers) will be used to run the containers in a pod. The Handler must be lowercase, conform to the DNS Label (RFC 1123) requirements, and is immutable.
-	Handler string `json:"handler" yaml:"handler"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass. For more details, see
-	//  https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/
-	Overhead *Overhead `json:"overhead,omitempty" yaml:"overhead,omitempty"`
-
-	// Scheduling holds the scheduling constraints to ensure that pods running with this RuntimeClass are scheduled to nodes that support it. If scheduling is nil, this RuntimeClass is assumed to be supported by all nodes.
-	Scheduling *Scheduling `json:"scheduling,omitempty" yaml:"scheduling,omitempty"`
+func NewRuntimeClass(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "RuntimeClass")
+	return document
 }
 
-func NewRuntimeClass() *RuntimeClass {
-	return &RuntimeClass{}
-}
-
-func NewRuntimeClassWithSpec(spec *RuntimeClass) *RuntimeClass {
-	version := "v1"
-	kind := "RuntimeClass"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewRuntimeClassWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "RuntimeClass")
+	return document
 }
 
 func RegisterRuntimeClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[RuntimeClass]()).JsNamespace("k8s.node.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Handler"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Overhead"),
-		js.Field("Scheduling"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewRuntimeClass)),
-		js.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsNamespace("k8s.node.v1").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsNamespace("k8s.node.v1").JsName("RuntimeClass")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsNamespace("k8s").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsNamespace("k8s").JsName("RuntimeClass")
+	
 }

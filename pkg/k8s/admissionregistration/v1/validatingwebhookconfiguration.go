@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ValidatingWebhookConfiguration describes the configuration of and admission webhook that accept or reject and object without changing it.
-type ValidatingWebhookConfiguration struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Webhooks is a list of webhooks and the affected resources and operations.
-	Webhooks []*ValidatingWebhook `json:"webhooks,omitempty" yaml:"webhooks,omitempty"`
+func NewValidatingWebhookConfiguration(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ValidatingWebhookConfiguration")
+	return document
 }
 
-func NewValidatingWebhookConfiguration() *ValidatingWebhookConfiguration {
-	return &ValidatingWebhookConfiguration{}
-}
-
-func NewValidatingWebhookConfigurationWithSpec(spec *ValidatingWebhookConfiguration) *ValidatingWebhookConfiguration {
-	version := "v1"
-	kind := "ValidatingWebhookConfiguration"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewValidatingWebhookConfigurationWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ValidatingWebhookConfiguration")
+	return document
 }
 
 func RegisterValidatingWebhookConfiguration(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ValidatingWebhookConfiguration]()).JsNamespace("k8s.admissionregistration.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Webhooks"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)),
-		js.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingWebhookConfiguration")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsNamespace("k8s").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsNamespace("k8s").JsName("ValidatingWebhookConfiguration")
+	
 }

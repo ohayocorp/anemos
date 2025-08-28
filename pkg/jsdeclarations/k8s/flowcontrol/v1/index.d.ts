@@ -3,8 +3,6 @@
 export * from './ExemptPriorityLevelConfiguration';
 export * from './FlowDistinguisherMethod';
 export * from './FlowSchema';
-export * from './FlowSchemaCondition';
-export * from './FlowSchemaList';
 export * from './FlowSchemaSpec';
 export * from './GroupSubject';
 export * from './LimitResponse';
@@ -12,8 +10,6 @@ export * from './LimitedPriorityLevelConfiguration';
 export * from './NonResourcePolicyRule';
 export * from './PolicyRulesWithSubjects';
 export * from './PriorityLevelConfiguration';
-export * from './PriorityLevelConfigurationCondition';
-export * from './PriorityLevelConfigurationList';
 export * from './PriorityLevelConfigurationReference';
 export * from './PriorityLevelConfigurationSpec';
 export * from './QueuingConfiguration';

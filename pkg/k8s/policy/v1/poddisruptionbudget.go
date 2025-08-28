@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
-type PodDisruptionBudget struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Specification of the desired behavior of the PodDisruptionBudget.
-	Spec *PodDisruptionBudgetSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewPodDisruptionBudget(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PodDisruptionBudget")
+	return document
 }
 
-func NewPodDisruptionBudget() *PodDisruptionBudget {
-	return &PodDisruptionBudget{}
-}
-
-func NewPodDisruptionBudgetWithSpec(spec *PodDisruptionBudget) *PodDisruptionBudget {
-	version := "v1"
-	kind := "PodDisruptionBudget"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPodDisruptionBudgetWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PodDisruptionBudget")
+	return document
 }
 
 func RegisterPodDisruptionBudget(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[PodDisruptionBudget]()).JsNamespace("k8s.policy.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPodDisruptionBudget)),
-		js.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsNamespace("k8s.policy.v1").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsNamespace("k8s.policy.v1").JsName("PodDisruptionBudget")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsNamespace("k8s").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsNamespace("k8s").JsName("PodDisruptionBudget")
+	
 }

@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ResourceQuota sets aggregate quota restrictions enforced per namespace
-type ResourceQuota struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec defines the desired quota. https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *ResourceQuotaSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewResourceQuota(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ResourceQuota")
+	return document
 }
 
-func NewResourceQuota() *ResourceQuota {
-	return &ResourceQuota{}
-}
-
-func NewResourceQuotaWithSpec(spec *ResourceQuota) *ResourceQuota {
-	version := "v1"
-	kind := "ResourceQuota"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewResourceQuotaWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ResourceQuota")
+	return document
 }
 
 func RegisterResourceQuota(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ResourceQuota]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewResourceQuota)),
-		js.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsNamespace("k8s.core.v1").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsNamespace("k8s.core.v1").JsName("ResourceQuota")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsNamespace("k8s").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsNamespace("k8s").JsName("ResourceQuota")
+	
 }

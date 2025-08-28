@@ -5,59 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// PriorityClass defines mapping from a priority class name to the priority integer value. The value can be any valid integer.
-type PriorityClass struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Description is an arbitrary string that usually provides guidelines on when this priority class should be used.
-	Description *string `json:"description,omitempty" yaml:"description,omitempty"`
-
-	// GlobalDefault specifies whether this PriorityClass should be considered as the default priority for pods that do not have any priority class. Only one PriorityClass can be marked as `globalDefault`. However, if more than one PriorityClasses exists with their `globalDefault` field set to true, the smallest value of such global default PriorityClasses will be used as the default priority.
-	GlobalDefault *bool `json:"globalDefault,omitempty" yaml:"globalDefault,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// PreemptionPolicy is the Policy for preempting pods with lower priority. One of Never, PreemptLowerPriority. Defaults to PreemptLowerPriority if unset.
-	PreemptionPolicy *string `json:"preemptionPolicy,omitempty" yaml:"preemptionPolicy,omitempty"`
-
-	// Value represents the integer value of this priority class. This is the actual priority that pods receive when they have the name of this class in their pod spec.
-	Value int `json:"value" yaml:"value"`
+func NewPriorityClass(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PriorityClass")
+	return document
 }
 
-func NewPriorityClass() *PriorityClass {
-	return &PriorityClass{}
-}
-
-func NewPriorityClassWithSpec(spec *PriorityClass) *PriorityClass {
-	version := "v1"
-	kind := "PriorityClass"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPriorityClassWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "PriorityClass")
+	return document
 }
 
 func RegisterPriorityClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[PriorityClass]()).JsNamespace("k8s.scheduling.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Description"),
-		js.Field("GlobalDefault"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("PreemptionPolicy"),
-		js.Field("Value"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPriorityClass)),
-		js.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsNamespace("k8s.scheduling.v1").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsNamespace("k8s.scheduling.v1").JsName("PriorityClass")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsNamespace("k8s").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsNamespace("k8s").JsName("PriorityClass")
+	
 }

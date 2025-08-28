@@ -5,47 +5,30 @@ package v2
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// HorizontalPodAutoscaler is the configuration for a horizontal pod autoscaler, which automatically manages the replica count of any resource implementing the scale subresource based on the metrics specified.
-type HorizontalPodAutoscaler struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Metadata is the standard object metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec is the specification for the behaviour of the autoscaler. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status.
-	Spec *HorizontalPodAutoscalerSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewHorizontalPodAutoscaler(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v2")
+	document.Set("kind", "HorizontalPodAutoscaler")
+	return document
 }
 
-func NewHorizontalPodAutoscaler() *HorizontalPodAutoscaler {
-	return &HorizontalPodAutoscaler{}
-}
-
-func NewHorizontalPodAutoscalerWithSpec(spec *HorizontalPodAutoscaler) *HorizontalPodAutoscaler {
-	version := "v2"
-	kind := "HorizontalPodAutoscaler"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewHorizontalPodAutoscalerWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v2")
+	document.Set("kind", "HorizontalPodAutoscaler")
+	return document
 }
 
 func RegisterHorizontalPodAutoscaler(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[HorizontalPodAutoscaler]()).JsNamespace("k8s.autoscaling.v2").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)),
-		js.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsNamespace("k8s.autoscaling.v2").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsNamespace("k8s.autoscaling.v2").JsName("HorizontalPodAutoscaler")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsNamespace("k8s").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsNamespace("k8s").JsName("HorizontalPodAutoscaler")
+	
 }

@@ -1,5 +1,4 @@
 // Auto generated code; DO NOT EDIT.
-
 import { ConfigMapKeySelector } from "./ConfigMapKeySelector"
 import { FileKeySelector } from "./FileKeySelector"
 import { ObjectFieldSelector } from "./ObjectFieldSelector"
@@ -8,39 +7,39 @@ import { SecretKeySelector } from "./SecretKeySelector"
 
 /**
  * EnvVarSource represents a source for the value of an EnvVar.
- * 
  */
 export declare class EnvVarSource {
     constructor();
-    constructor(spec: EnvVarSource);
+    constructor(spec: Pick<EnvVarSource, "configMapKeyRef" | "fieldRef" | "fileKeyRef" | "resourceFieldRef" | "secretKeyRef">);
 
 	/**
      * Selects a key of a ConfigMap.
-     * 
      */
     configMapKeyRef?: ConfigMapKeySelector
 
 	/**
      * Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-     * 
      */
     fieldRef?: ObjectFieldSelector
 
 	/**
      * FileKeyRef selects a key of the env file. Requires the EnvFiles feature gate to be enabled.
-     * 
      */
     fileKeyRef?: FileKeySelector
 
 	/**
      * Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-     * 
      */
     resourceFieldRef?: ResourceFieldSelector
 
 	/**
      * Selects a key of a secret in the pod's namespace
-     * 
      */
     secretKeyRef?: SecretKeySelector
+
+	/**
+     * This declaration allows setting and getting custom properties on the document without TypeScript
+     * compiler errors.
+     */
+    [customProperties: string]: any;
 }

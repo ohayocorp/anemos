@@ -5,51 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ClusterRole is a cluster level, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding or ClusterRoleBinding.
-type ClusterRole struct {
-	// AggregationRule is an optional field that describes how to build the Rules for this ClusterRole. If AggregationRule is set, then the Rules are controller managed and direct changes to Rules will be stomped by the controller.
-	AggregationRule *AggregationRule `json:"aggregationRule,omitempty" yaml:"aggregationRule,omitempty"`
-
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Rules holds all the PolicyRules for this ClusterRole
-	Rules []*PolicyRule `json:"rules,omitempty" yaml:"rules,omitempty"`
+func NewClusterRole(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ClusterRole")
+	return document
 }
 
-func NewClusterRole() *ClusterRole {
-	return &ClusterRole{}
-}
-
-func NewClusterRoleWithSpec(spec *ClusterRole) *ClusterRole {
-	version := "v1"
-	kind := "ClusterRole"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewClusterRoleWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ClusterRole")
+	return document
 }
 
 func RegisterClusterRole(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ClusterRole]()).JsNamespace("k8s.rbac.v1").Fields(
-		js.Field("AggregationRule"),
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Rules"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewClusterRole)),
-		js.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsNamespace("k8s.rbac.v1").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsNamespace("k8s.rbac.v1").JsName("ClusterRole")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsNamespace("k8s").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsNamespace("k8s").JsName("ClusterRole")
+	
 }

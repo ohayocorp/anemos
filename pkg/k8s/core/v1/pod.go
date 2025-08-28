@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// Pod is a collection of containers that can run on a host. This resource is created by clients and scheduled onto hosts.
-type Pod struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Specification of the desired behavior of the pod. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *PodSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewPod(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Pod")
+	return document
 }
 
-func NewPod() *Pod {
-	return &Pod{}
-}
-
-func NewPodWithSpec(spec *Pod) *Pod {
-	version := "v1"
-	kind := "Pod"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewPodWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Pod")
+	return document
 }
 
 func RegisterPod(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Pod]()).JsNamespace("k8s.core.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewPod)),
-		js.Constructor(reflect.ValueOf(NewPodWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsNamespace("k8s.core.v1").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsNamespace("k8s.core.v1").JsName("Pod")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsNamespace("k8s").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsNamespace("k8s").JsName("Pod")
+	
 }

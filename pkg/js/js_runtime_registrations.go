@@ -34,9 +34,10 @@ type TypeAlias struct {
 }
 
 type FunctionRegistration struct {
-	function    reflect.Value
-	jsNamespace string
-	jsName      string
+	function     reflect.Value
+	jsNamespace  string
+	jsName       string
+	functionType FunctionType
 }
 
 type ExtensionMethodRegistration struct {
@@ -202,7 +203,7 @@ func (jsRuntime *JsRuntime) registerFunctions() {
 		function := &DynamicFunction{
 			jsNamespace:  jsNamespace,
 			jsName:       jsName,
-			functionType: jsFunction,
+			functionType: function.functionType,
 			function:     function.function,
 		}
 
@@ -336,7 +337,19 @@ func (t *TypeRegistration) DisableObjectMapping() *TypeRegistration {
 
 func (jsRuntime *JsRuntime) Function(function reflect.Value) *FunctionRegistration {
 	f := &FunctionRegistration{
-		function: function,
+		function:     function,
+		functionType: jsFunction,
+	}
+
+	jsRuntime.functionRegistrations = append(jsRuntime.functionRegistrations, f)
+
+	return f
+}
+
+func (jsRuntime *JsRuntime) Constructor(function reflect.Value) *FunctionRegistration {
+	f := &FunctionRegistration{
+		function:     function,
+		functionType: jsConstructor,
 	}
 
 	jsRuntime.functionRegistrations = append(jsRuntime.functionRegistrations, f)

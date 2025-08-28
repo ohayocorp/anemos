@@ -5,51 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// CertificateSigningRequest objects provide a mechanism to obtain x509 certificates by submitting a certificate signing request, and having it asynchronously approved and issued.
-// Kubelets use this API to obtain:
-//  1. client certificates to authenticate to kube-apiserver (with the "kubernetes.io/kube-apiserver-client-kubelet" signerName).
-//  2. serving certificates for TLS endpoints kube-apiserver can connect to securely (with the "kubernetes.io/kubelet-serving" signerName).
-// This API can be used to request client certificates to authenticate to kube-apiserver (with the "kubernetes.io/kube-apiserver-client" signerName), or to obtain certificates from custom non-Kubernetes signers.
-type CertificateSigningRequest struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Spec contains the certificate request, and is immutable after creation. Only the request, signerName, expirationSeconds, and usages fields can be set on creation. Other fields are derived by Kubernetes and cannot be modified by users.
-	Spec *CertificateSigningRequestSpec `json:"spec" yaml:"spec"`
+func NewCertificateSigningRequest(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "CertificateSigningRequest")
+	return document
 }
 
-func NewCertificateSigningRequest() *CertificateSigningRequest {
-	return &CertificateSigningRequest{}
-}
-
-func NewCertificateSigningRequestWithSpec(spec *CertificateSigningRequest) *CertificateSigningRequest {
-	version := "v1"
-	kind := "CertificateSigningRequest"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewCertificateSigningRequestWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "CertificateSigningRequest")
+	return document
 }
 
 func RegisterCertificateSigningRequest(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[CertificateSigningRequest]()).JsNamespace("k8s.certificates.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewCertificateSigningRequest)),
-		js.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsNamespace("k8s.certificates.v1").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsNamespace("k8s.certificates.v1").JsName("CertificateSigningRequest")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsNamespace("k8s").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsNamespace("k8s").JsName("CertificateSigningRequest")
+	
 }

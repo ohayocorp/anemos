@@ -5,51 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ClusterRoleBinding references a ClusterRole, but not contain it.  It can reference a ClusterRole in the global namespace, and adds who information via Subject.
-type ClusterRoleBinding struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// RoleRef can only reference a ClusterRole in the global namespace. If the RoleRef cannot be resolved, the Authorizer must return an error. This field is immutable.
-	RoleRef *RoleRef `json:"roleRef" yaml:"roleRef"`
-
-	// Subjects holds references to the objects the role applies to.
-	Subjects []*Subject `json:"subjects,omitempty" yaml:"subjects,omitempty"`
+func NewClusterRoleBinding(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ClusterRoleBinding")
+	return document
 }
 
-func NewClusterRoleBinding() *ClusterRoleBinding {
-	return &ClusterRoleBinding{}
-}
-
-func NewClusterRoleBindingWithSpec(spec *ClusterRoleBinding) *ClusterRoleBinding {
-	version := "v1"
-	kind := "ClusterRoleBinding"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewClusterRoleBindingWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ClusterRoleBinding")
+	return document
 }
 
 func RegisterClusterRoleBinding(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ClusterRoleBinding]()).JsNamespace("k8s.rbac.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("RoleRef"),
-		js.Field("Subjects"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewClusterRoleBinding)),
-		js.Constructor(reflect.ValueOf(NewClusterRoleBindingWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleBinding)).JsNamespace("k8s.rbac.v1").JsName("ClusterRoleBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleBindingWithSpec)).JsNamespace("k8s.rbac.v1").JsName("ClusterRoleBinding")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleBinding)).JsNamespace("k8s").JsName("ClusterRoleBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleBindingWithSpec)).JsNamespace("k8s").JsName("ClusterRoleBinding")
+	
 }

@@ -1,42 +1,41 @@
 // Auto generated code; DO NOT EDIT.
-
 import { HTTPHeader } from "./HTTPHeader"
 
 /**
  * HTTPGetAction describes an action based on HTTP Get requests.
- * 
  */
 export declare class HTTPGetAction {
     constructor();
-    constructor(spec: HTTPGetAction);
+    constructor(spec: Pick<HTTPGetAction, "host" | "httpHeaders" | "path" | "port" | "scheme">);
 
 	/**
      * Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
-     * 
      */
     host?: string
 
 	/**
      * Custom headers to set in the request. HTTP allows repeated headers.
-     * 
      */
     httpHeaders?: Array<HTTPHeader>
 
 	/**
      * Path to access on the HTTP server.
-     * 
      */
     path?: string
 
 	/**
      * Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
-     * 
      */
-    port: any
+    port: number | string
 
 	/**
      * Scheme to use for connecting to the host. Defaults to HTTP.
-     * 
      */
     scheme?: string
+
+	/**
+     * This declaration allows setting and getting custom properties on the document without TypeScript
+     * compiler errors.
+     */
+    [customProperties: string]: any;
 }

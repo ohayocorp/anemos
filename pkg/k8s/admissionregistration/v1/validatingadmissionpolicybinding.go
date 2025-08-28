@@ -5,49 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// ValidatingAdmissionPolicyBinding binds the ValidatingAdmissionPolicy with paramerized resources. ValidatingAdmissionPolicyBinding and parameter CRDs together define how cluster administrators configure policies for clusters.
-// For a given admission request, each binding will cause its policy to be evaluated N times, where N is 1 for policies/bindings that don't use params, otherwise N is the number of parameters selected by the binding.
-// The CEL expressions of a policy must have a computed CEL cost below the maximum CEL budget. Each evaluation of the policy is given an independent CEL cost budget. Adding/removing policies, bindings, or params can not affect whether a given (policy, binding, param) combination is within its own CEL budget.
-type ValidatingAdmissionPolicyBinding struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object metadata; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Specification of the desired behavior of the ValidatingAdmissionPolicyBinding.
-	Spec *ValidatingAdmissionPolicyBindingSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewValidatingAdmissionPolicyBinding(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ValidatingAdmissionPolicyBinding")
+	return document
 }
 
-func NewValidatingAdmissionPolicyBinding() *ValidatingAdmissionPolicyBinding {
-	return &ValidatingAdmissionPolicyBinding{}
-}
-
-func NewValidatingAdmissionPolicyBindingWithSpec(spec *ValidatingAdmissionPolicyBinding) *ValidatingAdmissionPolicyBinding {
-	version := "v1"
-	kind := "ValidatingAdmissionPolicyBinding"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewValidatingAdmissionPolicyBindingWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "ValidatingAdmissionPolicyBinding")
+	return document
 }
 
 func RegisterValidatingAdmissionPolicyBinding(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[ValidatingAdmissionPolicyBinding]()).JsNamespace("k8s.admissionregistration.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)),
-		js.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicyBinding")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicyBinding")
+	
 }

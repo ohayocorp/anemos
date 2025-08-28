@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// Role is a namespaced, logical grouping of PolicyRules that can be referenced as a unit by a RoleBinding.
-type Role struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata.
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// Rules holds all the PolicyRules for this Role
-	Rules []*PolicyRule `json:"rules,omitempty" yaml:"rules,omitempty"`
+func NewRole(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Role")
+	return document
 }
 
-func NewRole() *Role {
-	return &Role{}
-}
-
-func NewRoleWithSpec(spec *Role) *Role {
-	version := "v1"
-	kind := "Role"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewRoleWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "Role")
+	return document
 }
 
 func RegisterRole(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Role]()).JsNamespace("k8s.rbac.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Rules"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewRole)),
-		js.Constructor(reflect.ValueOf(NewRoleWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsNamespace("k8s.rbac.v1").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsNamespace("k8s.rbac.v1").JsName("Role")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsNamespace("k8s").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsNamespace("k8s").JsName("Role")
+	
 }

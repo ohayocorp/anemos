@@ -1,25 +1,27 @@
 // Auto generated code; DO NOT EDIT.
-
 import { MetricIdentifier } from "./MetricIdentifier"
 import { MetricTarget } from "./MetricTarget"
 
 /**
  * ExternalMetricSource indicates how to scale on a metric not associated with any Kubernetes object (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).
- * 
  */
 export declare class ExternalMetricSource {
     constructor();
-    constructor(spec: ExternalMetricSource);
+    constructor(spec: Pick<ExternalMetricSource, "metric" | "target">);
 
 	/**
      * Metric identifies the target metric by name and selector
-     * 
      */
     metric: MetricIdentifier
 
 	/**
      * Target specifies the target value for the given metric
-     * 
      */
     target: MetricTarget
+
+	/**
+     * This declaration allows setting and getting custom properties on the document without TypeScript
+     * compiler errors.
+     */
+    [customProperties: string]: any;
 }

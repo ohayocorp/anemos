@@ -5,47 +5,30 @@ package v1
 import (
 	"reflect"
 
+	"github.com/grafana/sobek"
+	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
-
-	apimachinerymetav1 "github.com/ohayocorp/anemos/pkg/k8s/apimachinery/meta/v1"
 )
 
-// DaemonSet represents the configuration of a daemon set.
-type DaemonSet struct {
-	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-	ApiVersion *string `json:"apiVersion,omitempty" yaml:"apiVersion,omitempty"`
-
-	// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-	Kind *string `json:"kind,omitempty" yaml:"kind,omitempty"`
-
-	// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-	Metadata *apimachinerymetav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
-
-	// The desired behavior of this daemon set. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Spec *DaemonSetSpec `json:"spec,omitempty" yaml:"spec,omitempty"`
+func NewDaemonSet(jsRuntime *js.JsRuntime) *core.Document {
+	document := core.NewDocument(jsRuntime)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "DaemonSet")
+	return document
 }
 
-func NewDaemonSet() *DaemonSet {
-	return &DaemonSet{}
-}
-
-func NewDaemonSetWithSpec(spec *DaemonSet) *DaemonSet {
-	version := "v1"
-	kind := "DaemonSet"
-	
-	spec.ApiVersion = &version
-	spec.Kind = &kind
-	return spec
+func NewDaemonSetWithSpec(spec *sobek.Object) *core.Document {
+	document := core.NewDocumentWithContent(spec)
+	document.Set("apiVersion", "v1")
+	document.Set("kind", "DaemonSet")
+	return document
 }
 
 func RegisterDaemonSet(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[DaemonSet]()).JsNamespace("k8s.apps.v1").Fields(
-		js.Field("ApiVersion"),
-		js.Field("Kind"),
-		js.Field("Metadata"),
-		js.Field("Spec"),
-	).Constructors(
-		js.Constructor(reflect.ValueOf(NewDaemonSet)),
-		js.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)),
-	)
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsNamespace("k8s.apps.v1").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsNamespace("k8s.apps.v1").JsName("DaemonSet")
+	
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsNamespace("k8s").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsNamespace("k8s").JsName("DaemonSet")
+	
 }
