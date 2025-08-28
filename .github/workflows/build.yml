@@ -32,12 +32,17 @@ jobs:
           go-version: '1.24'
           check-latest: true
 
+      # For built-in JavaScript library.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
       - name: Build
         run: |
           LD_FLAGS="-X github.com/ohayocorp/anemos/pkg/util.AppVersion=${{ inputs.version }}"
           LD_FLAGS="${LD_FLAGS} -s -w"
 
           bash download-bun.sh
+          tsc -p pkg/jslib/tsconfig.json
           
           OS_LIST=("linux" "windows" "darwin")
           ARCH_LIST=("amd64" "arm64")
