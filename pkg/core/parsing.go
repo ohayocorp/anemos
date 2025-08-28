@@ -3,10 +3,10 @@ package core
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"reflect"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
