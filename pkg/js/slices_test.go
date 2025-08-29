@@ -8,10 +8,7 @@ import (
 )
 
 func TestSlices(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	type elem struct {
 		Property string
@@ -47,7 +44,7 @@ func TestSlices(t *testing.T) {
 	jsRuntime.Variable("", "stringArray", reflect.ValueOf(stringArray))
 	jsRuntime.Variable("", "object", reflect.ValueOf(objectArray))
 
-	err = jsRuntime.Run(ReadScript(t, "tests/slices.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/slices.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

@@ -8,10 +8,7 @@ import (
 )
 
 func TestMethods(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	jsRuntime.Type(reflect.TypeFor[MethodTest]()).Methods(
 		js.Method("NoParams"),
@@ -32,7 +29,7 @@ func TestMethods(t *testing.T) {
 	instance := &MethodTest{}
 	jsRuntime.Variable("", "test", reflect.ValueOf(instance))
 
-	err = jsRuntime.Run(ReadScript(t, "tests/primitives-method.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/primitives-method.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

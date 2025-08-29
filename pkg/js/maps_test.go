@@ -20,10 +20,7 @@ type MapObject struct {
 }
 
 func TestMaps(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	jsRuntime.Type(reflect.TypeFor[MapElem]()).Fields(
 		js.Field("Property"),
@@ -53,7 +50,7 @@ func TestMaps(t *testing.T) {
 
 	jsRuntime.Variable("", "object", reflect.ValueOf(object))
 
-	err = jsRuntime.Run(ReadScript(t, "tests/maps.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/maps.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

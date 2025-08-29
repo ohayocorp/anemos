@@ -12,10 +12,7 @@ type ExtensionObject struct {
 }
 
 func TestExtensionMethods(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	jsRuntime.Type(reflect.TypeFor[ExtensionObject]()).Fields(
 		js.Field("Property"),
@@ -31,7 +28,7 @@ func TestExtensionMethods(t *testing.T) {
 
 	jsRuntime.Variable("", "object", reflect.ValueOf(object))
 
-	err = jsRuntime.Run(ReadScript(t, "tests/extension-methods.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/extension-methods.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

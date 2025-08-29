@@ -8,17 +8,14 @@ import (
 )
 
 func TestConstructors(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	jsRuntime.Type(reflect.TypeFor[ConstructorTest]()).JsName("Test").Constructors(
 		js.Constructor(reflect.ValueOf(EmptyConstructor)),
 		js.Constructor(reflect.ValueOf(ConstructorPrimitives)),
 	)
 
-	err = jsRuntime.Run(ReadScript(t, "tests/constructors.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/constructors.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

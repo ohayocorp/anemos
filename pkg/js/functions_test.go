@@ -8,10 +8,7 @@ import (
 )
 
 func TestFunctions(t *testing.T) {
-	jsRuntime, err := js.NewJsRuntime()
-	if err != nil {
-		t.Errorf("NewJsRuntime() failed: %v", err)
-	}
+	jsRuntime := js.NewJsRuntime()
 
 	jsRuntime.Function(reflect.ValueOf(NoParams))
 	jsRuntime.Function(reflect.ValueOf(ReturnBool))
@@ -27,7 +24,7 @@ func TestFunctions(t *testing.T) {
 	jsRuntime.Function(reflect.ValueOf(ReturnStringParam)).JsName("returnString")
 	jsRuntime.Function(reflect.ValueOf(ReturnStringPointer))
 
-	err = jsRuntime.Run(ReadScript(t, "tests/functions.js"), nil)
+	err := jsRuntime.Run(ReadScript(t, "tests/functions.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

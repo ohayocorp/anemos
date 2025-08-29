@@ -28,7 +28,7 @@
                 "pkg/jslib/tsconfig.json"
             ],
             "presentation": {
-                "reveal": "never"
+                "reveal": "silent"
             }
         }
     ]

@@ -16,6 +16,7 @@ import (
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/ohayocorp/sobek_nodejs/console"
 	"github.com/ohayocorp/sobek_nodejs/process"
 	"github.com/ohayocorp/sobek_nodejs/require"
@@ -179,6 +180,13 @@ func SourceLoader(jsRuntime *JsRuntime, path string) ([]byte, error) {
 			return nil, err
 		}
 
+		if stat, err := result.Stat(); err == nil {
+			// Check if the file is a regular file.
+			if !stat.Mode().IsRegular() {
+				return nil, require.ModuleFileDoesNotExistError
+			}
+		}
+
 		// Read the file contents from the embedded filesystem.
 		data, err := io.ReadAll(result)
 		if err != nil {
@@ -199,7 +207,7 @@ func SourceLoader(jsRuntime *JsRuntime, path string) ([]byte, error) {
 	return require.DefaultSourceLoader(path)
 }
 
-func NewJsRuntime() (*JsRuntime, error) {
+func NewJsRuntime() *JsRuntime {
 	runtime := sobek.New()
 
 	jsRuntime := &JsRuntime{
@@ -228,12 +236,7 @@ func NewJsRuntime() (*JsRuntime, error) {
 
 	jsRuntime.Registry = registry
 
-	err := jsRuntime.initialize()
-	if err != nil {
-		return nil, err
-	}
-
-	return jsRuntime, nil
+	return jsRuntime
 }
 
 func (jsRuntime *JsRuntime) GetStackTrace() []sobek.StackFrame {
@@ -310,7 +313,7 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 	return template
 }
 
-func (jsRuntime *JsRuntime) initialize() error {
+func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 	require.RegisterNativeModule(PackageName, func(runtime *sobek.Runtime, module *sobek.Object) {
 		jsRuntime.registerTypes()
 		jsRuntime.registerFunctions()
@@ -360,14 +363,9 @@ func (jsRuntime *JsRuntime) initialize() error {
 		}
 
 		jsRuntime.initializeFunctions(rootObject, jsRuntime.functions, nil)
-
-		err := jsRuntime.initializeLib(rootObject)
-		if err != nil {
-			panic(err)
-		}
 	})
 
-	return nil
+	return jsRuntime.initializeLib()
 }
 
 func (jsRuntime *JsRuntime) addToNamespace(rootObject *sobek.Object, namespace, name string, value reflect.Value) error {
@@ -409,7 +407,7 @@ func (jsRuntime *JsRuntime) getNamespace(rootObject *sobek.Object, namespace str
 	return currentNamespace, nil
 }
 
-func (jsRuntime *JsRuntime) initializeLib(exports *sobek.Object) error {
+func (jsRuntime *JsRuntime) initializeLib() error {
 	jsRuntime.EmbeddedModules = append(jsRuntime.EmbeddedModules, &EmbeddedModule{
 		ModulePath: PackageName,
 		Files:      pkg.LibJavaScript,
@@ -420,19 +418,22 @@ func (jsRuntime *JsRuntime) initializeLib(exports *sobek.Object) error {
 		return fmt.Errorf("failed to read lib index.js: %w", err)
 	}
 
-	err = jsRuntime.Runtime.Set("exports", exports)
-	if err != nil {
-		return fmt.Errorf("failed to set exports: %w", err)
-	}
+	script := util.ParseTemplate(`
+		__anemos_existing_exports = exports;
+        exports = require("@ohayocorp/anemos");
 
-	_, err = jsRuntime.Runtime.RunString(string(libIndexJs))
-	if err != nil {
-		return fmt.Errorf("failed to run lib index.js: %w", err)
-	}
+		{{ .IndexJs }}
 
-	_, err = jsRuntime.Runtime.RunString("delete exports;")
+		exports = __anemos_existing_exports;
+		delete __anemos_existing_exports;
+		`,
+		map[string]string{
+			"IndexJs": string(libIndexJs),
+		})
+
+	_, err = jsRuntime.Runtime.RunString(script)
 	if err != nil {
-		return fmt.Errorf("failed to delete exports: %w", err)
+		Throw(fmt.Errorf("failed to run lib index.js: %w", err))
 	}
 
 	return nil

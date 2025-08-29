@@ -92,14 +92,16 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 }
 
 func initializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
-	runtime, err := js.NewJsRuntime()
-	if err != nil {
-		return nil, err
-	}
+	runtime := js.NewJsRuntime()
 
 	k8s.RegisterK8S(runtime)
 	core.RegisterCore(runtime)
 	components.RegisterComponents(runtime)
+
+	err := runtime.InitializeNativeLibraries()
+	if err != nil {
+		return nil, err
+	}
 
 	if program.InitializeRuntimeCallback != nil {
 		if err := program.InitializeRuntimeCallback(runtime); err != nil {
