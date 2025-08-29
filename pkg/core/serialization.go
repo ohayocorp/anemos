@@ -18,6 +18,10 @@ func SerializeSobekObjectToYaml(jsRuntime *js.JsRuntime, object *sobek.Object) (
 		return "", err
 	}
 
+	if node == nil {
+		return "", nil
+	}
+
 	var buffer bytes.Buffer
 
 	encoder := yaml.NewEncoder(&buffer)
@@ -77,6 +81,11 @@ func serializeSobekValueToMapping(jsRuntime *js.JsRuntime, value sobek.Value) (*
 			return nil, err
 		}
 
+		// Skip undefined values.
+		if node == nil {
+			continue
+		}
+
 		// Append the key first.
 		mapping.Content = append(mapping.Content, &yaml.Node{
 			Kind:  yaml.ScalarNode,
@@ -110,6 +119,11 @@ func serializeSobekValueToSequence(jsRuntime *js.JsRuntime, value sobek.Value) (
 			return nil, err
 		}
 
+		// Skip undefined values.
+		if node == nil {
+			continue
+		}
+
 		sequence.Content = append(sequence.Content, node)
 	}
 
@@ -117,6 +131,17 @@ func serializeSobekValueToSequence(jsRuntime *js.JsRuntime, value sobek.Value) (
 }
 
 func serializeSobekValueToScalar(jsRuntime *js.JsRuntime, value sobek.Value) (*yaml.Node, error) {
+	if value == sobek.Undefined() {
+		return nil, nil
+	}
+
+	if value == nil || value == sobek.Null() {
+		return &yaml.Node{
+			Kind:  yaml.ScalarNode,
+			Value: "null",
+		}, nil
+	}
+
 	boolValue, err := jsRuntime.MarshalToGo(value, reflect.TypeFor[bool]())
 	if err == nil {
 		return &yaml.Node{
