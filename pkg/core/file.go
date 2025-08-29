@@ -1,9 +1,12 @@
 package core
 
 import (
+	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 
 	"github.com/ohayocorp/anemos/pkg/js"
 )
@@ -16,18 +19,27 @@ func CheckPathInsideMainScriptDirectory(jsRuntime *js.JsRuntime, filePath string
 }
 
 func ReadAllText(jsRuntime *js.JsRuntime, filePath string) string {
-	filePath = filepath.Clean(filePath)
-	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		js.Throw(err)
-	}
-
-	return string(data)
+	return string(ReadAllBytes(jsRuntime, filePath))
 }
 
 func ReadAllBytes(jsRuntime *js.JsRuntime, filePath string) []byte {
+	if embeddedFilePath, ok := strings.CutPrefix(filePath, "anemos://"); ok {
+		for _, module := range jsRuntime.EmbeddedModules {
+			// Try to read the file from the embedded module.
+			moduleFilePath, ok := strings.CutPrefix(embeddedFilePath, module.ModulePath+"/")
+			if !ok {
+				continue
+			}
+
+			data, err := fs.ReadFile(module.Files, moduleFilePath)
+			if err == nil {
+				return data
+			}
+		}
+
+		js.Throw(fmt.Errorf("embedded file %s not found", filePath))
+	}
+
 	filePath = filepath.Clean(filePath)
 	CheckPathInsideMainScriptDirectory(jsRuntime, filePath)
 
