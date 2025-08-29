@@ -12,6 +12,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg/client"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"helm.sh/helm/v3/pkg/releaseutil"
 	"sigs.k8s.io/cli-utils/pkg/kstatus/status"
 )
@@ -241,7 +242,7 @@ func getApplySetName(documentGroup *core.DocumentGroup) string {
 		path = "default"
 	}
 
-	return core.ToKubernetesIdentifier(path)
+	return util.ToKubernetesIdentifier(path)
 }
 
 func (component *component) getRegexList() ([]*regexp.Regexp, error) {

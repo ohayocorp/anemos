@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/ohayocorp/anemos/pkg/core"
+	"github.com/ohayocorp/anemos/pkg/util"
 )
 
 const packageBase = "github.com/ohayocorp/anemos/pkg/k8s"
@@ -129,7 +130,7 @@ func generateType(typeInfo *typeInfo) error {
 		jsFieldBuilder.WriteString(fmt.Sprintf("%s\n", toJsComment(comment)))
 		jsFieldBuilder.WriteString(fmt.Sprintf("%s%s: %s", jsFieldName, optionalTag, jsFieldType))
 
-		jsFields = append(jsFields, core.Indent(jsFieldBuilder.String(), 4))
+		jsFields = append(jsFields, util.Indent(jsFieldBuilder.String(), 4))
 	}
 
 	err := typeInfo.writeGoContents()

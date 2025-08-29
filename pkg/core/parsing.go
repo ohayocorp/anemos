@@ -1,37 +1,21 @@
 package core
 
 import (
-	"bytes"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"gopkg.in/yaml.v3"
 )
-
-// Parses a template as a string by calling [MultilineString] on template text beforehand.
-// Panics if template is invalid.
-func ParseTemplate(templateText string, data any) string {
-	templateText = MultilineString(templateText)
-	template := template.Must(template.New("template").Parse(templateText))
-
-	var buffer bytes.Buffer
-
-	if err := template.Execute(&buffer, data); err != nil {
-		panic(fmt.Errorf("can't parse template, %v\n%s", err, templateText))
-	}
-
-	return buffer.String()
-}
 
 // Deserializes given string into an object of given type. Dedents the data using [Dedent] so that the
 // multiline strings with indentation are handled properly. Trims the newlines before deserialization.
 func ParseYaml[T any](data string) (T, error) {
-	data = Dedent(data)
+	data = util.Dedent(data)
 	data = strings.Trim(data, "\n")
 
 	var result T

@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/ohayocorp/anemos/pkg"
-	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
@@ -42,7 +41,7 @@ func writeDeclarations(program *AnemosProgram, output string) error {
 	}
 
 	packageJsonFile := filepath.Join(output, "package.json")
-	packageJson := core.ParseTemplate(`
+	packageJson := util.ParseTemplate(`
 		{
 		  "name": "{{ .PackageName }}",
 		  "version": "{{ .AppVersion }}",

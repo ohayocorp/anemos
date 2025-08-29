@@ -10,6 +10,7 @@ import (
 	"github.com/dominikbraun/graph"
 	"github.com/dominikbraun/graph/draw"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 )
 
 type DependencyGraph[T comparable] struct {
@@ -167,7 +168,7 @@ func (d *DependencyGraph[T]) getDotRepresentation(g graph.Graph[string, T]) (str
 		return "", fmt.Errorf("can't find '{' in DOT representation of graph")
 	}
 
-	attributes := MultilineString(`
+	attributes := util.MultilineString(`
 		graph [ ratio = "auto", page = "100", compound = true, bgcolor = "#2e3e56", pad = 2, ranksep=1.0 ];
 		node [ style = "filled", fillcolor = "#edad56", color = "#edad56", penwidth =3 ];
 		edge [ color = "#fcfcfc", penwidth =2 ]

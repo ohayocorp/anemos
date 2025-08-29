@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/ohayocorp/anemos/pkg/core"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -398,7 +399,7 @@ func printChanges(diffs []Diff) {
 
 			slog.Info(fmt.Sprintf(
 				"%s:\n  %s",
-				getDiffColored(diff.Resource, diff.DiffType), core.Indent(diff.DiffText, 2)))
+				getDiffColored(diff.Resource, diff.DiffType), util.Indent(diff.DiffText, 2)))
 		}
 	}
 

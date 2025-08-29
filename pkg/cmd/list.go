@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ohayocorp/anemos/pkg/client"
-	"github.com/ohayocorp/anemos/pkg/core"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 )
@@ -19,7 +19,7 @@ func getListCommand(program *AnemosProgram) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "list",
 		Short: "List apply sets",
-		Long: core.Dedent(`
+		Long: util.Dedent(`
 			List apply sets in the Kubernetes cluster.
 			`),
 		RunE: func(cmd *cobra.Command, args []string) error {

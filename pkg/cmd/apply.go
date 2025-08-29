@@ -14,6 +14,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg/client"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/ohayocorp/sobek_nodejs/require"
 	"github.com/spf13/cobra"
 	cmdutil "k8s.io/kubectl/pkg/cmd/util"
@@ -45,7 +46,7 @@ func getApplyCommand(program *AnemosProgram) *cobra.Command {
 	command := &cobra.Command{
 		Use:   "apply [package|directory]",
 		Short: "Apply manifests to the Kubernetes cluster",
-		Long: core.Dedent(`
+		Long: util.Dedent(`
 			Apply manifests to the Kubernetes cluster. Packages are downloaded using Bun, so you
 			can use any package format that Bun supports.
 			  - Apply a package from NPM: anemos apply my-package

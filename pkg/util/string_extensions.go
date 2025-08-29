@@ -1,14 +1,11 @@
-package core
+package util
 
 import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"reflect"
 	"regexp"
 	"strings"
-
-	"github.com/ohayocorp/anemos/pkg/js"
 )
 
 // Indents the each line with given number of spaces except the first line.
@@ -109,7 +106,7 @@ func Dedent(text string) string {
 	}
 
 	if err := scanner.Err(); err != nil {
-		js.Throw(fmt.Errorf("failed to scan text for dedent: %w", err))
+		panic(fmt.Errorf("failed to scan text for dedent: %w", err))
 	}
 
 	// This function is a copy of bufio.ScanLines with the difference that it doesn't remove the '\r' character.
@@ -194,11 +191,4 @@ func ToKubernetesIdentifier(name string) string {
 	name = strings.Trim(name, "-")
 
 	return name
-}
-
-func registerStringExtensions(jsRuntime *js.JsRuntime) {
-	jsRuntime.Function(reflect.ValueOf(Indent))
-	jsRuntime.Function(reflect.ValueOf(Dedent))
-	jsRuntime.Function(reflect.ValueOf(MultilineString))
-	jsRuntime.Function(reflect.ValueOf(ToKubernetesIdentifier))
 }

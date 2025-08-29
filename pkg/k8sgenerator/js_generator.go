@@ -10,6 +10,7 @@ import (
 
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/ohayocorp/anemos/pkg/core"
+	"github.com/ohayocorp/anemos/pkg/util"
 )
 
 // writeJsContents generates a TypeScript declaration file for a Kubernetes type.
@@ -29,7 +30,7 @@ func (typeInfo *typeInfo) writeJsContents(fields []string) error {
 	}
 
 	if !typeInfo.IsDocument {
-		fields = append(fields, core.Indent(core.MultilineString(`
+		fields = append(fields, util.Indent(util.MultilineString(`
 			/**
 			 * This declaration allows setting and getting custom properties on the document without TypeScript
 			 * compiler errors.
@@ -38,7 +39,7 @@ func (typeInfo *typeInfo) writeJsContents(fields []string) error {
 			`), 4))
 	}
 
-	template := core.MultilineString(`
+	template := util.MultilineString(`
 		// Auto generated code; DO NOT EDIT.
 		{{ .Imports }}
 		{{ .Description }}
@@ -65,7 +66,7 @@ func (typeInfo *typeInfo) writeJsContents(fields []string) error {
 		imports += "\n"
 	}
 
-	contents := core.ParseTemplate(template, map[string]any{
+	contents := util.ParseTemplate(template, map[string]any{
 		"Imports":      imports,
 		"Description":  toJsComment(getDescription(typeInfo.Schema.Description)),
 		"TypeName":     typeInfo.Name,
