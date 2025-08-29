@@ -28,7 +28,7 @@ type JsRuntime struct {
 	Registry               *require.Registry
 	Runtime                *sobek.Runtime
 	Flags                  map[string]string
-	embeddedModules        []*EmbeddedModule
+	EmbeddedModules        []*EmbeddedModule
 	variableRegistrations  []*VariableRegistration
 	functionRegistrations  []*FunctionRegistration
 	typeRegistrations      map[reflect.Type]*TypeRegistration
@@ -93,7 +93,7 @@ func ResolvePath(path string, mayNotExist bool) (string, error) {
 }
 
 func pathResolver(jsRuntime *JsRuntime, base, path string) string {
-	for _, module := range jsRuntime.embeddedModules {
+	for _, module := range jsRuntime.EmbeddedModules {
 		if strings.HasPrefix(path, module.ModulePath) {
 			// Module will be loaded from embedded modules, base path is ignored.
 			return path
@@ -147,7 +147,7 @@ func SourceLoader(jsRuntime *JsRuntime, path string) ([]byte, error) {
 		return io.ReadAll(response.Body)
 	}
 
-	for _, module := range jsRuntime.embeddedModules {
+	for _, module := range jsRuntime.EmbeddedModules {
 		pathClean := filepath.Clean(path)
 		modulePathClean := filepath.Clean(module.ModulePath)
 
@@ -252,10 +252,6 @@ func (jsRuntime *JsRuntime) GetEnv(key string) *string {
 
 	valueString := value.String()
 	return &valueString
-}
-
-func (jsRuntime *JsRuntime) AddEmbeddedModule(module *EmbeddedModule) {
-	jsRuntime.embeddedModules = append(jsRuntime.embeddedModules, module)
 }
 
 func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
@@ -414,7 +410,7 @@ func (jsRuntime *JsRuntime) getNamespace(rootObject *sobek.Object, namespace str
 }
 
 func (jsRuntime *JsRuntime) initializeLib(exports *sobek.Object) error {
-	jsRuntime.AddEmbeddedModule(&EmbeddedModule{
+	jsRuntime.EmbeddedModules = append(jsRuntime.EmbeddedModules, &EmbeddedModule{
 		ModulePath: PackageName,
 		Files:      pkg.LibJavaScript,
 	})
