@@ -31,7 +31,7 @@ export class Component extends anemos.Component {
         const documentGroupsToRemove: anemos.DocumentGroup[] = [];
 
         for (const documentGroup of context.getDocumentGroups()) {
-            const documentsToMove: anemos.Document[] = documentGroup.documents.filter(document => document.isCustomResourceDefinition());
+            const documentsToMove: anemos.Document[] = documentGroup.documents.filter(document => document.isCRD());
 
             if (documentsToMove.length == 0) {
                 continue;

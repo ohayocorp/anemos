@@ -14,6 +14,9 @@ declare module "@ohayocorp/anemos" {
         /** Returns true if the document is a ConfigMap. */
         isConfigMap(): boolean;
 
+        /** Returns true if the document is a CustomResourceDefinition. */
+        isCRD(): boolean;
+
         /** Returns true if the document is a CronJob. */
         isCronJob(): boolean;
 
@@ -87,6 +90,10 @@ anemos.Document.prototype.isClusterRoleBinding = function (this: anemos.Document
 
 anemos.Document.prototype.isConfigMap = function (this: anemos.Document): boolean {
     return this.isOfKind("v1", "ConfigMap");
+};
+
+anemos.Document.prototype.isCRD = function (this: anemos.Document): boolean {
+    return this.isCustomResourceDefinition();
 };
 
 anemos.Document.prototype.isCronJob = function (this: anemos.Document): boolean {
