@@ -9,6 +9,7 @@ import (
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 )
 
 type NewDocumentOptions struct {
@@ -116,7 +117,7 @@ func (document *Document) GetPath() string {
 		name := SobekObjectGetStringChain(document.Object, "metadata", "name")
 
 		if kind != nil && name != nil {
-			p := fmt.Sprintf("%s-%s.yaml", strings.ToLower(*kind), *name)
+			p := fmt.Sprintf("%s-%s.yaml", strings.ToLower(*kind), util.ToKubernetesIdentifier(*name))
 			path = &p
 		}
 	}
