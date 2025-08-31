@@ -93,7 +93,7 @@ func (context *BuildContext) RemoveDocumentGroup(group *DocumentGroup) {
 
 // Returns all documents inside all document groups as a slice.
 func (context *BuildContext) GetAllDocuments() []*Document {
-	var documents []*Document
+	documents := make([]*Document, 0)
 
 	for _, documentGroups := range context.documentGroups {
 		for _, documentGroup := range documentGroups {
@@ -138,7 +138,7 @@ func (context *BuildContext) GetDocumentWithPath(path string) *Document {
 }
 
 func (context *BuildContext) GetDocumentGroups() []*DocumentGroup {
-	var documentGroups []*DocumentGroup
+	documentGroups := make([]*DocumentGroup, 0)
 
 	for _, r := range context.documentGroups {
 		documentGroups = append(documentGroups, r...)

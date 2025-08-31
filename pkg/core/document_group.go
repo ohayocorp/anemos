@@ -27,7 +27,8 @@ type AdditionalFile struct {
 // Creates a new [DocumentGroup] with given path.
 func NewDocumentGroup(path string) *DocumentGroup {
 	documentGroup := &DocumentGroup{
-		Path: path,
+		Path:      path,
+		Documents: make([]*Document, 0),
 	}
 
 	documentGroup.ApplyProvisioner = ApplyDocuments(documentGroup)
