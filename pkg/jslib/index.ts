@@ -1,3 +1,4 @@
+export * from "@ohayocorp/anemos/native";
 export * from "@ohayocorp/anemos/documentExtensions";
 export * from "@ohayocorp/anemos/documentExtensionsLabels";
 

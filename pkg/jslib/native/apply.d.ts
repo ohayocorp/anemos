@@ -1,6 +1,4 @@
 import { Component } from "./component";
-import { Document } from "./document";
-import { DocumentGroup } from "./documentGroup";
 import { steps } from "./step";
 
 declare module "./builder" {

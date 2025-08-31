@@ -64,7 +64,7 @@ func writeDeclarations(program *AnemosProgram, output string) error {
 func createTypeDeclarations(program *AnemosProgram, outputDir string) error {
 	indexBuilder := &strings.Builder{}
 
-	err := copyDeclarations(pkg.TypeDeclarations, outputDir, indexBuilder)
+	err := copyDeclarations(pkg.LibNativeDeclarations, filepath.Join(outputDir, "native"), nil)
 	if err != nil {
 		return err
 	}
@@ -93,22 +93,8 @@ func createTypeDeclarations(program *AnemosProgram, outputDir string) error {
 }
 
 func copyDeclarations(files fs.FS, outputDir string, indexBuilder *strings.Builder) error {
-	indexContents, err := copyExcludeIndex(outputDir, files)
-	if err != nil {
-		return err
-	}
-
-	indexBuilder.WriteString(indexContents)
-	indexBuilder.WriteString("\n")
-
-	return nil
-}
-
-func copyExcludeIndex(outputDir string, files fs.FS) (string, error) {
-	indexContents := ""
-
 	// Walk the source FS and copy files, overwriting any existing ones.
-	err := fs.WalkDir(files, ".", func(path string, d fs.DirEntry, err error) error {
+	return fs.WalkDir(files, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -132,14 +118,14 @@ func copyExcludeIndex(outputDir string, files fs.FS) (string, error) {
 		}
 
 		// Don't write the index.d.ts file as multiple index files will be merged afterwards.
-		if path == "index.d.ts" {
-			indexContents = string(b)
+		if indexBuilder != nil && path == "index.d.ts" {
+			indexBuilder.WriteString(string(b))
+			indexBuilder.WriteString("\n")
+
 			return nil
 		}
 
 		// Write the file, truncating if it already exists.
 		return os.WriteFile(target, b, 0666)
 	})
-
-	return indexContents, err
 }

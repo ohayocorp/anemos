@@ -24,7 +24,7 @@ var (
 
 	// Output directories for generated Go and TypeScript files.
 	outputDir   = filepath.Join("..", "k8s")
-	jsOutputDir = filepath.Join("..", "jsdeclarations", "k8s")
+	jsOutputDir = filepath.Join("..", "jslib", "native", "k8s")
 
 	// Mapping of OpenAPI primitive types to TypeScript primitive types.
 	literalMappings = map[string]string{

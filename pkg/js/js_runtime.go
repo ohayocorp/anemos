@@ -314,7 +314,7 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 }
 
 func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
-	require.RegisterNativeModule(PackageName, func(runtime *sobek.Runtime, module *sobek.Object) {
+	require.RegisterNativeModule(fmt.Sprintf("%s/native", PackageName), func(runtime *sobek.Runtime, module *sobek.Object) {
 		jsRuntime.registerTypes()
 		jsRuntime.registerFunctions()
 

@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	//go:embed jsdeclarations
-	typeDeclarations embed.FS
-	TypeDeclarations = mustSub(typeDeclarations, "jsdeclarations")
+	//go:embed jslib/native
+	libNativeDeclarations embed.FS
+	LibNativeDeclarations = mustSub(libNativeDeclarations, "jslib/native")
 
 	//go:embed jslib/dist/*.d.ts
 	libTypeDeclarations embed.FS
