@@ -15,6 +15,7 @@ import (
 
 	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"gopkg.in/yaml.v3"
 
 	"helm.sh/helm/v3/pkg/action"
@@ -209,7 +210,7 @@ func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmO
 }
 
 func (options *HelmOptions) getValues() (values map[string]interface{}) {
-	valuesYaml := options.Values
+	valuesYaml := util.MultilineString(options.Values)
 
 	slog.Debug("Values for helm chart, release name: ${releaseName}, values:\n${values}",
 		slog.String("releaseName", options.ReleaseName),
@@ -272,6 +273,10 @@ func HelmManifestToDocuments(jsRuntime *js.JsRuntime, manifests string, releaseN
 }
 
 func createDocumentFromHelmManifest(jsRuntime *js.JsRuntime, manifest string, releaseName string, path string) *Document {
+	if manifest == "" {
+		return nil
+	}
+
 	document, err := ParseDocument(jsRuntime, manifest)
 	if err != nil {
 		js.Throw(err)

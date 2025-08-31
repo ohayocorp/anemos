@@ -37,6 +37,10 @@ func ParseDocument(jsRuntime *js.JsRuntime, yaml string) (*Document, error) {
 }
 
 func Parse(jsRuntime *js.JsRuntime, yamlText string) (*sobek.Object, error) {
+	if yamlText == "" {
+		return nil, fmt.Errorf("can't parse empty yaml")
+	}
+
 	node, err := ParseYaml[yaml.Node](yamlText)
 	if err != nil {
 		return nil, err
@@ -59,6 +63,14 @@ func parseYamlNode(jsRuntime *js.JsRuntime, node *yaml.Node) (sobek.Value, error
 		return scalar, nil
 	}
 
+	sequence, err := tryParseSequence(jsRuntime, node)
+	if err != nil {
+		return nil, err
+	}
+	if sequence != nil {
+		return sequence, nil
+	}
+
 	mapping, err := tryParseMapping(jsRuntime, node)
 	if err != nil {
 		return nil, err
@@ -66,10 +78,6 @@ func parseYamlNode(jsRuntime *js.JsRuntime, node *yaml.Node) (sobek.Value, error
 
 	if mapping != nil {
 		return mapping, nil
-	}
-
-	if sequence, err := tryParseSequence(jsRuntime, node); err == nil {
-		return sequence, nil
 	}
 
 	return nil, fmt.Errorf("can't parse yaml node of kind %s", getYamlNodeKind(node))
