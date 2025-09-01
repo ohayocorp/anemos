@@ -20,7 +20,7 @@ export declare class StorageClass extends Document {
 	/**
      * AllowedTopologies restrict the node topologies where volumes can be dynamically provisioned. Each volume plugin defines its own supported topology specifications. An empty TopologySelectorTerm list means there is no topology restriction. This field is only honored by servers that enable the VolumeScheduling feature.
      */
-    allowedTopologies?: TopologySelectorTerm
+    allowedTopologies?: Array<TopologySelectorTerm>
 
 	/**
      * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources

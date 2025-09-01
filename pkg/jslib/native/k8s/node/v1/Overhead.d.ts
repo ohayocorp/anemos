@@ -10,7 +10,7 @@ export declare class Overhead {
 	/**
      * PodFixed represents the fixed resource overhead associated with running a pod.
      */
-    podFixed?: number | string
+    podFixed?: Record<string, number | string>
 
 	/**
      * This declaration allows setting and getting custom properties on the document without TypeScript

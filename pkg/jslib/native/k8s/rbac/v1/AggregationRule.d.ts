@@ -11,7 +11,7 @@ export declare class AggregationRule {
 	/**
      * ClusterRoleSelectors holds a list of selectors which will be used to find ClusterRoles and create the rules. If any of the selectors match, then the ClusterRole's permissions will be added
      */
-    clusterRoleSelectors?: LabelSelector
+    clusterRoleSelectors?: Array<LabelSelector>
 
 	/**
      * This declaration allows setting and getting custom properties on the document without TypeScript

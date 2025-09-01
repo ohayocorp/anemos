@@ -10,27 +10,27 @@ export declare class LimitRangeItem {
 	/**
      * Default resource requirement limit value by resource name if resource limit is omitted.
      */
-    default?: number | string
+    default?: Record<string, number | string>
 
 	/**
      * DefaultRequest is the default resource requirement request value by resource name if resource request is omitted.
      */
-    defaultRequest?: number | string
+    defaultRequest?: Record<string, number | string>
 
 	/**
      * Max usage constraints on this kind by resource name.
      */
-    max?: number | string
+    max?: Record<string, number | string>
 
 	/**
      * MaxLimitRequestRatio if specified, the named resource must have a request and limit that are both non-zero where limit divided by request is less than or equal to the enumerated value; this represents the max burst for the named resource.
      */
-    maxLimitRequestRatio?: number | string
+    maxLimitRequestRatio?: Record<string, number | string>
 
 	/**
      * Min usage constraints on this kind by resource name.
      */
-    min?: number | string
+    min?: Record<string, number | string>
 
 	/**
      * Type of resource that this limit applies to.

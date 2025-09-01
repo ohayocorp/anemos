@@ -20,7 +20,7 @@ func getSwaggerSpec() (*spec.Swagger, error) {
 	return swagger, nil
 }
 
-func (typeInfo *typeInfo) schemaToType(schema *spec.Schema, isGo bool) (string, *typeInfo) {
+func (typeInfo *typeInfo) schemaToType(schema *spec.Schema) (string, *typeInfo) {
 	if len(schema.Type) > 1 {
 		panic(fmt.Sprintf("Type %s has multiple types: %v", schema.ID, schema.Type))
 	}
@@ -34,11 +34,7 @@ func (typeInfo *typeInfo) schemaToType(schema *spec.Schema, isGo bool) (string, 
 
 		if schemaType == "array" {
 			itemsSchema := schema.Items.Schema
-			itemType, fieldTypeInfo := typeInfo.schemaToType(itemsSchema, isGo)
-
-			if isGo {
-				return fmt.Sprintf("[]%s", itemType), fieldTypeInfo
-			}
+			itemType, fieldTypeInfo := typeInfo.schemaToType(itemsSchema)
 
 			return fmt.Sprintf("Array<%s>", itemType), fieldTypeInfo
 		}
@@ -49,13 +45,8 @@ func (typeInfo *typeInfo) schemaToType(schema *spec.Schema, isGo bool) (string, 
 	}
 
 	if schema.AdditionalProperties != nil {
-		mapValueType, mapValueTypeInfo := typeInfo.schemaToType(schema.AdditionalProperties.Schema, isGo)
-
-		if isGo {
-			return fmt.Sprintf("map[string]%s", mapValueType), mapValueTypeInfo
-		} else {
-			return fmt.Sprintf("Record<string, %s>", mapValueType), mapValueTypeInfo
-		}
+		mapValueType, mapValueTypeInfo := typeInfo.schemaToType(schema.AdditionalProperties.Schema)
+		return fmt.Sprintf("Record<string, %s>", mapValueType), mapValueTypeInfo
 	}
 
 	ref := schema.Ref.GetURL()
@@ -77,15 +68,6 @@ func (typeInfo *typeInfo) schemaToType(schema *spec.Schema, isGo bool) (string, 
 
 	if fieldTypeInfo.NativeType != nil {
 		return fieldTypeInfo.NativeType.Name, fieldTypeInfo
-	}
-
-	if isGo {
-		if fieldTypeInfo.PackagePath == typeInfo.PackagePath {
-			typeName = fmt.Sprintf("*%s", fieldTypeInfo.Name)
-		} else {
-			// Different package, use alias. Packages will always be imported with their alias.
-			typeName = fmt.Sprintf("*%s.%s", fieldTypeInfo.PackageAlias, typeName)
-		}
 	}
 
 	return typeName, fieldTypeInfo

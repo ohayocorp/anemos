@@ -197,10 +197,7 @@ func generateIndexTsFiles() error {
 func (typeInfo *typeInfo) getFieldTypeJs(propertyName string) string {
 	propertySchema := typeInfo.Schema.Properties[propertyName]
 
-	fieldType, fieldTypeInfo := typeInfo.schemaToType(&propertySchema, false)
-	if fieldTypeInfo != nil && fieldTypeInfo.PackagePath != typeInfo.PackagePath {
-		return fieldTypeInfo.Name
-	}
+	fieldType, _ := typeInfo.schemaToType(&propertySchema)
 
 	return fieldType
 }
@@ -213,7 +210,7 @@ func (typeInfo *typeInfo) getJsImports() []string {
 	for propertyName := range typeInfo.Schema.Properties {
 		propertySchema := typeInfo.Schema.Properties[propertyName]
 
-		_, fieldTypeInfo := typeInfo.schemaToType(&propertySchema, true)
+		_, fieldTypeInfo := typeInfo.schemaToType(&propertySchema)
 		if fieldTypeInfo == nil {
 			continue
 		}

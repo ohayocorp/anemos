@@ -161,7 +161,7 @@ var typeCustomizations = map[string]typeCustomization{
 	"core/v1/ResourceFieldSelector":                                 {},
 	"core/v1/ResourceQuota":                                         {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/ResourceQuotaSpec":                                     {},
-	"core/v1/ResourceRequirements":                                  {},
+	"core/v1/ResourceRequirements":                                  {ExcludedFields: []string{"claims"}},
 	"core/v1/ScopedResourceSelectorRequirement":                     {},
 	"core/v1/ScopeSelector":                                         {},
 	"core/v1/SeccompProfile":                                        {},

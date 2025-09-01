@@ -16,7 +16,7 @@ export declare class Scheduling {
 	/**
      * Tolerations are appended (excluding duplicates) to pods running with this RuntimeClass during admission, effectively unioning the set of nodes tolerated by the pod and the RuntimeClass.
      */
-    tolerations?: Toleration
+    tolerations?: Array<Toleration>
 
 	/**
      * This declaration allows setting and getting custom properties on the document without TypeScript

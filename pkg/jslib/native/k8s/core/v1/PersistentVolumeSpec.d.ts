@@ -23,7 +23,7 @@ export declare class PersistentVolumeSpec {
 	/**
      * Capacity is the description of the persistent volume's resources and capacity. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#capacity
      */
-    capacity?: number | string
+    capacity?: Record<string, number | string>
 
 	/**
      * Csi represents storage that is handled by an external CSI driver.
