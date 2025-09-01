@@ -353,9 +353,9 @@ func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 			} else {
 				// Class doesn't have a constructor, create a new object and set the prototype.
 				object := runtime.NewObject()
-				object.SetPrototype(template.prototype)
+				object.Set("prototype", template.prototype)
 
-				err := rootObject.Set(template.jsName, object)
+				err := namespace.Set(template.jsName, object)
 				if err != nil {
 					panic(err)
 				}
