@@ -11,9 +11,6 @@ export declare class Document {
     /** Creates a new document with the given content. Content must be a valid YAML string or a JavaScript object. */
     constructor(content: string | Object);
 
-    /** Creates a new document with the given path and content. Content must be a valid YAML string or a JavaScript object. */
-    constructor(options: Omit<NewDocumentOptions, "documentGroup">);
-
     /**
      * This declaration allows setting and getting custom properties on the document without TypeScript
      * compiler errors.

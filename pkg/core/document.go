@@ -191,7 +191,6 @@ func registerDocument(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewDocument)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithContent)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithYaml)),
-		js.Constructor(reflect.ValueOf(NewDocumentWithOptions)),
 	)
 
 	jsRuntime.Type(reflect.TypeFor[NewDocumentOptions]()).Fields(
