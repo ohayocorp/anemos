@@ -141,14 +141,7 @@ func (builder *Builder) Build() {
 
 	builder.sanitizeBuilderOptions(builder.Options)
 
-	context := BuildContext{
-		BuilderOptions:         builder.Options,
-		KubernetesResourceInfo: NewKubernetesResourceInfo(builder.Options.KubernetesCluster.Version),
-		CustomData:             map[string]any{},
-		JsRuntime:              builder.jsRuntime,
-		builder:                builder,
-		documentGroups:         map[*Component][]*DocumentGroup{},
-	}
+	context := NewBuildContext(builder, builder.Options)
 
 	for _, resource := range builder.Options.KubernetesCluster.AdditionalResources {
 		context.KubernetesResourceInfo.AddKubernetesResource(resource)
@@ -231,7 +224,7 @@ func (builder *Builder) Build() {
 				}
 
 				if action.Callback != nil {
-					action.Callback(&context)
+					action.Callback(context)
 				}
 			}
 		}

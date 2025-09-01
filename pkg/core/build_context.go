@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sort"
 
+	"github.com/grafana/sobek"
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
@@ -13,12 +14,24 @@ import (
 type BuildContext struct {
 	BuilderOptions         *BuilderOptions
 	KubernetesResourceInfo *KubernetesResourceInfo
-	CustomData             map[string]any
+	CustomData             *sobek.Object
 	JsRuntime              *js.JsRuntime
 
 	builder          *Builder
 	documentGroups   map[*Component][]*DocumentGroup
 	currentComponent *Component
+}
+
+func NewBuildContext(builder *Builder, options *BuilderOptions) *BuildContext {
+	return &BuildContext{
+		BuilderOptions:         builder.Options,
+		KubernetesResourceInfo: NewKubernetesResourceInfo(builder.Options.KubernetesCluster.Version),
+		CustomData:             builder.jsRuntime.Runtime.NewObject(),
+		JsRuntime:              builder.jsRuntime,
+		builder:                builder,
+		documentGroups:         map[*Component][]*DocumentGroup{},
+	}
+
 }
 
 func (context *BuildContext) addDocument(documentGroupPath *string, document *Document) {
