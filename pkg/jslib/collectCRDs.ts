@@ -40,9 +40,13 @@ export class Component extends anemos.Component {
             for (const document of documentsToMove) {
                 documentGroup.removeDocument(document);
                 crds.addDocument(document);
-                
-                // Clear the path to enable default naming behavior.
-                document.setPath(null);
+
+                // Set the path to the document's name or use the default naming scheme if name is not available.
+                if (document.metadata?.name) {
+                    document.setPath(`${document.metadata.name}.yaml`);
+                } else {
+                    document.setPath(null);
+                }
             }
 
             if (documentGroup.documents.length == 0) {
