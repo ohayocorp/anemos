@@ -11,16 +11,6 @@ export interface Workload {
     getInitContainer(indexOrName: number | string): Container | undefined;
 }
 
-declare module "@ohayocorp/anemos" {
-    export interface Document {
-        asWorkload(): this is anemos.Document & Workload;
-    }
-}
-
-anemos.Document.prototype.asWorkload = function (this: anemos.Document): this is anemos.Document & Workload {
-    return this.isWorkload();
-}
-
 anemos.Document.prototype.getWorkloadSpec = function (this: anemos.Document): PodSpec | undefined {
     if (!this.asWorkload()) {
         return undefined;
