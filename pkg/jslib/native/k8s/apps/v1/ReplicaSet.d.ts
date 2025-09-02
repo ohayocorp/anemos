@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { ReplicaSetSpec } from "./ReplicaSetSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * ReplicaSet ensures that a specified number of pod replicas are running at any given time.
  */
-export declare class ReplicaSet extends Document {
+export declare class ReplicaSet extends Workload {
     constructor();
     constructor(spec: Pick<ReplicaSet, "metadata" | "spec">);
 

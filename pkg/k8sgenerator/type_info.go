@@ -22,6 +22,7 @@ type typeInfo struct {
 	IsExcluded          bool
 	GenerateAliasOnRoot bool
 	IsDocument          bool
+	IsWorkload          bool
 }
 
 type nativeTypeInfo struct {
@@ -98,6 +99,7 @@ func initializeTypeInfo(swagger *spec.Swagger) {
 
 		info.GenerateAliasOnRoot = customization.GenerateAliasOnRoot
 		info.IsDocument = customization.IsDocument
+		info.IsWorkload = customization.IsWorkload
 	}
 }
 

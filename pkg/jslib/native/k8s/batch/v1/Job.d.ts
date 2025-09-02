@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { JobSpec } from "./JobSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * Job represents the configuration of a single job.
  */
-export declare class Job extends Document {
+export declare class Job extends Workload {
     constructor();
     constructor(spec: Pick<Job, "metadata" | "spec">);
 

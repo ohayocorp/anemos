@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { DeploymentSpec } from "./DeploymentSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * Deployment enables declarative updates for Pods and ReplicaSets.
  */
-export declare class Deployment extends Document {
+export declare class Deployment extends Workload {
     constructor();
     constructor(spec: Pick<Deployment, "metadata" | "spec">);
 

@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { CronJobSpec } from "./CronJobSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * CronJob represents the configuration of a single cron job.
  */
-export declare class CronJob extends Document {
+export declare class CronJob extends Workload {
     constructor();
     constructor(spec: Pick<CronJob, "metadata" | "spec">);
 

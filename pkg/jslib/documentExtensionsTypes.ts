@@ -174,7 +174,7 @@ anemos.Document.prototype.asCronJob = function (this: anemos.Document): this is 
 }
 
 anemos.Document.prototype.asCustomResourceDefinition = function (this: anemos.Document): this is anemos.Document & CustomResourceDefinition {
-    return this.isCRD();
+    return this.isCustomResourceDefinition();
 }
 
 anemos.Document.prototype.asDaemonSet = function (this: anemos.Document): this is anemos.Document & DaemonSet {

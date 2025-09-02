@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { DaemonSetSpec } from "./DaemonSetSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * DaemonSet represents the configuration of a daemon set.
  */
-export declare class DaemonSet extends Document {
+export declare class DaemonSet extends Workload {
     constructor();
     constructor(spec: Pick<DaemonSet, "metadata" | "spec">);
 

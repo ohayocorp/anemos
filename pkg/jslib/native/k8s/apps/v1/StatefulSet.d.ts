@@ -1,7 +1,7 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { StatefulSetSpec } from "./StatefulSetSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * StatefulSet represents a set of pods with consistent identities. Identities are defined as:
@@ -12,7 +12,7 @@ import {Document} from '@ohayocorp/anemos';
 
  * The StatefulSet guarantees that a given network identity will always map to the same storage identity.
  */
-export declare class StatefulSet extends Document {
+export declare class StatefulSet extends Workload {
     constructor();
     constructor(spec: Pick<StatefulSet, "metadata" | "spec">);
 

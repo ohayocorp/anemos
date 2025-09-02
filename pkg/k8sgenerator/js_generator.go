@@ -54,11 +54,12 @@ func (typeInfo *typeInfo) writeJsContents(fields []string) error {
 	jsImports := typeInfo.getJsImports()
 
 	extends := ""
-	if typeInfo.IsDocument {
+	if typeInfo.IsWorkload {
+		extends = " extends Workload"
+		jsImports = append(jsImports, "import {Workload} from '@ohayocorp/anemos';")
+	} else if typeInfo.IsDocument {
 		extends = " extends Document"
 		jsImports = append(jsImports, "import {Document} from '@ohayocorp/anemos';")
-	} else {
-
 	}
 
 	imports := strings.Join(jsImports, "\n")

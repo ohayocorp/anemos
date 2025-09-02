@@ -6,6 +6,7 @@ type typeCustomization struct {
 	NativeType          *nativeTypeInfo
 	GenerateAliasOnRoot bool
 	IsDocument          bool
+	IsWorkload          bool
 }
 
 var typeCustomizations = map[string]typeCustomization{
@@ -15,13 +16,13 @@ var typeCustomizations = map[string]typeCustomization{
 	"admissionregistration/v1/ValidatingWebhookConfiguration":   {IsDocument: true, GenerateAliasOnRoot: true},
 	"apiextensions/v1/CustomResourceDefinition":                 {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"apiregistration/v1/APIService":                             {IsDocument: true, ExcludedFields: []string{"status"}},
-	"apps/v1/DaemonSet":                                         {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"apps/v1/Deployment":                                        {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"apps/v1/ReplicaSet":                                        {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"apps/v1/StatefulSet":                                       {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"apps/v1/DaemonSet":                                         {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"apps/v1/Deployment":                                        {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"apps/v1/ReplicaSet":                                        {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"apps/v1/StatefulSet":                                       {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"autoscaling/v2/HorizontalPodAutoscaler":                    {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"batch/v1/CronJob":                                          {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"batch/v1/Job":                                              {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"batch/v1/CronJob":                                          {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
+	"batch/v1/Job":                                              {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"certificates/v1/CertificateSigningRequest":                 {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"coordination/v1/Lease":                                     {IsDocument: true},
 	"coordination/v1/LeaseSpec":                                 {ExcludedFields: []string{"acquireTime", "renewTime"}},
@@ -34,14 +35,8 @@ var typeCustomizations = map[string]typeCustomization{
 	"core/v1/PersistentVolume":                                  {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/PersistentVolumeClaim":                             {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/PersistentVolumeSpec":                              {ExcludedFields: []string{"awsElasticBlockStore", "azureDisk", "azureFile", "cephfs", "claimRef", "cinder", "flexVolume", "flocker", "gcePersistentDisk", "gitRepo", "glusterfs", "photonPersistentDisk", "portworxVolume", "quobyte", "rbd", "scaleIO", "storageos", "vsphereVolume"}},
-	"core/v1/Pod":                                               {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
-	"core/v1/PodOS":                                             {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
-	"core/v1/PodReadinessGate":                                  {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
-	"core/v1/PodResourceClaim":                                  {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
-	"core/v1/PodSchedulingGate":                                 {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
-	"core/v1/PodSecurityContext":                                {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
+	"core/v1/Pod":                                               {IsDocument: true, IsWorkload: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/PodSpec":                                           {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
-	"core/v1/PodTemplateSpec":                                   {ExcludedFields: []string{"ephemeralContainers", "overhead"}},
 	"core/v1/ReplicationController":                             {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/ResourceQuota":                                     {IsDocument: true, GenerateAliasOnRoot: true, ExcludedFields: []string{"status"}},
 	"core/v1/ResourceRequirements":                              {ExcludedFields: []string{"claims"}},

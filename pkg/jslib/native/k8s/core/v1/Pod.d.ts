@@ -1,12 +1,12 @@
 // Auto generated code; DO NOT EDIT.
 import { ObjectMeta } from "./../../apimachinery/meta/v1"
 import { PodSpec } from "./PodSpec"
-import {Document} from '@ohayocorp/anemos';
+import {Workload} from '@ohayocorp/anemos';
 
 /**
  * Pod is a collection of containers that can run on a host. This resource is created by clients and scheduled onto hosts.
  */
-export declare class Pod extends Document {
+export declare class Pod extends Workload {
     constructor();
     constructor(spec: Pick<Pod, "metadata" | "spec">);
 
