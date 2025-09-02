@@ -33,6 +33,10 @@ func ParseDocument(jsRuntime *js.JsRuntime, yaml string) (*Document, error) {
 		return nil, err
 	}
 
+	if object == nil {
+		return nil, nil
+	}
+
 	return NewDocumentWithContent(object), nil
 }
 
@@ -49,6 +53,10 @@ func Parse(jsRuntime *js.JsRuntime, yamlText string) (*sobek.Object, error) {
 	value, err := parseYamlNode(jsRuntime, &node)
 	if err != nil {
 		return nil, err
+	}
+
+	if value == nil {
+		return nil, nil
 	}
 
 	return value.ToObject(jsRuntime.Runtime), nil
@@ -80,7 +88,8 @@ func parseYamlNode(jsRuntime *js.JsRuntime, node *yaml.Node) (sobek.Value, error
 		return mapping, nil
 	}
 
-	return nil, fmt.Errorf("can't parse yaml node of kind %s", getYamlNodeKind(node))
+	// Return nil for empty documents that only contains comments.
+	return nil, nil
 }
 
 func tryParseMapping(jsRuntime *js.JsRuntime, node *yaml.Node) (sobek.Value, error) {
