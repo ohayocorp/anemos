@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"reflect"
 	"slices"
 	"sort"
@@ -49,6 +50,11 @@ func NewAdditionalFile(path, content string) *AdditionalFile {
 
 // Adds the given document to this group and sets its Group field to this group.
 func (group *DocumentGroup) AddDocument(document *Document) {
+	if document == nil {
+		js.Throw(fmt.Errorf("document cannot be nil"))
+		return
+	}
+
 	group.Documents = append(group.Documents, document)
 	document.Group = group
 }
@@ -103,9 +109,21 @@ func (group *DocumentGroup) SortedDocuments() []*Document {
 
 // Removes the given document from this group and sets its Group field to nil.
 func (group *DocumentGroup) RemoveDocument(document *Document) {
-	group.Documents = slices.DeleteFunc(group.Documents, func(d *Document) bool {
-		return d == document
-	})
+	if document == nil {
+		js.Throw(fmt.Errorf("document cannot be nil"))
+		return
+	}
+
+	// Using slices.DeleteFunc modifies the original slice that can lead to unexpected behavior since
+	// JavaScript objects may reference it. Create a new slice and copy the elements over.
+	newDocuments := make([]*Document, 0, len(group.Documents))
+	for _, d := range group.Documents {
+		if d != document {
+			newDocuments = append(newDocuments, d)
+		}
+	}
+	group.Documents = newDocuments
+
 	document.Group = nil
 }
 
