@@ -1,4 +1,5 @@
 import { DocumentGroup } from "./documentGroup"
+import { ObjectMeta } from "./k8s/apimachinery/meta/v1";
 
 /**
  * Document corresponds to a single YAML document. Note that even though a YAML file can contain multiple documents,
@@ -34,6 +35,21 @@ export declare class Document {
 
     /** Apply and wait for this document before the given document. Documents must be in the same group. */
     provisionBefore(other: Document): void;
+
+    /**
+     * The API version of the document.
+     */
+    apiVersion?: string;
+
+    /**
+     * The kind of the document.
+     */
+    kind?: string;
+
+    /**
+     * The metadata of the document.
+     */
+    metadata?: ObjectMeta;
 }
 
 export declare class NewDocumentOptions {
