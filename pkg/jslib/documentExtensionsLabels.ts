@@ -19,9 +19,20 @@ export enum LabelNode {
 
 declare module "@ohayocorp/anemos" {
     export interface Document {
+        /**
+         * Sets a label on the document.
+         */
+        setLabel(key: string, value: string): void;
+
         /** Sets the given key value pairs to the specified nodes on the document. */
         setLabels(labels: { [key: string]: string }, nodes?: LabelNode[]): void;
     }
+}
+
+anemos.Document.prototype.setLabel = function (this: anemos.Document, key: string, value: string): void {
+    this.metadata ??= {};
+    this.metadata.labels ??= {};
+    this.metadata.labels[key] = value;
 }
 
 anemos.Document.prototype.setLabels = function (this: anemos.Document, labels: { [key: string]: string }, nodes?: LabelNode[]): void {
@@ -75,7 +86,7 @@ class MetadataLabels extends LabelSetter {
 
     getNode(document: anemos.Document): any | undefined {
         super.ensureObject(document, ["metadata", "labels"]);
-        return document.metadata.labels;
+        return document.metadata?.labels;
     }
 }
 

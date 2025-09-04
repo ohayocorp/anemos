@@ -66,7 +66,7 @@ function checkNamespace(resource: Resource, document: anemos.Document): boolean 
         return false;
     }
 
-	return resource.document.metadata.name === namespace
+	return resource.document.metadata?.name === namespace
 }
 
 function checkCRD(resource: Resource, document: anemos.Document): boolean {
