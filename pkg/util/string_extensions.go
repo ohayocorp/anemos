@@ -3,10 +3,23 @@ package util
 import (
 	"bufio"
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"regexp"
 	"strings"
 )
+
+func Base64Encode(text string) string {
+	return base64.StdEncoding.EncodeToString([]byte(text))
+}
+
+func Base64Decode(text string) (string, error) {
+	data, err := base64.StdEncoding.DecodeString(text)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
 
 // Indents the each line with given number of spaces except the first line.
 func Indent(text string, numberOfSpaces int) string {

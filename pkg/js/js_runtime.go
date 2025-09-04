@@ -365,6 +365,8 @@ func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 		jsRuntime.initializeFunctions(rootObject, jsRuntime.functions, nil)
 	})
 
+	jsRuntime.initializeStringExtensions()
+
 	return jsRuntime.initializeLib()
 }
 
@@ -437,4 +439,36 @@ func (jsRuntime *JsRuntime) initializeLib() error {
 	}
 
 	return nil
+}
+
+func (jsRuntime *JsRuntime) initializeStringExtensions() {
+	runtime := jsRuntime.Runtime
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("indent", func(call sobek.FunctionCall) sobek.Value {
+		this := call.This.String()
+		numberOfSpaces := call.Argument(0).ToInteger()
+
+		return runtime.ToValue(util.Indent(this, int(numberOfSpaces)))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("dedent", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.Dedent(call.This.String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("toKubernetesIdentifier", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.ToKubernetesIdentifier(call.This.String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("base64Encode", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.Base64Encode(call.This.String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("base64Decode", func(call sobek.FunctionCall) sobek.Value {
+		result, err := util.Base64Decode(call.This.String())
+		if err != nil {
+			return runtime.ToValue(err)
+		}
+
+		return runtime.ToValue(result)
+	})
 }
