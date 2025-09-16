@@ -77,6 +77,14 @@ func (builder *Builder) AddDocument(document *Document) {
 	})
 }
 
+func (builder *Builder) AddDocumentString(jsRuntime *js.JsRuntime, yaml string) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddDocumentWithOptions(jsRuntime, &NewDocumentOptions{
+			Yaml: &yaml,
+		})
+	})
+}
+
 func (builder *Builder) AddDocumentWithOptions(jsRuntime *js.JsRuntime, options *NewDocumentOptions) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
 		context.AddDocumentWithOptions(jsRuntime, options)
@@ -373,6 +381,7 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("RemoveComponent"),
 		js.Method("AddProvisionCheckpoint"),
 		js.Method("AddDocument"),
+		js.Method("AddDocumentString").JsName("addDocument"),
 		js.Method("AddDocumentWithOptions").JsName("addDocument"),
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),

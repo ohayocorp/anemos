@@ -35,6 +35,15 @@ export declare class Builder {
     addProvisionCheckpoint(name: string): Component;
 
     /**
+     * Parses the given YAML string as a {@link Document} and adds it to a {@link DocumentGroup} named ""
+     * during the {@link steps.generateResources} step.
+     * 
+     * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
+     * Creates a new {@link DocumentGroup} if it doesn't exist.
+     */
+    addDocument(document: string): void;
+
+    /**
      * Adds the given document to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
      * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
