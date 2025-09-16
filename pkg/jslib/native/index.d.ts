@@ -11,7 +11,6 @@ export * from './document';
 export * from './documentGroup';
 export * from './file';
 export * from './helm';
-export * from './index';
 export * from './kubernetesResourceInfo';
 export * from './parsing';
 export * from './provisioner';
