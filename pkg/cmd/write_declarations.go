@@ -119,7 +119,12 @@ func copyDeclarations(files fs.FS, outputDir string, indexBuilder *strings.Build
 
 		// Don't write the index.d.ts file as multiple index files will be merged afterwards.
 		if indexBuilder != nil && path == "index.d.ts" {
-			indexBuilder.WriteString(string(b))
+			// Libraries use @ohayocorp/anemos to import modules, but VS Code intellisense can't resolve these paths.
+			// Use relative paths instead. Since the index.d.ts is a declaration file, it doesn't affect module resolution.
+			indexContents := string(b)
+			indexContents = strings.ReplaceAll(indexContents, "@ohayocorp/anemos/", "./")
+
+			indexBuilder.WriteString(indexContents)
 			indexBuilder.WriteString("\n")
 
 			return nil
