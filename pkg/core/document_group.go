@@ -193,7 +193,9 @@ func (documentGroup *DocumentGroup) ProvisionBefore(other *DocumentGroup) {
 }
 
 func registerDocumentGroup(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[DocumentGroup]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[DocumentGroup]()).JsModule(
+		"documentGroup",
+	).Fields(
 		js.Field("Path"),
 		js.Field("Documents"),
 		js.Field("AdditionalFiles"),
@@ -216,7 +218,9 @@ func registerDocumentGroup(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewDocumentGroup)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[AdditionalFile]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[AdditionalFile]()).JsModule(
+		"documentGroup",
+	).Fields(
 		js.Field("Path"),
 		js.Field("Content"),
 	).Constructors(

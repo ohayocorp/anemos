@@ -25,10 +25,10 @@ func NewValidatingAdmissionPolicyWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterValidatingAdmissionPolicy(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicy)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicy")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicy)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingAdmissionPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyWithSpec)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingAdmissionPolicy")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicy)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicy")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyWithSpec)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicy)).JsModule("k8s").JsName("ValidatingAdmissionPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyWithSpec)).JsModule("k8s").JsName("ValidatingAdmissionPolicy")
 	
 }

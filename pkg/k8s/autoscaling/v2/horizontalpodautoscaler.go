@@ -25,10 +25,10 @@ func NewHorizontalPodAutoscalerWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterHorizontalPodAutoscaler(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsNamespace("k8s.autoscaling.v2").JsName("HorizontalPodAutoscaler")
-	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsNamespace("k8s.autoscaling.v2").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsModule("k8s/autoscaling/v2").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsModule("k8s/autoscaling/v2").JsName("HorizontalPodAutoscaler")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsNamespace("k8s").JsName("HorizontalPodAutoscaler")
-	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsNamespace("k8s").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscaler)).JsModule("k8s").JsName("HorizontalPodAutoscaler")
+	jsRuntime.Constructor(reflect.ValueOf(NewHorizontalPodAutoscalerWithSpec)).JsModule("k8s").JsName("HorizontalPodAutoscaler")
 	
 }

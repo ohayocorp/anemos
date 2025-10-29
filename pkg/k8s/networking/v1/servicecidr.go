@@ -25,10 +25,10 @@ func NewServiceCIDRWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterServiceCIDR(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDR)).JsNamespace("k8s.networking.v1").JsName("ServiceCIDR")
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDRWithSpec)).JsNamespace("k8s.networking.v1").JsName("ServiceCIDR")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDR)).JsModule("k8s/networking/v1").JsName("ServiceCIDR")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDRWithSpec)).JsModule("k8s/networking/v1").JsName("ServiceCIDR")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDR)).JsNamespace("k8s").JsName("ServiceCIDR")
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDRWithSpec)).JsNamespace("k8s").JsName("ServiceCIDR")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDR)).JsModule("k8s").JsName("ServiceCIDR")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceCIDRWithSpec)).JsModule("k8s").JsName("ServiceCIDR")
 	
 }

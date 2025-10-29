@@ -25,10 +25,10 @@ func NewPriorityLevelConfigurationWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPriorityLevelConfiguration(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsNamespace("k8s.flowcontrol.v1").JsName("PriorityLevelConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsNamespace("k8s.flowcontrol.v1").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsModule("k8s/flowcontrol/v1").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsModule("k8s/flowcontrol/v1").JsName("PriorityLevelConfiguration")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsNamespace("k8s").JsName("PriorityLevelConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsNamespace("k8s").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfiguration)).JsModule("k8s").JsName("PriorityLevelConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityLevelConfigurationWithSpec)).JsModule("k8s").JsName("PriorityLevelConfiguration")
 	
 }

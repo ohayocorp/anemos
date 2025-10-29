@@ -25,7 +25,7 @@ func NewAPIServiceWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterAPIService(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewAPIService)).JsNamespace("k8s.apiregistration.v1").JsName("APIService")
-	jsRuntime.Constructor(reflect.ValueOf(NewAPIServiceWithSpec)).JsNamespace("k8s.apiregistration.v1").JsName("APIService")
+	jsRuntime.Constructor(reflect.ValueOf(NewAPIService)).JsModule("k8s/apiregistration/v1").JsName("APIService")
+	jsRuntime.Constructor(reflect.ValueOf(NewAPIServiceWithSpec)).JsModule("k8s/apiregistration/v1").JsName("APIService")
 	
 }

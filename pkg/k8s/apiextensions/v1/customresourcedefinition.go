@@ -25,10 +25,10 @@ func NewCustomResourceDefinitionWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterCustomResourceDefinition(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinition)).JsNamespace("k8s.apiextensions.v1").JsName("CustomResourceDefinition")
-	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinitionWithSpec)).JsNamespace("k8s.apiextensions.v1").JsName("CustomResourceDefinition")
+	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinition)).JsModule("k8s/apiextensions/v1").JsName("CustomResourceDefinition")
+	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinitionWithSpec)).JsModule("k8s/apiextensions/v1").JsName("CustomResourceDefinition")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinition)).JsNamespace("k8s").JsName("CustomResourceDefinition")
-	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinitionWithSpec)).JsNamespace("k8s").JsName("CustomResourceDefinition")
+	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinition)).JsModule("k8s").JsName("CustomResourceDefinition")
+	jsRuntime.Constructor(reflect.ValueOf(NewCustomResourceDefinitionWithSpec)).JsModule("k8s").JsName("CustomResourceDefinition")
 	
 }

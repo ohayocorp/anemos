@@ -46,7 +46,9 @@ func (provisioner *Provisioner) RunBefore(p *Provisioner) {
 }
 
 func registerProvisioner(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Provisioner]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[Provisioner]()).JsModule(
+		"provisioner",
+	).Fields(
 		js.Field("Type"),
 		js.Field("DocumentGroup"),
 	).Methods(

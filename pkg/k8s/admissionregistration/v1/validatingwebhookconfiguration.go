@@ -25,10 +25,10 @@ func NewValidatingWebhookConfigurationWithSpec(spec *sobek.Object) *core.Documen
 }
 
 func RegisterValidatingWebhookConfiguration(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingWebhookConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingWebhookConfiguration")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsNamespace("k8s").JsName("ValidatingWebhookConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsNamespace("k8s").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfiguration)).JsModule("k8s").JsName("ValidatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingWebhookConfigurationWithSpec)).JsModule("k8s").JsName("ValidatingWebhookConfiguration")
 	
 }

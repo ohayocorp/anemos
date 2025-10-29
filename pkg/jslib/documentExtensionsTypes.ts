@@ -1,83 +1,83 @@
-import * as anemos from "@ohayocorp/anemos";
+import { Document } from "@ohayocorp/anemos/document";
+import { Workload } from "./documentExtensionsWorkload";
+import { CustomResourceDefinition } from "./k8s/apiextensions/v1";
+import { DaemonSet, Deployment, ReplicaSet, StatefulSet } from "./k8s/apps/v1";
+import { HorizontalPodAutoscaler } from "./k8s/autoscaling/v2";
+import { CronJob, Job } from "./k8s/batch/v1";
+import { ConfigMap, Namespace, PersistentVolume, PersistentVolumeClaim, Pod, Secret, Service, ServiceAccount } from "./k8s/core/v1";
+import { Ingress } from "./k8s/networking/v1";
+import { ClusterRole, ClusterRoleBinding, Role, RoleBinding } from "./k8s/rbac/v1";
 
-import { CustomResourceDefinition } from "./native/k8s/apiextensions/v1";
-import { DaemonSet, Deployment, ReplicaSet, StatefulSet } from "./native/k8s/apps/v1";
-import { HorizontalPodAutoscaler } from "./native/k8s/autoscaling/v2";
-import { CronJob, Job } from "./native/k8s/batch/v1";
-import { ConfigMap, Namespace, PersistentVolume, PersistentVolumeClaim, Pod, Secret, Service, ServiceAccount } from "./native/k8s/core/v1";
-import { Ingress } from "./native/k8s/networking/v1";
-import { ClusterRole, ClusterRoleBinding, Role, RoleBinding } from "./native/k8s/rbac/v1";
-
-declare module "@ohayocorp/anemos" {
+declare module "@ohayocorp/anemos/document" {
     export interface Document {
         /** Type guard for ClusterRole documents. */
-        asClusterRole(): this is anemos.Document & ClusterRole;
+        asClusterRole(): this is Document & ClusterRole;
 
         /** Type guard for ClusterRoleBinding documents. */
-        asClusterRoleBinding(): this is anemos.Document & ClusterRoleBinding;
+        asClusterRoleBinding(): this is Document & ClusterRoleBinding;
 
         /** Type guard for ConfigMap documents. */
-        asConfigMap(): this is anemos.Document & ConfigMap;
+        asConfigMap(): this is Document & ConfigMap;
 
         /** Type guard for CustomResourceDefinition documents. */
-        asCRD(): this is anemos.Document & CustomResourceDefinition;
+        asCRD(): this is Document & CustomResourceDefinition;
 
         /** Type guard for CronJob documents. */
-        asCronJob(): this is anemos.Document & CronJob;
+        asCronJob(): this is Document & CronJob;
 
         /** Type guard for CustomResourceDefinition documents. */
-        asCustomResourceDefinition(): this is anemos.Document & CustomResourceDefinition;
+        asCustomResourceDefinition(): this is Document & CustomResourceDefinition;
 
         /** Type guard for DaemonSet documents. */
-        asDaemonSet(): this is anemos.Document & DaemonSet;
+        asDaemonSet(): this is Document & DaemonSet;
 
         /** Type guard for Deployment documents. */
-        asDeployment(): this is anemos.Document & Deployment;
+        asDeployment(): this is Document & Deployment;
 
         /** Type guard for HorizontalPodAutoscaler documents. */
-        asHorizontalPodAutoscaler(): this is anemos.Document & HorizontalPodAutoscaler;
+        asHorizontalPodAutoscaler(): this is Document & HorizontalPodAutoscaler;
 
         /** Type guard for Ingress documents. */
-        asIngress(): this is anemos.Document & Ingress;
+        asIngress(): this is Document & Ingress;
 
         /** Type guard for Job documents. */
-        asJob(): this is anemos.Document & Job;
+        asJob(): this is Document & Job;
 
         /** Type guard for Namespace documents. */
-        asNamespace(): this is anemos.Document & Namespace;
+        asNamespace(): this is Document & Namespace;
 
         /** Type guard for PersistentVolume documents. */
-        asPersistentVolume(): this is anemos.Document & PersistentVolume;
+        asPersistentVolume(): this is Document & PersistentVolume;
 
         /** Type guard for PersistentVolumeClaim documents. */
-        asPersistentVolumeClaim(): this is anemos.Document & PersistentVolumeClaim;
+        asPersistentVolumeClaim(): this is Document & PersistentVolumeClaim;
 
         /** Type guard for Pod documents. */
-        asPod(): this is anemos.Document & Pod;
+        asPod(): this is Document & Pod;
 
         /** Type guard for ReplicaSet documents. */
-        asReplicaSet(): this is anemos.Document & ReplicaSet;
+        asReplicaSet(): this is Document & ReplicaSet;
 
         /** Type guard for Role documents. */
-        asRole(): this is anemos.Document & Role;
+        asRole(): this is Document & Role;
 
         /** Type guard for RoleBinding documents. */
-        asRoleBinding(): this is anemos.Document & RoleBinding;
+        asRoleBinding(): this is Document & RoleBinding;
 
         /** Type guard for Secret documents. */
-        asSecret(): this is anemos.Document & Secret;
+        asSecret(): this is Document & Secret;
 
         /** Type guard for Service documents. */
-        asService(): this is anemos.Document & Service;
+        asService(): this is Document & Service;
 
         /** Type guard for ServiceAccount documents. */
-        asServiceAccount(): this is anemos.Document & ServiceAccount;
+        asServiceAccount(): this is Document & ServiceAccount;
 
         /** Type guard for StatefulSet documents. */
-        asStatefulSet(): this is anemos.Document & StatefulSet;
+        asStatefulSet(): this is Document & StatefulSet;
 
         /** Type guard for workload documents. */
-        asWorkload(): this is anemos.Document & anemos.Workload;
+        asWorkload(): this is Document & Workload;
 
         /** Returns true if the document has the given apiVersion and kind. */
         isOfKind(apiVersion: string, kind: string): boolean;
@@ -153,191 +153,191 @@ declare module "@ohayocorp/anemos" {
     }
 }
 
-anemos.Document.prototype.asClusterRole = function (this: anemos.Document): this is anemos.Document & ClusterRole {
+Document.prototype.asClusterRole = function (this: Document): this is Document & ClusterRole {
     return this.isClusterRole();
 }
 
-anemos.Document.prototype.asClusterRoleBinding = function (this: anemos.Document): this is anemos.Document & ClusterRoleBinding {
+Document.prototype.asClusterRoleBinding = function (this: Document): this is Document & ClusterRoleBinding {
     return this.isClusterRoleBinding();
 }
 
-anemos.Document.prototype.asConfigMap = function (this: anemos.Document): this is anemos.Document & ConfigMap {
+Document.prototype.asConfigMap = function (this: Document): this is Document & ConfigMap {
     return this.isConfigMap();
 }
 
-anemos.Document.prototype.asCRD = function (this: anemos.Document): this is anemos.Document & CustomResourceDefinition {
+Document.prototype.asCRD = function (this: Document): this is Document & CustomResourceDefinition {
     return this.isCRD();
 }
 
-anemos.Document.prototype.asCronJob = function (this: anemos.Document): this is anemos.Document & CronJob {
+Document.prototype.asCronJob = function (this: Document): this is Document & CronJob {
     return this.isCronJob();
 }
 
-anemos.Document.prototype.asCustomResourceDefinition = function (this: anemos.Document): this is anemos.Document & CustomResourceDefinition {
+Document.prototype.asCustomResourceDefinition = function (this: Document): this is Document & CustomResourceDefinition {
     return this.isCustomResourceDefinition();
 }
 
-anemos.Document.prototype.asDaemonSet = function (this: anemos.Document): this is anemos.Document & DaemonSet {
+Document.prototype.asDaemonSet = function (this: Document): this is Document & DaemonSet {
     return this.isDaemonSet();
 }
 
-anemos.Document.prototype.asDeployment = function (this: anemos.Document): this is anemos.Document & Deployment {
+Document.prototype.asDeployment = function (this: Document): this is Document & Deployment {
     return this.isDeployment();
 }
 
-anemos.Document.prototype.asHorizontalPodAutoscaler = function (this: anemos.Document): this is anemos.Document & HorizontalPodAutoscaler {
+Document.prototype.asHorizontalPodAutoscaler = function (this: Document): this is Document & HorizontalPodAutoscaler {
     return this.isHorizontalPodAutoscaler();
 }
 
-anemos.Document.prototype.asIngress = function (this: anemos.Document): this is anemos.Document & Ingress {
+Document.prototype.asIngress = function (this: Document): this is Document & Ingress {
     return this.isIngress();
 }
 
-anemos.Document.prototype.asJob = function (this: anemos.Document): this is anemos.Document & Job {
+Document.prototype.asJob = function (this: Document): this is Document & Job {
     return this.isJob();
 }
 
-anemos.Document.prototype.asNamespace = function (this: anemos.Document): this is anemos.Document & Namespace {
+Document.prototype.asNamespace = function (this: Document): this is Document & Namespace {
     return this.isNamespace();
 }
 
-anemos.Document.prototype.asPersistentVolume = function (this: anemos.Document): this is anemos.Document & PersistentVolume {
+Document.prototype.asPersistentVolume = function (this: Document): this is Document & PersistentVolume {
     return this.isPersistentVolume();
 }
 
-anemos.Document.prototype.asPersistentVolumeClaim = function (this: anemos.Document): this is anemos.Document & PersistentVolumeClaim {
+Document.prototype.asPersistentVolumeClaim = function (this: Document): this is Document & PersistentVolumeClaim {
     return this.isPersistentVolumeClaim();
 }
 
-anemos.Document.prototype.asPod = function (this: anemos.Document): this is anemos.Document & Pod {
+Document.prototype.asPod = function (this: Document): this is Document & Pod {
     return this.isPod();
 }
 
-anemos.Document.prototype.asReplicaSet = function (this: anemos.Document): this is anemos.Document & ReplicaSet {
+Document.prototype.asReplicaSet = function (this: Document): this is Document & ReplicaSet {
     return this.isReplicaSet();
 }
 
-anemos.Document.prototype.asRole = function (this: anemos.Document): this is anemos.Document & Role {
+Document.prototype.asRole = function (this: Document): this is Document & Role {
     return this.isRole();
 }
 
-anemos.Document.prototype.asRoleBinding = function (this: anemos.Document): this is anemos.Document & RoleBinding {
+Document.prototype.asRoleBinding = function (this: Document): this is Document & RoleBinding {
     return this.isRoleBinding();
 }
 
-anemos.Document.prototype.asSecret = function (this: anemos.Document): this is anemos.Document & Secret {
+Document.prototype.asSecret = function (this: Document): this is Document & Secret {
     return this.isSecret();
 }
 
-anemos.Document.prototype.asService = function (this: anemos.Document): this is anemos.Document & Service {
+Document.prototype.asService = function (this: Document): this is Document & Service {
     return this.isService();
 }
 
-anemos.Document.prototype.asServiceAccount = function (this: anemos.Document): this is anemos.Document & ServiceAccount {
+Document.prototype.asServiceAccount = function (this: Document): this is Document & ServiceAccount {
     return this.isServiceAccount();
 }
 
-anemos.Document.prototype.asStatefulSet = function (this: anemos.Document): this is anemos.Document & StatefulSet {
+Document.prototype.asStatefulSet = function (this: Document): this is Document & StatefulSet {
     return this.isStatefulSet();
 }
 
-anemos.Document.prototype.asWorkload = function (this: anemos.Document): this is anemos.Document & anemos.Workload {
+Document.prototype.asWorkload = function (this: Document): this is Document & Workload {
     return this.isWorkload();
 }
 
-anemos.Document.prototype.isOfKind = function (this: anemos.Document, apiVersion: string, kind: string): boolean {
+Document.prototype.isOfKind = function (this: Document, apiVersion: string, kind: string): boolean {
     return this.apiVersion === apiVersion && this.kind === kind;
 };
 
-anemos.Document.prototype.isClusterRole = function (this: anemos.Document): boolean {
+Document.prototype.isClusterRole = function (this: Document): boolean {
     return this.isOfKind("rbac.authorization.k8s.io/v1", "ClusterRole");
 };
 
-anemos.Document.prototype.isClusterRoleBinding = function (this: anemos.Document): boolean {
+Document.prototype.isClusterRoleBinding = function (this: Document): boolean {
     return this.isOfKind("rbac.authorization.k8s.io/v1", "ClusterRoleBinding");
 };
 
-anemos.Document.prototype.isConfigMap = function (this: anemos.Document): boolean {
+Document.prototype.isConfigMap = function (this: Document): boolean {
     return this.isOfKind("v1", "ConfigMap");
 };
 
-anemos.Document.prototype.isCRD = function (this: anemos.Document): boolean {
+Document.prototype.isCRD = function (this: Document): boolean {
     return this.isCustomResourceDefinition();
 };
 
-anemos.Document.prototype.isCronJob = function (this: anemos.Document): boolean {
+Document.prototype.isCronJob = function (this: Document): boolean {
     return this.isOfKind("batch/v1", "CronJob");
 };
 
-anemos.Document.prototype.isCustomResourceDefinition = function (this: anemos.Document): boolean {
+Document.prototype.isCustomResourceDefinition = function (this: Document): boolean {
     return this.isOfKind("apiextensions.k8s.io/v1", "CustomResourceDefinition");
 };
 
-anemos.Document.prototype.isDaemonSet = function (this: anemos.Document): boolean {
+Document.prototype.isDaemonSet = function (this: Document): boolean {
     return this.isOfKind("apps/v1", "DaemonSet");
 };
 
-anemos.Document.prototype.isDeployment = function (this: anemos.Document): boolean {
+Document.prototype.isDeployment = function (this: Document): boolean {
     return this.isOfKind("apps/v1", "Deployment");
 };
 
-anemos.Document.prototype.isHorizontalPodAutoscaler = function (this: anemos.Document): boolean {
+Document.prototype.isHorizontalPodAutoscaler = function (this: Document): boolean {
     return this.isOfKind("autoscaling/v2", "HorizontalPodAutoscaler");
 };
 
-anemos.Document.prototype.isIngress = function (this: anemos.Document): boolean {
+Document.prototype.isIngress = function (this: Document): boolean {
     return this.isOfKind("networking.k8s.io/v1", "Ingress");
 };
 
-anemos.Document.prototype.isJob = function (this: anemos.Document): boolean {
+Document.prototype.isJob = function (this: Document): boolean {
     return this.isOfKind("batch/v1", "Job");
 };
 
-anemos.Document.prototype.isNamespace = function (this: anemos.Document): boolean {
+Document.prototype.isNamespace = function (this: Document): boolean {
     return this.isOfKind("v1", "Namespace");
 };
 
-anemos.Document.prototype.isPersistentVolume = function (this: anemos.Document): boolean {
+Document.prototype.isPersistentVolume = function (this: Document): boolean {
     return this.isOfKind("v1", "PersistentVolume");
 };
 
-anemos.Document.prototype.isPersistentVolumeClaim = function (this: anemos.Document): boolean {
+Document.prototype.isPersistentVolumeClaim = function (this: Document): boolean {
     return this.isOfKind("v1", "PersistentVolumeClaim");
 };
 
-anemos.Document.prototype.isPod = function (this: anemos.Document): boolean {
+Document.prototype.isPod = function (this: Document): boolean {
     return this.isOfKind("v1", "Pod");
 };
 
-anemos.Document.prototype.isReplicaSet = function (this: anemos.Document): boolean {
+Document.prototype.isReplicaSet = function (this: Document): boolean {
     return this.isOfKind("apps/v1", "ReplicaSet");
 };
 
-anemos.Document.prototype.isRole = function (this: anemos.Document): boolean {
+Document.prototype.isRole = function (this: Document): boolean {
     return this.isOfKind("rbac.authorization.k8s.io/v1", "Role");
 };
 
-anemos.Document.prototype.isRoleBinding = function (this: anemos.Document): boolean {
+Document.prototype.isRoleBinding = function (this: Document): boolean {
     return this.isOfKind("rbac.authorization.k8s.io/v1", "RoleBinding");
 };
 
-anemos.Document.prototype.isSecret = function (this: anemos.Document): boolean {
+Document.prototype.isSecret = function (this: Document): boolean {
     return this.isOfKind("v1", "Secret");
 };
 
-anemos.Document.prototype.isService = function (this: anemos.Document): boolean {
+Document.prototype.isService = function (this: Document): boolean {
     return this.isOfKind("v1", "Service");
 };
 
-anemos.Document.prototype.isServiceAccount = function (this: anemos.Document): boolean {
+Document.prototype.isServiceAccount = function (this: Document): boolean {
     return this.isOfKind("v1", "ServiceAccount");
 };
 
-anemos.Document.prototype.isStatefulSet = function (this: anemos.Document): boolean {
+Document.prototype.isStatefulSet = function (this: Document): boolean {
     return this.isOfKind("apps/v1", "StatefulSet");
 };
 
-anemos.Document.prototype.isWorkload = function (this: anemos.Document): boolean {
+Document.prototype.isWorkload = function (this: Document): boolean {
     return this.isCronJob()
         || this.isDaemonSet()
         || this.isDeployment()

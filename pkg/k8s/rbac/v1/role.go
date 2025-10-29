@@ -25,10 +25,10 @@ func NewRoleWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterRole(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsNamespace("k8s.rbac.v1").JsName("Role")
-	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsNamespace("k8s.rbac.v1").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsModule("k8s/rbac/v1").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsModule("k8s/rbac/v1").JsName("Role")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsNamespace("k8s").JsName("Role")
-	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsNamespace("k8s").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRole)).JsModule("k8s").JsName("Role")
+	jsRuntime.Constructor(reflect.ValueOf(NewRoleWithSpec)).JsModule("k8s").JsName("Role")
 	
 }

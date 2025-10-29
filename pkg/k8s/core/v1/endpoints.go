@@ -25,10 +25,10 @@ func NewEndpointsWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterEndpoints(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpoints)).JsNamespace("k8s.core.v1").JsName("Endpoints")
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointsWithSpec)).JsNamespace("k8s.core.v1").JsName("Endpoints")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpoints)).JsModule("k8s/core/v1").JsName("Endpoints")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointsWithSpec)).JsModule("k8s/core/v1").JsName("Endpoints")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpoints)).JsNamespace("k8s").JsName("Endpoints")
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointsWithSpec)).JsNamespace("k8s").JsName("Endpoints")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpoints)).JsModule("k8s").JsName("Endpoints")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointsWithSpec)).JsModule("k8s").JsName("Endpoints")
 	
 }

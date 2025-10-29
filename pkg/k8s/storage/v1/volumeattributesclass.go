@@ -25,7 +25,7 @@ func NewVolumeAttributesClassWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterVolumeAttributesClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewVolumeAttributesClass)).JsNamespace("k8s.storage.v1").JsName("VolumeAttributesClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewVolumeAttributesClassWithSpec)).JsNamespace("k8s.storage.v1").JsName("VolumeAttributesClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewVolumeAttributesClass)).JsModule("k8s/storage/v1").JsName("VolumeAttributesClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewVolumeAttributesClassWithSpec)).JsModule("k8s/storage/v1").JsName("VolumeAttributesClass")
 	
 }

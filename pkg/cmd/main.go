@@ -14,6 +14,7 @@ import (
 
 type AnemosProgram struct {
 	RootCommand               *cobra.Command
+	RegisterRuntimeCallback   func(runtime *js.JsRuntime) error
 	InitializeRuntimeCallback func(runtime *js.JsRuntime) error
 	ExtraJsDeclarations       []fs.FS
 }

@@ -25,10 +25,10 @@ func NewNamespaceWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterNamespace(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewNamespace)).JsNamespace("k8s.core.v1").JsName("Namespace")
-	jsRuntime.Constructor(reflect.ValueOf(NewNamespaceWithSpec)).JsNamespace("k8s.core.v1").JsName("Namespace")
+	jsRuntime.Constructor(reflect.ValueOf(NewNamespace)).JsModule("k8s/core/v1").JsName("Namespace")
+	jsRuntime.Constructor(reflect.ValueOf(NewNamespaceWithSpec)).JsModule("k8s/core/v1").JsName("Namespace")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewNamespace)).JsNamespace("k8s").JsName("Namespace")
-	jsRuntime.Constructor(reflect.ValueOf(NewNamespaceWithSpec)).JsNamespace("k8s").JsName("Namespace")
+	jsRuntime.Constructor(reflect.ValueOf(NewNamespace)).JsModule("k8s").JsName("Namespace")
+	jsRuntime.Constructor(reflect.ValueOf(NewNamespaceWithSpec)).JsModule("k8s").JsName("Namespace")
 	
 }

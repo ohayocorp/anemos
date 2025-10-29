@@ -25,10 +25,10 @@ func NewReplicaSetWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterReplicaSet(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSet)).JsNamespace("k8s.apps.v1").JsName("ReplicaSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSetWithSpec)).JsNamespace("k8s.apps.v1").JsName("ReplicaSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSet)).JsModule("k8s/apps/v1").JsName("ReplicaSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSetWithSpec)).JsModule("k8s/apps/v1").JsName("ReplicaSet")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSet)).JsNamespace("k8s").JsName("ReplicaSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSetWithSpec)).JsNamespace("k8s").JsName("ReplicaSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSet)).JsModule("k8s").JsName("ReplicaSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicaSetWithSpec)).JsModule("k8s").JsName("ReplicaSet")
 	
 }

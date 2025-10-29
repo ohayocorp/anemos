@@ -25,10 +25,10 @@ func NewStorageClassWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterStorageClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewStorageClass)).JsNamespace("k8s.storage.v1").JsName("StorageClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewStorageClassWithSpec)).JsNamespace("k8s.storage.v1").JsName("StorageClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewStorageClass)).JsModule("k8s/storage/v1").JsName("StorageClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewStorageClassWithSpec)).JsModule("k8s/storage/v1").JsName("StorageClass")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewStorageClass)).JsNamespace("k8s").JsName("StorageClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewStorageClassWithSpec)).JsNamespace("k8s").JsName("StorageClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewStorageClass)).JsModule("k8s").JsName("StorageClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewStorageClassWithSpec)).JsModule("k8s").JsName("StorageClass")
 	
 }

@@ -25,10 +25,10 @@ func NewPodDisruptionBudgetWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPodDisruptionBudget(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsNamespace("k8s.policy.v1").JsName("PodDisruptionBudget")
-	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsNamespace("k8s.policy.v1").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsModule("k8s/policy/v1").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsModule("k8s/policy/v1").JsName("PodDisruptionBudget")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsNamespace("k8s").JsName("PodDisruptionBudget")
-	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsNamespace("k8s").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudget)).JsModule("k8s").JsName("PodDisruptionBudget")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodDisruptionBudgetWithSpec)).JsModule("k8s").JsName("PodDisruptionBudget")
 	
 }

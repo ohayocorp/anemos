@@ -25,10 +25,10 @@ func NewPriorityClassWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPriorityClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsNamespace("k8s.scheduling.v1").JsName("PriorityClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsNamespace("k8s.scheduling.v1").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsModule("k8s/scheduling/v1").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsModule("k8s/scheduling/v1").JsName("PriorityClass")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsNamespace("k8s").JsName("PriorityClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsNamespace("k8s").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClass)).JsModule("k8s").JsName("PriorityClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewPriorityClassWithSpec)).JsModule("k8s").JsName("PriorityClass")
 	
 }

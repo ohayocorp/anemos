@@ -25,10 +25,10 @@ func NewJobWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterJob(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsNamespace("k8s.batch.v1").JsName("Job")
-	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsNamespace("k8s.batch.v1").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsModule("k8s/batch/v1").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsModule("k8s/batch/v1").JsName("Job")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsNamespace("k8s").JsName("Job")
-	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsNamespace("k8s").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJob)).JsModule("k8s").JsName("Job")
+	jsRuntime.Constructor(reflect.ValueOf(NewJobWithSpec)).JsModule("k8s").JsName("Job")
 	
 }

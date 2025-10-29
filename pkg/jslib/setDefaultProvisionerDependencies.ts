@@ -1,15 +1,18 @@
-import * as anemos from "@ohayocorp/anemos";
+import { Component as AnemosComponent } from "@ohayocorp/anemos/component";
+import { BuildContext } from "@ohayocorp/anemos/buildContext";
+import { Document } from "@ohayocorp/anemos/document";
+import * as steps from "@ohayocorp/anemos/steps";
 
 export const componentType = "set-default-provisioner-dependencies";
 
-export class Component extends anemos.Component {
+export class Component extends AnemosComponent {
     constructor() {
         super();
 
-        this.addAction(anemos.steps.specifyProvisionerDependencies, this.specifyProvisionerDependencies);
+        this.addAction(steps.specifyProvisionerDependencies, this.specifyProvisionerDependencies);
     }
 
-    specifyProvisionerDependencies = (context: anemos.BuildContext) => {
+    specifyProvisionerDependencies = (context: BuildContext) => {
         // Find document groups that depend on other resources in other document groups such as
         // namespaces or CRDs and add provisioner dependencies accordingly.
         const resources: Resource[] = [];
@@ -60,7 +63,7 @@ export class Component extends anemos.Component {
     }
 }
 
-function checkNamespace(resource: Resource, document: anemos.Document): boolean {
+function checkNamespace(resource: Resource, document: Document): boolean {
     const namespace = document.metadata?.namespace;
     if (!namespace) {
         return false;
@@ -69,7 +72,7 @@ function checkNamespace(resource: Resource, document: anemos.Document): boolean 
 	return resource.document.metadata?.name === namespace
 }
 
-function checkCRD(resource: Resource, document: anemos.Document): boolean {
+function checkCRD(resource: Resource, document: Document): boolean {
     const apiVersion = document.apiVersion;
     const kind = document.kind;
 
@@ -103,6 +106,6 @@ function checkCRD(resource: Resource, document: anemos.Document): boolean {
 class Resource {
     apiVersion!: string;
     kind!: string;
-    document!: anemos.Document;
-    checkDependency!: (resource: Resource, document: anemos.Document) => boolean;
+    document!: Document;
+    checkDependency!: (resource: Resource, document: Document) => boolean;
 }

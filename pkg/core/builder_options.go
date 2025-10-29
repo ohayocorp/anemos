@@ -115,14 +115,18 @@ func jsToVersion(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*semver.Version,
 }
 
 func registerBuilderOptions(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Environment]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[Environment]()).JsModule(
+		"builderOptions",
+	).Fields(
 		js.Field("Name"),
 		js.Field("Type"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewEnvironment)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[KubernetesCluster]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[KubernetesCluster]()).JsModule(
+		"builderOptions",
+	).Fields(
 		js.Field("Version"),
 		js.Field("Distribution"),
 		js.Field("AdditionalResources"),
@@ -131,13 +135,17 @@ func registerBuilderOptions(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewKubernetesClusterWithAdditionalResources)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[OutputConfiguration]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[OutputConfiguration]()).JsModule(
+		"builderOptions",
+	).Fields(
 		js.Field("OutputPath"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewOutputConfiguration)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[BuilderOptions]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[BuilderOptions]()).JsModule(
+		"builderOptions",
+	).Fields(
 		js.Field("KubernetesCluster"),
 		js.Field("Environment"),
 		js.Field("OutputConfiguration"),
@@ -146,22 +154,24 @@ func registerBuilderOptions(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewBuilderOptionsWithOutputConfiguration)),
 	)
 
-	jsRuntime.Variable("EnvironmentType", "Unknown", reflect.ValueOf(EnvironmentTypeUnknown))
-	jsRuntime.Variable("EnvironmentType", "Development", reflect.ValueOf(EnvironmentTypeDevelopment))
-	jsRuntime.Variable("EnvironmentType", "Testing", reflect.ValueOf(EnvironmentTypeTesting))
-	jsRuntime.Variable("EnvironmentType", "Production", reflect.ValueOf(EnvironmentTypeProduction))
+	jsRuntime.Variable("environmentType", "unknown", reflect.ValueOf(EnvironmentTypeUnknown))
+	jsRuntime.Variable("environmentType", "development", reflect.ValueOf(EnvironmentTypeDevelopment))
+	jsRuntime.Variable("environmentType", "testing", reflect.ValueOf(EnvironmentTypeTesting))
+	jsRuntime.Variable("environmentType", "production", reflect.ValueOf(EnvironmentTypeProduction))
 
-	jsRuntime.Variable("KubernetesDistribution", "Unknown", reflect.ValueOf(KubernetesDistributionUnknown))
-	jsRuntime.Variable("KubernetesDistribution", "AKS", reflect.ValueOf(KubernetesDistributionAKS))
-	jsRuntime.Variable("KubernetesDistribution", "EKS", reflect.ValueOf(KubernetesDistributionEKS))
-	jsRuntime.Variable("KubernetesDistribution", "GKE", reflect.ValueOf(KubernetesDistributionGKE))
-	jsRuntime.Variable("KubernetesDistribution", "K3S", reflect.ValueOf(KubernetesDistributionK3S))
-	jsRuntime.Variable("KubernetesDistribution", "Kubeadm", reflect.ValueOf(KubernetesDistributionKubeadm))
-	jsRuntime.Variable("KubernetesDistribution", "MicroK8S", reflect.ValueOf(KubernetesDistributionMicroK8s))
-	jsRuntime.Variable("KubernetesDistribution", "Minikube", reflect.ValueOf(KubernetesDistributionMinikube))
-	jsRuntime.Variable("KubernetesDistribution", "OpenShift", reflect.ValueOf(KubernetesDistributionOpenShift))
+	jsRuntime.Variable("kubernetesDistribution", "unknown", reflect.ValueOf(KubernetesDistributionUnknown))
+	jsRuntime.Variable("kubernetesDistribution", "aks", reflect.ValueOf(KubernetesDistributionAKS))
+	jsRuntime.Variable("kubernetesDistribution", "eks", reflect.ValueOf(KubernetesDistributionEKS))
+	jsRuntime.Variable("kubernetesDistribution", "gke", reflect.ValueOf(KubernetesDistributionGKE))
+	jsRuntime.Variable("kubernetesDistribution", "k3s", reflect.ValueOf(KubernetesDistributionK3S))
+	jsRuntime.Variable("kubernetesDistribution", "kubeadm", reflect.ValueOf(KubernetesDistributionKubeadm))
+	jsRuntime.Variable("kubernetesDistribution", "microk8s", reflect.ValueOf(KubernetesDistributionMicroK8s))
+	jsRuntime.Variable("kubernetesDistribution", "minikube", reflect.ValueOf(KubernetesDistributionMinikube))
+	jsRuntime.Variable("kubernetesDistribution", "openshift", reflect.ValueOf(KubernetesDistributionOpenShift))
 
-	jsRuntime.Type(reflect.TypeFor[semver.Version]()).Constructors(
+	jsRuntime.Type(reflect.TypeFor[semver.Version]()).JsModule(
+		"builderOptions",
+	).Constructors(
 		js.Constructor(reflect.ValueOf(semver.NewVersion)),
 	).TypeConversion(reflect.ValueOf(jsToVersion))
 }

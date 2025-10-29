@@ -25,10 +25,10 @@ func NewPersistentVolumeWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPersistentVolume(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolume)).JsNamespace("k8s.core.v1").JsName("PersistentVolume")
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeWithSpec)).JsNamespace("k8s.core.v1").JsName("PersistentVolume")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolume)).JsModule("k8s/core/v1").JsName("PersistentVolume")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeWithSpec)).JsModule("k8s/core/v1").JsName("PersistentVolume")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolume)).JsNamespace("k8s").JsName("PersistentVolume")
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeWithSpec)).JsNamespace("k8s").JsName("PersistentVolume")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolume)).JsModule("k8s").JsName("PersistentVolume")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeWithSpec)).JsModule("k8s").JsName("PersistentVolume")
 	
 }

@@ -106,7 +106,9 @@ func registerStep(jsRuntime *js.JsRuntime) {
 	jsRuntime.Variable("steps", "specifyProvisionerDependencies", reflect.ValueOf(StepSpecifyProvisionerDependencies))
 	jsRuntime.Variable("steps", "output", reflect.ValueOf(StepOutput))
 
-	jsRuntime.Type(reflect.TypeFor[Step]()).Constructors(
+	jsRuntime.Type(reflect.TypeFor[Step]()).JsModule(
+		"step",
+	).Constructors(
 		js.Constructor(reflect.ValueOf(NewStep)),
 	).Fields(
 		js.Field("Description"),

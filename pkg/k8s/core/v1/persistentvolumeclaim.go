@@ -25,10 +25,10 @@ func NewPersistentVolumeClaimWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPersistentVolumeClaim(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsNamespace("k8s.core.v1").JsName("PersistentVolumeClaim")
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsNamespace("k8s.core.v1").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsModule("k8s/core/v1").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsModule("k8s/core/v1").JsName("PersistentVolumeClaim")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsNamespace("k8s").JsName("PersistentVolumeClaim")
-	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsNamespace("k8s").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaim)).JsModule("k8s").JsName("PersistentVolumeClaim")
+	jsRuntime.Constructor(reflect.ValueOf(NewPersistentVolumeClaimWithSpec)).JsModule("k8s").JsName("PersistentVolumeClaim")
 	
 }

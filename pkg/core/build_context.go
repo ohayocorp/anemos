@@ -209,7 +209,9 @@ func (context *BuildContext) IsProduction() bool {
 }
 
 func registerBuildContext(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[BuildContext]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[BuildContext]()).JsModule(
+		"buildContext",
+	).Fields(
 		js.Field("BuilderOptions"),
 		js.Field("KubernetesResourceInfo"),
 		js.Field("CustomData"),

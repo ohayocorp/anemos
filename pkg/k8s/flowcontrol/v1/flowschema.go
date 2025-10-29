@@ -25,10 +25,10 @@ func NewFlowSchemaWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterFlowSchema(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchema)).JsNamespace("k8s.flowcontrol.v1").JsName("FlowSchema")
-	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchemaWithSpec)).JsNamespace("k8s.flowcontrol.v1").JsName("FlowSchema")
+	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchema)).JsModule("k8s/flowcontrol/v1").JsName("FlowSchema")
+	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchemaWithSpec)).JsModule("k8s/flowcontrol/v1").JsName("FlowSchema")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchema)).JsNamespace("k8s").JsName("FlowSchema")
-	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchemaWithSpec)).JsNamespace("k8s").JsName("FlowSchema")
+	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchema)).JsModule("k8s").JsName("FlowSchema")
+	jsRuntime.Constructor(reflect.ValueOf(NewFlowSchemaWithSpec)).JsModule("k8s").JsName("FlowSchema")
 	
 }

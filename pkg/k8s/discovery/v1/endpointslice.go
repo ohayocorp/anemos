@@ -25,10 +25,10 @@ func NewEndpointSliceWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterEndpointSlice(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSlice)).JsNamespace("k8s.discovery.v1").JsName("EndpointSlice")
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSliceWithSpec)).JsNamespace("k8s.discovery.v1").JsName("EndpointSlice")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSlice)).JsModule("k8s/discovery/v1").JsName("EndpointSlice")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSliceWithSpec)).JsModule("k8s/discovery/v1").JsName("EndpointSlice")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSlice)).JsNamespace("k8s").JsName("EndpointSlice")
-	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSliceWithSpec)).JsNamespace("k8s").JsName("EndpointSlice")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSlice)).JsModule("k8s").JsName("EndpointSlice")
+	jsRuntime.Constructor(reflect.ValueOf(NewEndpointSliceWithSpec)).JsModule("k8s").JsName("EndpointSlice")
 	
 }

@@ -373,7 +373,9 @@ func NewBuilderVersionDistributionEnvironmentType(version *semver.Version, distr
 }
 
 func registerBuilder(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Builder]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[Builder]()).JsModule(
+		"builder",
+	).Fields(
 		js.Field("Components"),
 		js.Field("Options"),
 	).Methods(

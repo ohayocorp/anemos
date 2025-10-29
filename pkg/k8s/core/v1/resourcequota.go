@@ -25,10 +25,10 @@ func NewResourceQuotaWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterResourceQuota(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsNamespace("k8s.core.v1").JsName("ResourceQuota")
-	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsNamespace("k8s.core.v1").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsModule("k8s/core/v1").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsModule("k8s/core/v1").JsName("ResourceQuota")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsNamespace("k8s").JsName("ResourceQuota")
-	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsNamespace("k8s").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuota)).JsModule("k8s").JsName("ResourceQuota")
+	jsRuntime.Constructor(reflect.ValueOf(NewResourceQuotaWithSpec)).JsModule("k8s").JsName("ResourceQuota")
 	
 }

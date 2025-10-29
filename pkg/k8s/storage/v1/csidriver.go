@@ -25,7 +25,7 @@ func NewCSIDriverWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterCSIDriver(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriver)).JsNamespace("k8s.storage.v1").JsName("CSIDriver")
-	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriverWithSpec)).JsNamespace("k8s.storage.v1").JsName("CSIDriver")
+	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriver)).JsModule("k8s/storage/v1").JsName("CSIDriver")
+	jsRuntime.Constructor(reflect.ValueOf(NewCSIDriverWithSpec)).JsModule("k8s/storage/v1").JsName("CSIDriver")
 	
 }

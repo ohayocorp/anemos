@@ -96,14 +96,14 @@ func CurrentScriptDirectory(jsRuntime *js.JsRuntime) string {
 }
 
 func registerFile(jsRuntime *js.JsRuntime) {
-	jsRuntime.Function(reflect.ValueOf(ReadAllText)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(ReadAllBytes)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(WriteAllText)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(WriteAllBytes)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(MainScriptPath)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(MainScriptDirectory)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(MainScriptPath)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(MainScriptDirectory)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(CurrentScriptPath)).JsNamespace("file")
-	jsRuntime.Function(reflect.ValueOf(CurrentScriptDirectory)).JsNamespace("file")
+	jsRuntime.Function(reflect.ValueOf(ReadAllText)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(ReadAllBytes)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(WriteAllText)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(WriteAllBytes)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(MainScriptPath)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(MainScriptDirectory)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(MainScriptPath)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(MainScriptDirectory)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(CurrentScriptPath)).JsModule("file")
+	jsRuntime.Function(reflect.ValueOf(CurrentScriptDirectory)).JsModule("file")
 }

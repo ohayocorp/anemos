@@ -25,10 +25,10 @@ func NewServiceWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterService(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsNamespace("k8s.core.v1").JsName("Service")
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsNamespace("k8s.core.v1").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsModule("k8s/core/v1").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsModule("k8s/core/v1").JsName("Service")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsNamespace("k8s").JsName("Service")
-	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsNamespace("k8s").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewService)).JsModule("k8s").JsName("Service")
+	jsRuntime.Constructor(reflect.ValueOf(NewServiceWithSpec)).JsModule("k8s").JsName("Service")
 	
 }

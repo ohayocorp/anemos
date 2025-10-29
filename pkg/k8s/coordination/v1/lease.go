@@ -25,7 +25,7 @@ func NewLeaseWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterLease(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewLease)).JsNamespace("k8s.coordination.v1").JsName("Lease")
-	jsRuntime.Constructor(reflect.ValueOf(NewLeaseWithSpec)).JsNamespace("k8s.coordination.v1").JsName("Lease")
+	jsRuntime.Constructor(reflect.ValueOf(NewLease)).JsModule("k8s/coordination/v1").JsName("Lease")
+	jsRuntime.Constructor(reflect.ValueOf(NewLeaseWithSpec)).JsModule("k8s/coordination/v1").JsName("Lease")
 	
 }

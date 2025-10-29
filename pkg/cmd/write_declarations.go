@@ -64,12 +64,13 @@ func writeDeclarations(program *AnemosProgram, output string) error {
 func createTypeDeclarations(program *AnemosProgram, outputDir string) error {
 	indexBuilder := &strings.Builder{}
 
-	err := copyDeclarations(pkg.LibNativeDeclarations, filepath.Join(outputDir, "native"), nil)
+	// Append native type declarations to index.d.ts file.
+	err := copyDeclarations(pkg.LibNativeDeclarations, outputDir, indexBuilder)
 	if err != nil {
 		return err
 	}
 
-	// Append library type declarations to index.d.ts file
+	// Append library type declarations to index.d.ts file.
 	err = copyDeclarations(pkg.LibTypeDeclarations, outputDir, indexBuilder)
 	if err != nil {
 		return err

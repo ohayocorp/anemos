@@ -23,7 +23,7 @@ type overloadError struct {
 type FunctionType string
 
 type DynamicFunction struct {
-	jsNamespace  string
+	jsModule     string
 	jsName       string
 	functionType FunctionType
 	function     reflect.Value
@@ -40,8 +40,8 @@ func (jsRuntime *JsRuntime) initializeFunctions(module *sobek.Object, functions 
 
 	for _, function := range functions {
 		key := function.jsName
-		if function.jsNamespace != "" {
-			key = fmt.Sprintf("%s.%s", function.jsNamespace, key)
+		if function.jsModule != "" {
+			key = fmt.Sprintf("%s/%s", function.jsModule, key)
 		}
 
 		keysInOrder = append(keysInOrder, key)
@@ -98,9 +98,10 @@ func (jsRuntime *JsRuntime) initializeFunctions(module *sobek.Object, functions 
 					panic(fmt.Errorf("failed to add function %s to prototype: %w", overloads[0].jsName, err))
 				}
 			} else {
-				err := jsRuntime.addToNamespace(module, overloads[0].jsNamespace, overloads[0].jsName, reflect.ValueOf(fn))
+				err := module.Set(overloads[0].jsName, reflect.ValueOf(fn).Interface())
+
 				if err != nil {
-					panic(fmt.Errorf("failed to add function %s to namespace: %w", overloads[0].jsName, err))
+					panic(fmt.Errorf("failed to add function %s to module %s: %w", overloads[0].jsName, overloads[0].jsModule, err))
 				}
 			}
 
@@ -117,9 +118,9 @@ func (jsRuntime *JsRuntime) initializeFunctions(module *sobek.Object, functions 
 				return object
 			}
 
-			err := jsRuntime.addToNamespace(module, overloads[0].jsNamespace, overloads[0].jsName, reflect.ValueOf(fn))
+			err := module.Set(overloads[0].jsName, reflect.ValueOf(fn).Interface())
 			if err != nil {
-				panic(fmt.Errorf("failed to add constructor %s to namespace %s: %w", overloads[0].jsName, overloads[0].jsNamespace, err))
+				panic(fmt.Errorf("failed to add constructor %s to module %s: %w", overloads[0].jsName, overloads[0].jsModule, err))
 			}
 
 			continue

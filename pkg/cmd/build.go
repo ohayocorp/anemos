@@ -65,7 +65,7 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 		}
 	}
 
-	runtime, err := initializeNewRuntime(program)
+	runtime, err := InitializeNewRuntime(program)
 	if err != nil {
 		return err
 	}
@@ -91,12 +91,18 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 	return runtime.Run(script, args)
 }
 
-func initializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
+func InitializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
 	runtime := js.NewJsRuntime()
 
 	k8s.RegisterK8S(runtime)
 	core.RegisterCore(runtime)
 	components.RegisterComponents(runtime)
+
+	if program.RegisterRuntimeCallback != nil {
+		if err := program.RegisterRuntimeCallback(runtime); err != nil {
+			return nil, fmt.Errorf("failed to call register runtime callback: %w", err)
+		}
+	}
 
 	err := runtime.InitializeNativeLibraries()
 	if err != nil {

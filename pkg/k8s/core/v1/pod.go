@@ -25,10 +25,10 @@ func NewPodWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPod(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsNamespace("k8s.core.v1").JsName("Pod")
-	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsNamespace("k8s.core.v1").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsModule("k8s/core/v1").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsModule("k8s/core/v1").JsName("Pod")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsNamespace("k8s").JsName("Pod")
-	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsNamespace("k8s").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPod)).JsModule("k8s").JsName("Pod")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodWithSpec)).JsModule("k8s").JsName("Pod")
 	
 }

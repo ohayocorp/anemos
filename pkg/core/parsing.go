@@ -161,24 +161,7 @@ func tryParseScalar(jsRuntime *js.JsRuntime, node *yaml.Node) sobek.Value {
 	return jsRuntime.Runtime.ToValue(node.Value)
 }
 
-func getYamlNodeKind(node *yaml.Node) string {
-	switch node.Kind {
-	case yaml.DocumentNode:
-		return "document"
-	case yaml.SequenceNode:
-		return "sequence"
-	case yaml.MappingNode:
-		return "mapping"
-	case yaml.ScalarNode:
-		return "scalar"
-	case yaml.AliasNode:
-		return "alias"
-	}
-
-	return "unknown"
-}
-
 func registerYamlParsing(jsRuntime *js.JsRuntime) {
-	jsRuntime.Function(reflect.ValueOf(Parse))
-	jsRuntime.Function(reflect.ValueOf(ParseDocument))
+	jsRuntime.Function(reflect.ValueOf(Parse)).JsModule("parsing")
+	jsRuntime.Function(reflect.ValueOf(ParseDocument)).JsModule("parsing")
 }

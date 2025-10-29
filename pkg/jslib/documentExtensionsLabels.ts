@@ -1,4 +1,4 @@
-import * as anemos from "@ohayocorp/anemos"
+import { Document } from "@ohayocorp/anemos/document";
 
 export enum LabelNode {
     /** .metadata.labels */
@@ -17,7 +17,7 @@ export enum LabelNode {
     serviceMonitorSelector
 }
 
-declare module "@ohayocorp/anemos" {
+declare module "@ohayocorp/anemos/document" {
     export interface Document {
         /**
          * Sets a label on the document.
@@ -29,13 +29,13 @@ declare module "@ohayocorp/anemos" {
     }
 }
 
-anemos.Document.prototype.setLabel = function (this: anemos.Document, key: string, value: string): void {
+Document.prototype.setLabel = function (this: Document, key: string, value: string): void {
     this.metadata ??= {};
     this.metadata.labels ??= {};
     this.metadata.labels[key] = value;
 }
 
-anemos.Document.prototype.setLabels = function (this: anemos.Document, labels: { [key: string]: string }, nodes?: LabelNode[]): void {
+Document.prototype.setLabels = function (this: Document, labels: { [key: string]: string }, nodes?: LabelNode[]): void {
     nodes ??= [LabelNode.metadataLabels];
 
     const setters: LabelSetter[] = nodes.map(node => {
@@ -59,7 +59,7 @@ anemos.Document.prototype.setLabels = function (this: anemos.Document, labels: {
 };
 
 abstract class LabelSetter {
-    setLabels(document: anemos.Document, labels: { [key: string]: string }): void {
+    setLabels(document: Document, labels: { [key: string]: string }): void {
         const node = this.getNode(document);
         if (!node) {
             return;
@@ -70,7 +70,7 @@ abstract class LabelSetter {
         });
     }
 
-    ensureObject(document: anemos.Document, parts: string[]): void {
+    ensureObject(document: Document, parts: string[]): void {
         let current: any = document;
         for (const part of parts) {
             current[part] ??= {};
@@ -78,13 +78,13 @@ abstract class LabelSetter {
         }
     }
 
-    abstract getNode(document: anemos.Document): any | undefined;
+    abstract getNode(document: Document): any | undefined;
 }
 
 class MetadataLabels extends LabelSetter {
     static readonly instance = new MetadataLabels();
 
-    getNode(document: anemos.Document): any | undefined {
+    getNode(document: Document): any | undefined {
         super.ensureObject(document, ["metadata", "labels"]);
         return document.metadata?.labels;
     }
@@ -93,7 +93,7 @@ class MetadataLabels extends LabelSetter {
 class WorkloadLabels extends LabelSetter {
     static readonly instance = new WorkloadLabels();
 
-    getNode(document: anemos.Document): any | undefined {
+    getNode(document: Document): any | undefined {
         if (!document.isWorkload()) {
             return undefined;
         }
@@ -110,7 +110,7 @@ class WorkloadLabels extends LabelSetter {
 class WorkloadSelector extends LabelSetter {
     static readonly instance = new WorkloadSelector();
 
-    getNode(document: anemos.Document): any | undefined {
+    getNode(document: Document): any | undefined {
         if (!document.isWorkload()) {
             return undefined;
         }
@@ -123,7 +123,7 @@ class WorkloadSelector extends LabelSetter {
 class ServiceSelector extends LabelSetter {
     static readonly instance = new ServiceSelector();
 
-    getNode(document: anemos.Document): any | undefined {
+    getNode(document: Document): any | undefined {
         if (!document.isService()) {
             return undefined;
         }
@@ -136,7 +136,7 @@ class ServiceSelector extends LabelSetter {
 class ServiceMonitorSelector extends LabelSetter {
     static readonly instance = new ServiceMonitorSelector();
 
-    getNode(document: anemos.Document): any | undefined {
+    getNode(document: Document): any | undefined {
         if (document.kind !== "ServiceMonitor") {
             return undefined;
         }

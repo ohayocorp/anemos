@@ -138,7 +138,9 @@ func (component *Component) ProvisionBeforeComponent(other *Component) {
 }
 
 func registerComponent(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Component]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[Component]()).JsModule(
+		"component",
+	).Fields(
 		js.Field("Actions"),
 	).Methods(
 		js.Method("AddAction"),

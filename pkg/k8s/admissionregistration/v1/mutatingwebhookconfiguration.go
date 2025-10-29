@@ -25,10 +25,10 @@ func NewMutatingWebhookConfigurationWithSpec(spec *sobek.Object) *core.Document 
 }
 
 func RegisterMutatingWebhookConfiguration(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfiguration)).JsNamespace("k8s.admissionregistration.v1").JsName("MutatingWebhookConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfigurationWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("MutatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfiguration)).JsModule("k8s/admissionregistration/v1").JsName("MutatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfigurationWithSpec)).JsModule("k8s/admissionregistration/v1").JsName("MutatingWebhookConfiguration")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfiguration)).JsNamespace("k8s").JsName("MutatingWebhookConfiguration")
-	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfigurationWithSpec)).JsNamespace("k8s").JsName("MutatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfiguration)).JsModule("k8s").JsName("MutatingWebhookConfiguration")
+	jsRuntime.Constructor(reflect.ValueOf(NewMutatingWebhookConfigurationWithSpec)).JsModule("k8s").JsName("MutatingWebhookConfiguration")
 	
 }

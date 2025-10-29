@@ -25,7 +25,7 @@ func NewPodCertificateRequestWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterPodCertificateRequest(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequest)).JsNamespace("k8s.certificates.v1alpha1").JsName("PodCertificateRequest")
-	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequestWithSpec)).JsNamespace("k8s.certificates.v1alpha1").JsName("PodCertificateRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequest)).JsModule("k8s/certificates/v1alpha1").JsName("PodCertificateRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewPodCertificateRequestWithSpec)).JsModule("k8s/certificates/v1alpha1").JsName("PodCertificateRequest")
 	
 }

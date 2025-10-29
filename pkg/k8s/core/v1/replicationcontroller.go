@@ -25,10 +25,10 @@ func NewReplicationControllerWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterReplicationController(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsNamespace("k8s.core.v1").JsName("ReplicationController")
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsNamespace("k8s.core.v1").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsModule("k8s/core/v1").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsModule("k8s/core/v1").JsName("ReplicationController")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsNamespace("k8s").JsName("ReplicationController")
-	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsNamespace("k8s").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationController)).JsModule("k8s").JsName("ReplicationController")
+	jsRuntime.Constructor(reflect.ValueOf(NewReplicationControllerWithSpec)).JsModule("k8s").JsName("ReplicationController")
 	
 }

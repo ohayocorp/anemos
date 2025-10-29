@@ -25,10 +25,10 @@ func NewCertificateSigningRequestWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterCertificateSigningRequest(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsNamespace("k8s.certificates.v1").JsName("CertificateSigningRequest")
-	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsNamespace("k8s.certificates.v1").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsModule("k8s/certificates/v1").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsModule("k8s/certificates/v1").JsName("CertificateSigningRequest")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsNamespace("k8s").JsName("CertificateSigningRequest")
-	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsNamespace("k8s").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequest)).JsModule("k8s").JsName("CertificateSigningRequest")
+	jsRuntime.Constructor(reflect.ValueOf(NewCertificateSigningRequestWithSpec)).JsModule("k8s").JsName("CertificateSigningRequest")
 	
 }

@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/ohayocorp/anemos/pkg/cmd"
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
@@ -20,37 +21,45 @@ type MapObject struct {
 }
 
 func TestMaps(t *testing.T) {
-	jsRuntime := js.NewJsRuntime()
+	jsRuntime, err := cmd.InitializeNewRuntime(&cmd.AnemosProgram{
+		RegisterRuntimeCallback: func(jsRuntime *js.JsRuntime) error {
 
-	jsRuntime.Type(reflect.TypeFor[MapElem]()).Fields(
-		js.Field("Property"),
-	)
+			jsRuntime.Type(reflect.TypeFor[MapElem]()).Fields(
+				js.Field("Property"),
+			)
 
-	jsRuntime.Type(reflect.TypeFor[MapObject]()).Fields(
-		js.Field("Array"),
-		js.Field("Bool"),
-		js.Field("Int"),
-		js.Field("Float"),
-		js.Field("String"),
-	)
+			jsRuntime.Type(reflect.TypeFor[MapObject]()).Fields(
+				js.Field("Array"),
+				js.Field("Bool"),
+				js.Field("Int"),
+				js.Field("Float"),
+				js.Field("String"),
+			)
 
-	jsRuntime.Function(reflect.ValueOf(MapParam))
+			jsRuntime.Function(reflect.ValueOf(MapParam))
 
-	object := &MapObject{
-		Bool:   true,
-		Int:    1,
-		Float:  1.2,
-		String: "a",
-		Array: []*MapElem{{
-			Property: "a",
-		}, {
-			Property: "b",
-		}},
+			object := &MapObject{
+				Bool:   true,
+				Int:    1,
+				Float:  1.2,
+				String: "a",
+				Array: []*MapElem{{
+					Property: "a",
+				}, {
+					Property: "b",
+				}},
+			}
+
+			jsRuntime.Variable("", "object", reflect.ValueOf(object))
+
+			return nil
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	jsRuntime.Variable("", "object", reflect.ValueOf(object))
-
-	err := jsRuntime.Run(ReadScript(t, "tests/maps.js"), nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/maps.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

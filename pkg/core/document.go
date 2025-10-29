@@ -178,7 +178,9 @@ func (document *Document) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Va
 }
 
 func registerDocument(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Document]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[Document]()).JsModule(
+		"document",
+	).Fields(
 		js.Field("Group"),
 	).Methods(
 		js.Method("GetPath"),
@@ -193,7 +195,9 @@ func registerDocument(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewDocumentWithYaml)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[NewDocumentOptions]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[NewDocumentOptions]()).JsModule(
+		"document",
+	).Fields(
 		js.Field("DocumentGroup"),
 		js.Field("Path"),
 		js.Field("Yaml").JsName("content"),

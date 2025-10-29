@@ -25,10 +25,10 @@ func NewSecretWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterSecret(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewSecret)).JsNamespace("k8s.core.v1").JsName("Secret")
-	jsRuntime.Constructor(reflect.ValueOf(NewSecretWithSpec)).JsNamespace("k8s.core.v1").JsName("Secret")
+	jsRuntime.Constructor(reflect.ValueOf(NewSecret)).JsModule("k8s/core/v1").JsName("Secret")
+	jsRuntime.Constructor(reflect.ValueOf(NewSecretWithSpec)).JsModule("k8s/core/v1").JsName("Secret")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewSecret)).JsNamespace("k8s").JsName("Secret")
-	jsRuntime.Constructor(reflect.ValueOf(NewSecretWithSpec)).JsNamespace("k8s").JsName("Secret")
+	jsRuntime.Constructor(reflect.ValueOf(NewSecret)).JsModule("k8s").JsName("Secret")
+	jsRuntime.Constructor(reflect.ValueOf(NewSecretWithSpec)).JsModule("k8s").JsName("Secret")
 	
 }

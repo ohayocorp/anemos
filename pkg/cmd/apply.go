@@ -172,7 +172,7 @@ func applyURL(context *applyContext) error {
 }
 
 func applyJavaScriptFile(context *applyContext, script string) error {
-	jsRuntime, err := initializeNewRuntime(context.program)
+	jsRuntime, err := InitializeNewRuntime(context.program)
 	if err != nil {
 		return err
 	}
@@ -270,7 +270,7 @@ func applyPackageIdentifier(context *applyContext) error {
 	// under the temporary directory so that modules can be resolved from node_modules.
 	filePath := filepath.Join(tempDir, "index.js")
 
-	jsRuntime, err := initializeNewRuntime(context.program)
+	jsRuntime, err := InitializeNewRuntime(context.program)
 	if err != nil {
 		return err
 	}

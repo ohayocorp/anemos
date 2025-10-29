@@ -25,10 +25,10 @@ func NewLimitRangeWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterLimitRange(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewLimitRange)).JsNamespace("k8s.core.v1").JsName("LimitRange")
-	jsRuntime.Constructor(reflect.ValueOf(NewLimitRangeWithSpec)).JsNamespace("k8s.core.v1").JsName("LimitRange")
+	jsRuntime.Constructor(reflect.ValueOf(NewLimitRange)).JsModule("k8s/core/v1").JsName("LimitRange")
+	jsRuntime.Constructor(reflect.ValueOf(NewLimitRangeWithSpec)).JsModule("k8s/core/v1").JsName("LimitRange")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewLimitRange)).JsNamespace("k8s").JsName("LimitRange")
-	jsRuntime.Constructor(reflect.ValueOf(NewLimitRangeWithSpec)).JsNamespace("k8s").JsName("LimitRange")
+	jsRuntime.Constructor(reflect.ValueOf(NewLimitRange)).JsModule("k8s").JsName("LimitRange")
+	jsRuntime.Constructor(reflect.ValueOf(NewLimitRangeWithSpec)).JsModule("k8s").JsName("LimitRange")
 	
 }

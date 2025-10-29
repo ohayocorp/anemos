@@ -94,7 +94,7 @@ func generateIndexTsFiles() error {
 	pathParts := map[string]mapset.Set[string]{}
 
 	// Types themselves will be exported as-is such as: export * from './type'
-	// Other non-type exports will be re-exported as namespaces such as: export * as foo from './foo'
+	// Other non-type exports will be re-exported as modules such as: export * as foo from './foo'
 	isType := map[string]bool{}
 
 	// Root paths will be exported from the root index file, so keep track of them.

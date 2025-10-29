@@ -61,11 +61,11 @@ func getDocumentTypeContents(typeInfo *typeInfo) string {
 		}
 
 		func Register{{ .TypeName }}(jsRuntime *js.JsRuntime) {
-			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }})).JsNamespace("k8s.{{ .JsNamespace }}").JsName("{{ .TypeName }}")
-			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }}WithSpec)).JsNamespace("k8s.{{ .JsNamespace }}").JsName("{{ .TypeName }}")
+			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }})).JsModule("k8s/{{ .JsModule }}").JsName("{{ .TypeName }}")
+			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }}WithSpec)).JsModule("k8s/{{ .JsModule }}").JsName("{{ .TypeName }}")
 			{{ if .GenerateAliasOnRoot }}
-			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }})).JsNamespace("k8s").JsName("{{ .TypeName }}")
-			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }}WithSpec)).JsNamespace("k8s").JsName("{{ .TypeName }}")
+			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }})).JsModule("k8s").JsName("{{ .TypeName }}")
+			jsRuntime.Constructor(reflect.ValueOf(New{{ .TypeName }}WithSpec)).JsModule("k8s").JsName("{{ .TypeName }}")
 			{{ end }}
 		}
 		`)
@@ -74,7 +74,7 @@ func getDocumentTypeContents(typeInfo *typeInfo) string {
 		"PackageName":         typeInfo.PackageName,
 		"Description":         getDescription(typeInfo.Schema.Description),
 		"TypeName":            typeInfo.Name,
-		"JsNamespace":         strings.ReplaceAll(typeInfo.PackagePath, "/", "."),
+		"JsModule":            typeInfo.PackagePath,
 		"TypeMetaSetter":      typeInfo.getTypeMetaSetter(),
 		"GenerateAliasOnRoot": typeInfo.GenerateAliasOnRoot,
 	})
@@ -106,8 +106,8 @@ func generateJsRegistrations() error {
 			imports.Add(importLine)
 		} else {
 			registration := fmt.Sprintf(
-				`jsRuntime.Constructor(reflect.ValueOf(NewObject)).JsNamespace("k8s.%s").JsName("%s")`,
-				strings.ReplaceAll(typeInfo.PackagePath, "/", "."),
+				`jsRuntime.Constructor(reflect.ValueOf(NewObject)).JsModule("k8s/%s").JsName("%s")`,
+				typeInfo.PackagePath,
 				typeInfo.Name)
 
 			registrationFuncs = append(registrationFuncs, registration)

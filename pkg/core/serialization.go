@@ -186,5 +186,5 @@ func serializeSobekValueToScalar(jsRuntime *js.JsRuntime, value sobek.Value) (*y
 }
 
 func registerYamlSerialization(jsRuntime *js.JsRuntime) {
-	jsRuntime.Function(reflect.ValueOf(SerializeSobekObjectToYaml)).JsName("serializeToYaml")
+	jsRuntime.Function(reflect.ValueOf(SerializeSobekObjectToYaml)).JsModule("serialization").JsName("serializeToYaml")
 }

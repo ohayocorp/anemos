@@ -25,10 +25,10 @@ func NewNetworkPolicyWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterNetworkPolicy(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsNamespace("k8s.networking.v1").JsName("NetworkPolicy")
-	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsNamespace("k8s.networking.v1").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsModule("k8s/networking/v1").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsModule("k8s/networking/v1").JsName("NetworkPolicy")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsNamespace("k8s").JsName("NetworkPolicy")
-	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsNamespace("k8s").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicy)).JsModule("k8s").JsName("NetworkPolicy")
+	jsRuntime.Constructor(reflect.ValueOf(NewNetworkPolicyWithSpec)).JsModule("k8s").JsName("NetworkPolicy")
 	
 }

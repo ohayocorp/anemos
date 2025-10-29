@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 
 	mapset "github.com/deckarep/golang-set/v2"
@@ -314,99 +315,141 @@ func (jsRuntime *JsRuntime) createTemplate(objectType reflect.Type) *DynamicObje
 }
 
 func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
-	require.RegisterNativeModule(fmt.Sprintf("%s/native", PackageName), func(runtime *sobek.Runtime, module *sobek.Object) {
-		jsRuntime.registerTypes()
-		jsRuntime.registerFunctions()
+	jsRuntime.registerTypes()
+	jsRuntime.registerFunctions()
 
-		rootObject := module.Get("exports").(*sobek.Object)
+	moduleNames := mapset.NewSet[string]()
+	variables := map[string][]*VariableRegistration{}
+	templates := map[string][]*DynamicObjectTemplate{}
+	functions := map[string][]*DynamicFunction{}
 
-		for _, variable := range jsRuntime.variableRegistrations {
-			value := variable.value
+	for _, variable := range jsRuntime.variableRegistrations {
+		variables[variable.jsModule] = append(variables[variable.jsModule], variable)
+		moduleNames.Add(variable.jsModule)
+	}
 
-			object, err := jsRuntime.MarshalToJs(value)
-			if err != nil {
-				panic(err)
-			}
+	for _, template := range jsRuntime.templates {
+		templates[template.jsModule] = append(templates[template.jsModule], template)
+		moduleNames.Add(template.jsModule)
+	}
 
-			value = reflect.ValueOf(object)
+	for _, function := range jsRuntime.functions {
+		functions[function.jsModule] = append(functions[function.jsModule], function)
+		moduleNames.Add(function.jsModule)
+	}
 
-			err = jsRuntime.addToNamespace(rootObject, variable.jsNamespace, variable.jsName, value)
-			if err != nil {
-				panic(err)
-			}
+	// Ensure intermediate module names are registered so that require("@ohayocorp/anemos/k8s/core")
+	// works even if only deeper modules like "@ohayocorp/anemos/k8s/core/v1" exist.
+	initialModules := moduleNames.ToSlice()
+	for _, m := range initialModules {
+		if m == "" {
+			continue
 		}
 
-		for _, template := range jsRuntime.templates {
-			template.Initialize(rootObject)
+		parts := strings.Split(m, "/")
+		// Add all parent prefixes like "k8s" and "k8s/core".
+		for i := 1; i < len(parts); i++ {
+			parent := strings.Join(parts[:i], "/")
+			moduleNames.Add(parent)
+		}
+	}
 
-			namespace, err := jsRuntime.getNamespace(rootObject, template.jsNamespace)
-			if err != nil {
-				panic(err)
-			}
+	moduleNamesSlice := moduleNames.ToSlice()
+	sort.Strings(moduleNamesSlice)
 
-			class := namespace.Get(template.jsName)
+	for _, moduleVariables := range variables {
+		sort.SliceStable(moduleVariables, func(i, j int) bool {
+			return moduleVariables[i].jsName < moduleVariables[j].jsName
+		})
+	}
 
-			// Set the prototype of the class to the prototype of the template. This way users can
-			// add functions to the prototypes of the built-in classes.
-			if classObject, ok := class.(*sobek.Object); ok {
-				classObject.Set("prototype", template.prototype)
-			} else {
-				// Class doesn't have a constructor, create a new object and set the prototype.
-				object := runtime.NewObject()
-				object.Set("prototype", template.prototype)
+	for _, moduleTemplates := range templates {
+		sort.SliceStable(moduleTemplates, func(i, j int) bool {
+			return moduleTemplates[i].jsName < moduleTemplates[j].jsName
+		})
+	}
 
-				err := namespace.Set(template.jsName, object)
+	for _, moduleFunctions := range functions {
+		sort.SliceStable(moduleFunctions, func(i, j int) bool {
+			return moduleFunctions[i].jsName < moduleFunctions[j].jsName
+		})
+	}
+
+	// Register the main module so that require("@ohayocorp/anemos") works.
+	require.RegisterNativeModule(PackageName, func(runtime *sobek.Runtime, jsModule *sobek.Object) {
+	})
+
+	for _, module := range moduleNamesSlice {
+		moduleName := PackageName
+		if module != "" {
+			moduleName = fmt.Sprintf("%s/%s", moduleName, module)
+		}
+
+		require.RegisterNativeModule(moduleName, func(runtime *sobek.Runtime, jsModule *sobek.Object) {
+			exports := jsModule.Get("exports").(*sobek.Object)
+
+			for _, variable := range variables[module] {
+				value := variable.value
+
+				object, err := jsRuntime.MarshalToJs(value)
 				if err != nil {
 					panic(err)
 				}
+
+				value = reflect.ValueOf(object)
+
+				err = exports.Set(variable.jsName, value.Interface())
+				if err != nil {
+					panic(fmt.Errorf("failed to set value name: %s on module: %s, %w", variable.jsName, variable.jsModule, err))
+				}
 			}
+
+			for _, template := range templates[module] {
+				template.Initialize(exports)
+
+				class := exports.Get(template.jsName)
+
+				// Set the prototype of the class to the prototype of the template. This way users can
+				// add functions to the prototypes of the built-in classes.
+				if classObject, ok := class.(*sobek.Object); ok {
+					classObject.Set("prototype", template.prototype)
+				} else {
+					// Class doesn't have a constructor, create a new object and set the prototype.
+					object := runtime.NewObject()
+					object.Set("prototype", template.prototype)
+
+					err := exports.Set(template.jsName, object)
+					if err != nil {
+						panic(err)
+					}
+				}
+			}
+
+			jsRuntime.initializeFunctions(exports, functions[module], nil)
+		})
+	}
+
+	// Export the child modules on the parent modules.
+	for _, module := range moduleNamesSlice {
+		if module == "" {
+			continue
 		}
 
-		jsRuntime.initializeFunctions(rootObject, jsRuntime.functions, nil)
-	})
+		moduleName := fmt.Sprintf("%s/%s", PackageName, module)
+		tokens := strings.Split(moduleName, "/")
+
+		parentModule := strings.Join(tokens[:len(tokens)-1], "/")
+		parent := require.Require(jsRuntime.Runtime, parentModule)
+
+		err := parent.ToObject(jsRuntime.Runtime).Set(tokens[len(tokens)-1], require.Require(jsRuntime.Runtime, moduleName))
+		if err != nil {
+			return fmt.Errorf("failed to set submodule %s on parent module %s: %w", tokens[len(tokens)-1], parentModule, err)
+		}
+	}
 
 	jsRuntime.initializeStringExtensions()
 
 	return jsRuntime.initializeLib()
-}
-
-func (jsRuntime *JsRuntime) addToNamespace(rootObject *sobek.Object, namespace, name string, value reflect.Value) error {
-	ns, err := jsRuntime.getNamespace(rootObject, namespace)
-	if err != nil {
-		return err
-	}
-
-	err = ns.Set(name, value.Interface())
-
-	if err != nil {
-		return fmt.Errorf("failed to set value name: %s, namespace: %s, %w", name, namespace, err)
-	}
-
-	return nil
-}
-
-func (jsRuntime *JsRuntime) getNamespace(rootObject *sobek.Object, namespace string) (*sobek.Object, error) {
-	currentNamespace := rootObject
-
-	tokens := strings.Split(namespace, ".")
-	for i := 0; i < len(tokens); i++ {
-		if tokens[i] == "" {
-			continue
-		}
-
-		ns, ok := currentNamespace.Get(tokens[i]).(*sobek.Object)
-		if !ok {
-			ns = jsRuntime.Runtime.NewObject()
-			err := currentNamespace.Set(tokens[i], ns)
-			if err != nil {
-				return nil, fmt.Errorf("failed to set namespace: %s, token: %s, %w", namespace, tokens[i], err)
-			}
-		}
-
-		currentNamespace = ns
-	}
-
-	return currentNamespace, nil
 }
 
 func (jsRuntime *JsRuntime) initializeLib() error {
@@ -435,7 +478,11 @@ func (jsRuntime *JsRuntime) initializeLib() error {
 
 	_, err = jsRuntime.Runtime.RunString(script)
 	if err != nil {
-		Throw(fmt.Errorf("failed to run lib index.js: %w", err))
+		if sobekEx, ok := err.(*sobek.Exception); ok {
+			return fmt.Errorf("failed to run lib index.js: %s", sobekEx.String())
+		}
+
+		return fmt.Errorf("failed to run lib index.js: %w", err)
 	}
 
 	return nil

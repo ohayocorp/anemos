@@ -8,8 +8,8 @@ import (
 )
 
 func registerStringExtensions(jsRuntime *js.JsRuntime) {
-	jsRuntime.Function(reflect.ValueOf(util.Indent))
-	jsRuntime.Function(reflect.ValueOf(util.Dedent))
-	jsRuntime.Function(reflect.ValueOf(util.MultilineString))
-	jsRuntime.Function(reflect.ValueOf(util.ToKubernetesIdentifier))
+	jsRuntime.Function(reflect.ValueOf(util.Indent)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.Dedent)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.MultilineString)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.ToKubernetesIdentifier)).JsModule("stringExtensions")
 }

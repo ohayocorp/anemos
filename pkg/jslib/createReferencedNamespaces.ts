@@ -1,4 +1,10 @@
-import * as anemos from "@ohayocorp/anemos"
+import { Component as AnemosComponent } from "@ohayocorp/anemos/component";
+import { Builder } from "@ohayocorp/anemos/builder";
+import { BuildContext } from "@ohayocorp/anemos/buildContext";
+import { DocumentGroup } from "@ohayocorp/anemos/documentGroup";
+import { Document } from "@ohayocorp/anemos/document";
+import { Step } from "@ohayocorp/anemos/step";
+import * as steps from "@ohayocorp/anemos/steps";
 
 const existingNamespaces = [
     "kube-system",
@@ -20,7 +26,7 @@ export class Options {
     predicate?: (namespace: string) => boolean
 }
 
-export class Component extends anemos.Component {
+export class Component extends AnemosComponent {
     options: Options;
 
     constructor(options?: Options) {
@@ -31,15 +37,15 @@ export class Component extends anemos.Component {
         this.setComponentType(componentType);
         this.setIdentifier(componentType);
 
-        this.addAction(anemos.steps.sanitize, this.sanitize);
-        this.addAction(anemos.steps.generateResourcesBasedOnOtherResources, this.generateNamespaces);
+        this.addAction(steps.sanitize, this.sanitize);
+        this.addAction(steps.generateResourcesBasedOnOtherResources, this.generateNamespaces);
     }
 
-    sanitize = (_: anemos.BuildContext) => {
+    sanitize = (_: BuildContext) => {
         this.options.documentGroup ??= "namespaces";
     }
 
-    generateNamespaces = (context: anemos.BuildContext) => {
+    generateNamespaces = (context: BuildContext) => {
         const predicate = this.options.predicate;
         const namespaces = new Set<string>();
 
@@ -64,13 +70,11 @@ export class Component extends anemos.Component {
             return;
         }
 
-        const documentGroup = new anemos.DocumentGroup(this.options.documentGroup!);
+        const documentGroup = new DocumentGroup(this.options.documentGroup!);
         context.addDocumentGroup(documentGroup);
 
         for (const namespace of namespaces) {
-            console.log(`Creating Namespace manifest for: ${namespace}`);
-
-            documentGroup.addDocument(new anemos.Document({
+            documentGroup.addDocument(new Document({
                 path: `${namespace}.yaml`,
                 content: {
                     apiVersion: "v1",
@@ -84,7 +88,7 @@ export class Component extends anemos.Component {
     }
 }
 
-export function add(builder: anemos.Builder, options?: Options): Component {
+export function add(builder: Builder, options?: Options): Component {
     const component = new Component(options);
     builder.addComponent(component);
 
@@ -101,6 +105,6 @@ declare module "@ohayocorp/anemos" {
     }
 }
 
-anemos.Builder.prototype.createReferencedNamespaces = function (this: anemos.Builder, options?: Options): Component {
+Builder.prototype.createReferencedNamespaces = function (this: Builder, options?: Options): Component {
     return add(this, options);
 }

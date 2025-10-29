@@ -1,5 +1,5 @@
 import { Component } from "./component";
-import { steps } from "./step";
+import * as steps from "./steps";
 
 declare module "./builder" {
     export interface Builder {

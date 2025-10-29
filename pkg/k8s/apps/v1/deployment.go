@@ -25,10 +25,10 @@ func NewDeploymentWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterDeployment(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewDeployment)).JsNamespace("k8s.apps.v1").JsName("Deployment")
-	jsRuntime.Constructor(reflect.ValueOf(NewDeploymentWithSpec)).JsNamespace("k8s.apps.v1").JsName("Deployment")
+	jsRuntime.Constructor(reflect.ValueOf(NewDeployment)).JsModule("k8s/apps/v1").JsName("Deployment")
+	jsRuntime.Constructor(reflect.ValueOf(NewDeploymentWithSpec)).JsModule("k8s/apps/v1").JsName("Deployment")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewDeployment)).JsNamespace("k8s").JsName("Deployment")
-	jsRuntime.Constructor(reflect.ValueOf(NewDeploymentWithSpec)).JsNamespace("k8s").JsName("Deployment")
+	jsRuntime.Constructor(reflect.ValueOf(NewDeployment)).JsModule("k8s").JsName("Deployment")
+	jsRuntime.Constructor(reflect.ValueOf(NewDeploymentWithSpec)).JsModule("k8s").JsName("Deployment")
 	
 }

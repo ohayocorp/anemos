@@ -25,10 +25,10 @@ func NewConfigMapWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterConfigMap(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsNamespace("k8s.core.v1").JsName("ConfigMap")
-	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsNamespace("k8s.core.v1").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsModule("k8s/core/v1").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsModule("k8s/core/v1").JsName("ConfigMap")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsNamespace("k8s").JsName("ConfigMap")
-	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsNamespace("k8s").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMap)).JsModule("k8s").JsName("ConfigMap")
+	jsRuntime.Constructor(reflect.ValueOf(NewConfigMapWithSpec)).JsModule("k8s").JsName("ConfigMap")
 	
 }

@@ -1,9 +1,12 @@
 import { Component } from "./component";
 import { BuildContext } from "./buildContext";
-import { BuilderOptions, EnvironmentType, KubernetesDistribution, Version } from "./builderOptions";
+import { BuilderOptions, Version } from "./builderOptions";
 import { Document, NewDocumentOptions } from "./document";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
-import { Step, steps } from "./step";
+import { EnvironmentType } from "./environmentType";
+import { KubernetesDistribution } from "./kubernetesDistribution";
+import { Step } from "./step";
+import * as steps from "./steps";
 
 export declare class Builder {
     constructor();

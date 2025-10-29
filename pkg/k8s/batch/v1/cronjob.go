@@ -25,10 +25,10 @@ func NewCronJobWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterCronJob(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewCronJob)).JsNamespace("k8s.batch.v1").JsName("CronJob")
-	jsRuntime.Constructor(reflect.ValueOf(NewCronJobWithSpec)).JsNamespace("k8s.batch.v1").JsName("CronJob")
+	jsRuntime.Constructor(reflect.ValueOf(NewCronJob)).JsModule("k8s/batch/v1").JsName("CronJob")
+	jsRuntime.Constructor(reflect.ValueOf(NewCronJobWithSpec)).JsModule("k8s/batch/v1").JsName("CronJob")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewCronJob)).JsNamespace("k8s").JsName("CronJob")
-	jsRuntime.Constructor(reflect.ValueOf(NewCronJobWithSpec)).JsNamespace("k8s").JsName("CronJob")
+	jsRuntime.Constructor(reflect.ValueOf(NewCronJob)).JsModule("k8s").JsName("CronJob")
+	jsRuntime.Constructor(reflect.ValueOf(NewCronJobWithSpec)).JsModule("k8s").JsName("CronJob")
 	
 }

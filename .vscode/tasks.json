@@ -12,7 +12,7 @@
                 "command": "powershell",
                 "args": [
                     "${workspaceFolder}\\build.ps1"
-                ],
+                ]
             },
             "presentation": {
                 "reveal": "never"
@@ -29,7 +29,8 @@
             ],
             "presentation": {
                 "reveal": "silent"
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }

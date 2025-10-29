@@ -65,7 +65,7 @@ type DynamicObjectTemplate struct {
 	jsToGoNameMappings map[string][]string
 	exportedFields     mapset.Set[string]
 	prototype          *sobek.Object
-	jsNamespace        string
+	jsModule           string
 	jsName             string
 	objectStore        WeakMap[any, sobek.Object]
 	keysWithOmitEmpty  mapset.Set[string]

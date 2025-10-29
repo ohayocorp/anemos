@@ -380,20 +380,28 @@ func fixNameClashes(group *DocumentGroup) {
 }
 
 func registerHelm(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[Builder]()).ExtensionMethods(
+	jsRuntime.Type(reflect.TypeFor[Builder]()).JsModule(
+		"builder",
+	).ExtensionMethods(
 		js.ExtensionMethod(reflect.ValueOf(AddHelmChart)),
 		js.ExtensionMethod(reflect.ValueOf(AddHelmChartObject)).JsName("addHelmChart"),
 		js.ExtensionMethod(reflect.ValueOf(AddHelmChartNoValues)).JsName("addHelmChart"),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[chart.Chart]()).JsName("HelmChart").ExtensionMethods(
+	jsRuntime.Type(reflect.TypeFor[chart.Chart]()).JsModule(
+		"helm",
+	).JsName(
+		"HelmChart",
+	).ExtensionMethods(
 		js.ExtensionMethod(reflect.ValueOf(GenerateFromChart)).JsName("generate"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(LoadChart)),
 		js.Constructor(reflect.ValueOf(LoadChartFromPath)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[HelmOptions]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[HelmOptions]()).JsModule(
+		"helm",
+	).Fields(
 		js.Field("ReleaseName"),
 		js.Field("Namespace"),
 		js.Field("Values"),

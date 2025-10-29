@@ -4,27 +4,35 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/ohayocorp/anemos/pkg/cmd"
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
 func TestFunctions(t *testing.T) {
-	jsRuntime := js.NewJsRuntime()
+	jsRuntime, err := cmd.InitializeNewRuntime(&cmd.AnemosProgram{
+		RegisterRuntimeCallback: func(jsRuntime *js.JsRuntime) error {
+			jsRuntime.Function(reflect.ValueOf(NoParams))
+			jsRuntime.Function(reflect.ValueOf(ReturnBool))
+			jsRuntime.Function(reflect.ValueOf(ReturnBoolParam)).JsName("returnBool")
+			jsRuntime.Function(reflect.ValueOf(ReturnBoolPointer))
+			jsRuntime.Function(reflect.ValueOf(ReturnInt))
+			jsRuntime.Function(reflect.ValueOf(ReturnIntParam)).JsName("returnInt")
+			jsRuntime.Function(reflect.ValueOf(ReturnIntPointer))
+			jsRuntime.Function(reflect.ValueOf(ReturnFloat))
+			jsRuntime.Function(reflect.ValueOf(ReturnFloatParam)).JsName("returnFloat")
+			jsRuntime.Function(reflect.ValueOf(ReturnFloatPointer))
+			jsRuntime.Function(reflect.ValueOf(ReturnString))
+			jsRuntime.Function(reflect.ValueOf(ReturnStringParam)).JsName("returnString")
+			jsRuntime.Function(reflect.ValueOf(ReturnStringPointer))
 
-	jsRuntime.Function(reflect.ValueOf(NoParams))
-	jsRuntime.Function(reflect.ValueOf(ReturnBool))
-	jsRuntime.Function(reflect.ValueOf(ReturnBoolParam)).JsName("returnBool")
-	jsRuntime.Function(reflect.ValueOf(ReturnBoolPointer))
-	jsRuntime.Function(reflect.ValueOf(ReturnInt))
-	jsRuntime.Function(reflect.ValueOf(ReturnIntParam)).JsName("returnInt")
-	jsRuntime.Function(reflect.ValueOf(ReturnIntPointer))
-	jsRuntime.Function(reflect.ValueOf(ReturnFloat))
-	jsRuntime.Function(reflect.ValueOf(ReturnFloatParam)).JsName("returnFloat")
-	jsRuntime.Function(reflect.ValueOf(ReturnFloatPointer))
-	jsRuntime.Function(reflect.ValueOf(ReturnString))
-	jsRuntime.Function(reflect.ValueOf(ReturnStringParam)).JsName("returnString")
-	jsRuntime.Function(reflect.ValueOf(ReturnStringPointer))
+			return nil
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	err := jsRuntime.Run(ReadScript(t, "tests/functions.js"), nil)
+	err = jsRuntime.Run(ReadScript(t, "tests/functions.js"), nil)
 	if err != nil {
 		t.Error(err)
 	}

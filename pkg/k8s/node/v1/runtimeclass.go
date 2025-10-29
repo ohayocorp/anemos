@@ -25,10 +25,10 @@ func NewRuntimeClassWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterRuntimeClass(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsNamespace("k8s.node.v1").JsName("RuntimeClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsNamespace("k8s.node.v1").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsModule("k8s/node/v1").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsModule("k8s/node/v1").JsName("RuntimeClass")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsNamespace("k8s").JsName("RuntimeClass")
-	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsNamespace("k8s").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClass)).JsModule("k8s").JsName("RuntimeClass")
+	jsRuntime.Constructor(reflect.ValueOf(NewRuntimeClassWithSpec)).JsModule("k8s").JsName("RuntimeClass")
 	
 }

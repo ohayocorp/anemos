@@ -1,18 +1,23 @@
-import * as anemos from "@ohayocorp/anemos"
+import { Component as AnemosComponent } from "@ohayocorp/anemos/component";
+import { Builder } from "@ohayocorp/anemos/builder";
+import { BuildContext } from "@ohayocorp/anemos/buildContext";
+import { Document } from "@ohayocorp/anemos/document";
+import { Step } from "@ohayocorp/anemos/step";
+import * as steps from "@ohayocorp/anemos/steps";
 
 export const componentType = "sort-fields";
 
-export class Component extends anemos.Component {
+export class Component extends AnemosComponent {
     constructor() {
         super();
 
         this.setComponentType(componentType);
         this.setIdentifier(componentType);
 
-        this.addAction(new anemos.Step("Sort Fields", [...anemos.steps.modify.numbers, 1]), this.modify);
+        this.addAction(new Step("Sort Fields", [...steps.modify.numbers, 1]), this.modify);
     }
 
-    modify = (context: anemos.BuildContext) => {
+    modify = (context: BuildContext) => {
         for (const document of context.getAllDocuments()) {
             for (const descriptor of sortDescriptors) {
                 if (!descriptor.canApply(document)) {
@@ -27,7 +32,7 @@ export class Component extends anemos.Component {
     }
 }
 
-export function add(builder: anemos.Builder): Component {
+export function add(builder: Builder): Component {
     const component = new Component();
     builder.addComponent(component);
 
@@ -44,12 +49,12 @@ declare module "@ohayocorp/anemos" {
     }
 }
 
-anemos.Builder.prototype.sortFields = function (this: anemos.Builder): Component {
+Builder.prototype.sortFields = function (this: Builder): Component {
     return add(this);
 }
 
 abstract class Sorter {
-    sort(document: anemos.Document): void {
+    sort(document: Document): void {
         const object = this.getObjects(document);
         const objects = Array.isArray(object) ? object : [object];
 
@@ -58,17 +63,17 @@ abstract class Sorter {
         }
     }
 
-    abstract getObjects(document: anemos.Document): any | any[];
+    abstract getObjects(document: Document): any | any[];
     abstract sortInternal(object: any): void;
 }
 
 interface SortDescriptor {
-    canApply(document: anemos.Document): boolean;
+    canApply(document: Document): boolean;
     getSorters(): Sorter[];
 }
 
 class SpecSortDescriptor implements SortDescriptor {
-    canApply(_: anemos.Document): boolean {
+    canApply(_: Document): boolean {
         return true;
     }
 
@@ -80,7 +85,7 @@ class SpecSortDescriptor implements SortDescriptor {
 }
 
 class WorkloadSpecSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload() && !document.isPod();
     }
 
@@ -95,7 +100,7 @@ class WorkloadSpecSortDescriptor implements SortDescriptor {
 }
 
 class WorkloadTemplateSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload() && !document.isPod();
     }
 
@@ -107,12 +112,12 @@ class WorkloadTemplateSortDescriptor implements SortDescriptor {
 }
 
 class WorkloadTemplateSpecSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload();
     }
 
     getSorters(): Sorter[] {
-        const getter = (document: anemos.Document) => document.isPod() ? document.spec : document.spec?.template?.spec;
+        const getter = (document: Document) => document.isPod() ? document.spec : document.spec?.template?.spec;
 
         return [
             new SortFields(
@@ -156,12 +161,12 @@ class WorkloadTemplateSpecSortDescriptor implements SortDescriptor {
 }
 
 class ContainerSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload();
     }
 
     getSorters(): Sorter[] {
-        const getter = (document: anemos.Document) => {
+        const getter = (document: Document) => {
             const spec = document.isPod() ? document.spec : document.spec?.template?.spec;
             const containers = spec?.containers || [];
             const initContainers = spec?.initContainers || [];
@@ -194,12 +199,12 @@ class ContainerSortDescriptor implements SortDescriptor {
 }
 
 class VolumeSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload();
     }
 
     getSorters(): Sorter[] {
-        const getter = (document: anemos.Document) => {
+        const getter = (document: Document) => {
             const spec = document.isPod() ? document.spec : document.spec?.template?.spec;
             return spec?.volumes || [];
         };
@@ -211,12 +216,12 @@ class VolumeSortDescriptor implements SortDescriptor {
 }
 
 class VolumeMountSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload();
     }
 
     getSorters(): Sorter[] {
-        const getter = (document: anemos.Document) => {
+        const getter = (document: Document) => {
             const spec = document.isPod() ? document.spec : document.spec?.template?.spec;
             const containers = spec?.containers || [];
             const initContainers = spec?.initContainers || [];
@@ -232,12 +237,12 @@ class VolumeMountSortDescriptor implements SortDescriptor {
 }
 
 class ContainerPortSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isWorkload();
     }
 
     getSorters(): Sorter[] {
-        const getter = (document: anemos.Document) => {
+        const getter = (document: Document) => {
             const spec = document.isPod() ? document.spec : document.spec?.template?.spec;
             const containers = spec?.containers || [];
             const initContainers = spec?.initContainers || [];
@@ -253,7 +258,7 @@ class ContainerPortSortDescriptor implements SortDescriptor {
 }
 
 class ConfigMapSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isConfigMap();
     }
 
@@ -267,7 +272,7 @@ class ConfigMapSortDescriptor implements SortDescriptor {
 }
 
 class SecretSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isSecret();
     }
 
@@ -281,7 +286,7 @@ class SecretSortDescriptor implements SortDescriptor {
 }
 
 class ServiceSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isService();
     }
 
@@ -308,7 +313,7 @@ class ServiceSortDescriptor implements SortDescriptor {
 }
 
 class IngressSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isIngress();
     }
 
@@ -323,7 +328,7 @@ class IngressSortDescriptor implements SortDescriptor {
 }
 
 class RoleClusterRoleSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isRole() || document.isClusterRole();
     }
 
@@ -335,7 +340,7 @@ class RoleClusterRoleSortDescriptor implements SortDescriptor {
 }
 
 class RoleBindingClusterRoleBindingSortDescriptor implements SortDescriptor {
-    canApply(document: anemos.Document): boolean {
+    canApply(document: Document): boolean {
         return document.isRoleBinding() || document.isClusterRoleBinding();
     }
 
@@ -349,7 +354,7 @@ class RoleBindingClusterRoleBindingSortDescriptor implements SortDescriptor {
 }
 
 class ObjectMetadataSortDescriptor implements SortDescriptor {
-    canApply(_: anemos.Document): boolean {
+    canApply(_: Document): boolean {
         return true;
     }
 
@@ -363,7 +368,7 @@ class ObjectMetadataSortDescriptor implements SortDescriptor {
 }
 
 class ObjectSortDescriptor implements SortDescriptor {
-    canApply(_: anemos.Document): boolean {
+    canApply(_: Document): boolean {
         return true;
     }
 
@@ -375,17 +380,17 @@ class ObjectSortDescriptor implements SortDescriptor {
 }
 
 class SortFields extends Sorter {
-    private getter: (document: anemos.Document) => any | any[];
+    private getter: (document: Document) => any | any[];
     private fields: string[];
 
-    constructor(getter: (document: anemos.Document) => any | any[], ...fields: string[]) {
+    constructor(getter: (document: Document) => any | any[], ...fields: string[]) {
         super();
 
         this.getter = getter;
         this.fields = fields;
     }
 
-    getObjects(document: anemos.Document): any | any[] {
+    getObjects(document: Document): any | any[] {
         return this.getter(document);
     }
 
@@ -395,17 +400,17 @@ class SortFields extends Sorter {
 }
 
 class SortFieldsTrailing extends Sorter {
-    private getter: (document: anemos.Document) => any | any[];
+    private getter: (document: Document) => any | any[];
     private fields: string[];
 
-    constructor(getter: (document: anemos.Document) => any | any[], ...fields: string[]) {
+    constructor(getter: (document: Document) => any | any[], ...fields: string[]) {
         super();
 
         this.getter = getter;
         this.fields = fields;
     }
 
-    getObjects(document: anemos.Document): any | any[] {
+    getObjects(document: Document): any | any[] {
         return this.getter(document);
     }
 
@@ -415,14 +420,14 @@ class SortFieldsTrailing extends Sorter {
 }
 
 class SortByKey extends Sorter {
-    private getter: (document: anemos.Document) => any | any[];
+    private getter: (document: Document) => any | any[];
 
-    constructor(getter: (document: anemos.Document) => any | any[]) {
+    constructor(getter: (document: Document) => any | any[]) {
         super();
         this.getter = getter;
     }
 
-    getObjects(document: anemos.Document): any | any[] {
+    getObjects(document: Document): any | any[] {
         return this.getter(document);
     }
 

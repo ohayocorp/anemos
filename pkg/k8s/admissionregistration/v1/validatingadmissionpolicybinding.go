@@ -25,10 +25,10 @@ func NewValidatingAdmissionPolicyBindingWithSpec(spec *sobek.Object) *core.Docum
 }
 
 func RegisterValidatingAdmissionPolicyBinding(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicyBinding")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsNamespace("k8s.admissionregistration.v1").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsModule("k8s/admissionregistration/v1").JsName("ValidatingAdmissionPolicyBinding")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicyBinding")
-	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsNamespace("k8s").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBinding)).JsModule("k8s").JsName("ValidatingAdmissionPolicyBinding")
+	jsRuntime.Constructor(reflect.ValueOf(NewValidatingAdmissionPolicyBindingWithSpec)).JsModule("k8s").JsName("ValidatingAdmissionPolicyBinding")
 	
 }

@@ -1,4 +1,6 @@
-import { KubernetesResource } from "./kubernetesResourceInfo"
+import { KubernetesResource } from "./kubernetesResourceInfo";
+import { EnvironmentType } from "./environmentType";
+import { KubernetesDistribution } from "./kubernetesDistribution";
 
 /**
  * Contains common options that are used by all components.
@@ -22,17 +24,6 @@ export declare class Environment {
 }
 
 /**
- * Predefined types for the environment. These are used to determine the default configurations of the components.
- * For example, in the development environment, some components may disable high availability.
- */
-export declare enum EnvironmentType {
-    Unknown,
-    Development,
-    Testing,
-    Production,
-}
-
-/**
  * Contains information about the target Kubernetes cluster.
  */
 export declare class KubernetesCluster {
@@ -41,21 +32,6 @@ export declare class KubernetesCluster {
     distribution: KubernetesDistribution
     version: Version
     additionalResources?: KubernetesResource[]
-}
-
-/**
- * Predefined types for the Kubernetes distribution. These are used to determine the behavior of some components.
- */
-export declare enum KubernetesDistribution {
-    Unknown,
-    AKS,
-    EKS,
-    GKE,
-    K3S,
-    Kubeadm,
-    MicroK8S,
-    Minikube,
-    OpenShift
 }
 
 /**

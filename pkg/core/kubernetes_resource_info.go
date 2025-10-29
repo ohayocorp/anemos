@@ -613,7 +613,9 @@ func (info *KubernetesResourceInfo) addKubernetes1_33() {
 }
 
 func registerKubernetesResourceInfo(jsRuntime *js.JsRuntime) {
-	jsRuntime.Type(reflect.TypeFor[KubernetesResource]()).Fields(
+	jsRuntime.Type(reflect.TypeFor[KubernetesResource]()).JsModule(
+		"kubernetesResourceInfo",
+	).Fields(
 		js.Field("ApiVersion"),
 		js.Field("Kind"),
 		js.Field("IsNamespaced"),
@@ -621,7 +623,9 @@ func registerKubernetesResourceInfo(jsRuntime *js.JsRuntime) {
 		js.Constructor(reflect.ValueOf(NewKubernetesResource)),
 	)
 
-	jsRuntime.Type(reflect.TypeFor[KubernetesResourceInfo]()).Fields().Methods(
+	jsRuntime.Type(reflect.TypeFor[KubernetesResourceInfo]()).JsModule(
+		"kubernetesResourceInfo",
+	).Methods(
 		js.Method("AddKubernetesResource").JsName("addResource"),
 		js.Method("Contains"),
 		js.Method("ContainsKind"),

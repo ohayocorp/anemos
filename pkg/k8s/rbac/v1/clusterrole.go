@@ -25,10 +25,10 @@ func NewClusterRoleWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterClusterRole(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsNamespace("k8s.rbac.v1").JsName("ClusterRole")
-	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsNamespace("k8s.rbac.v1").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsModule("k8s/rbac/v1").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsModule("k8s/rbac/v1").JsName("ClusterRole")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsNamespace("k8s").JsName("ClusterRole")
-	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsNamespace("k8s").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRole)).JsModule("k8s").JsName("ClusterRole")
+	jsRuntime.Constructor(reflect.ValueOf(NewClusterRoleWithSpec)).JsModule("k8s").JsName("ClusterRole")
 	
 }

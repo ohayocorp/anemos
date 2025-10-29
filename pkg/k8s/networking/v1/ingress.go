@@ -25,10 +25,10 @@ func NewIngressWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterIngress(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsNamespace("k8s.networking.v1").JsName("Ingress")
-	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsNamespace("k8s.networking.v1").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsModule("k8s/networking/v1").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsModule("k8s/networking/v1").JsName("Ingress")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsNamespace("k8s").JsName("Ingress")
-	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsNamespace("k8s").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngress)).JsModule("k8s").JsName("Ingress")
+	jsRuntime.Constructor(reflect.ValueOf(NewIngressWithSpec)).JsModule("k8s").JsName("Ingress")
 	
 }

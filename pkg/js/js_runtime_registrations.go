@@ -10,14 +10,14 @@ import (
 )
 
 type VariableRegistration struct {
-	jsNamespace string
-	jsName      string
-	value       reflect.Value
+	jsModule string
+	jsName   string
+	value    reflect.Value
 }
 
 type TypeRegistration struct {
 	objectType           reflect.Type
-	jsNamespace          string
+	jsModule             string
 	jsName               string
 	typeConversions      map[reflect.Type][]*TypeConversion
 	fields               []*FieldRegistration
@@ -29,13 +29,13 @@ type TypeRegistration struct {
 }
 
 type TypeAlias struct {
-	jsNamespace string
-	jsName      string
+	jsModule string
+	jsName   string
 }
 
 type FunctionRegistration struct {
 	function     reflect.Value
-	jsNamespace  string
+	jsModule     string
 	jsName       string
 	functionType FunctionType
 }
@@ -80,7 +80,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 		}
 
 		template := jsRuntime.createTemplate(typeRegistration.objectType)
-		template.jsNamespace = typeRegistration.jsNamespace
+		template.jsModule = typeRegistration.jsModule
 		template.jsName = typeRegistration.jsName
 
 		if template.jsName == "" {
@@ -133,7 +133,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 			}
 
 			function := &DynamicFunction{
-				jsNamespace:  "",
+				jsModule:     "",
 				jsName:       method.jsName,
 				functionType: jsFunction,
 				function:     m.Func,
@@ -154,7 +154,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 			}
 
 			function := &DynamicFunction{
-				jsNamespace:  "",
+				jsModule:     "",
 				jsName:       extensionMethod.jsName,
 				functionType: jsFunction,
 				function:     extensionMethod.function,
@@ -168,7 +168,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 
 		for _, constructor := range typeRegistration.constructors {
 			function := &DynamicFunction{
-				jsNamespace:  template.jsNamespace,
+				jsModule:     template.jsModule,
 				jsName:       typeRegistration.jsName,
 				functionType: jsConstructor,
 				function:     constructor.function,
@@ -178,7 +178,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 
 			for _, alias := range typeRegistration.aliases {
 				function := &DynamicFunction{
-					jsNamespace:  alias.jsNamespace,
+					jsModule:     alias.jsModule,
 					jsName:       alias.jsName,
 					functionType: jsConstructor,
 					function:     constructor.function,
@@ -192,7 +192,7 @@ func (jsRuntime *JsRuntime) registerTypes() {
 
 func (jsRuntime *JsRuntime) registerFunctions() {
 	for _, function := range jsRuntime.functionRegistrations {
-		jsNamespace := function.jsNamespace
+		jsModule := function.jsModule
 		jsName := function.jsName
 
 		if jsName == "" {
@@ -201,7 +201,7 @@ func (jsRuntime *JsRuntime) registerFunctions() {
 		}
 
 		function := &DynamicFunction{
-			jsNamespace:  jsNamespace,
+			jsModule:     jsModule,
 			jsName:       jsName,
 			functionType: function.functionType,
 			function:     function.function,
@@ -211,11 +211,11 @@ func (jsRuntime *JsRuntime) registerFunctions() {
 	}
 }
 
-func (jsRuntime *JsRuntime) Variable(jsNamespace, jsName string, value reflect.Value) *VariableRegistration {
+func (jsRuntime *JsRuntime) Variable(jsModule, jsName string, value reflect.Value) *VariableRegistration {
 	v := &VariableRegistration{
-		jsNamespace: jsNamespace,
-		jsName:      jsName,
-		value:       value,
+		jsModule: jsModule,
+		jsName:   jsName,
+		value:    value,
 	}
 
 	jsRuntime.variableRegistrations = append(jsRuntime.variableRegistrations, v)
@@ -239,10 +239,10 @@ func (jsRuntime *JsRuntime) Type(objectType reflect.Type) *TypeRegistration {
 	return t
 }
 
-func (t *TypeRegistration) Alias(namespace, name string) *TypeRegistration {
+func (t *TypeRegistration) Alias(module, name string) *TypeRegistration {
 	alias := &TypeAlias{
-		jsNamespace: namespace,
-		jsName:      name,
+		jsModule: module,
+		jsName:   name,
 	}
 
 	t.aliases = append(t.aliases, alias)
@@ -250,8 +250,8 @@ func (t *TypeRegistration) Alias(namespace, name string) *TypeRegistration {
 	return t
 }
 
-func (t *TypeRegistration) JsNamespace(namespace string) *TypeRegistration {
-	t.jsNamespace = namespace
+func (t *TypeRegistration) JsModule(module string) *TypeRegistration {
+	t.jsModule = module
 	return t
 }
 
@@ -357,8 +357,8 @@ func (jsRuntime *JsRuntime) Constructor(function reflect.Value) *FunctionRegistr
 	return f
 }
 
-func (f *FunctionRegistration) JsNamespace(namespace string) *FunctionRegistration {
-	f.jsNamespace = namespace
+func (f *FunctionRegistration) JsModule(module string) *FunctionRegistration {
+	f.jsModule = module
 	return f
 }
 

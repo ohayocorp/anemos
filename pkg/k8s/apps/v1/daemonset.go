@@ -25,10 +25,10 @@ func NewDaemonSetWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterDaemonSet(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsNamespace("k8s.apps.v1").JsName("DaemonSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsNamespace("k8s.apps.v1").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsModule("k8s/apps/v1").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsModule("k8s/apps/v1").JsName("DaemonSet")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsNamespace("k8s").JsName("DaemonSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsNamespace("k8s").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSet)).JsModule("k8s").JsName("DaemonSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewDaemonSetWithSpec)).JsModule("k8s").JsName("DaemonSet")
 	
 }

@@ -25,10 +25,10 @@ func NewStatefulSetWithSpec(spec *sobek.Object) *core.Document {
 }
 
 func RegisterStatefulSet(jsRuntime *js.JsRuntime) {
-	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSet)).JsNamespace("k8s.apps.v1").JsName("StatefulSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSetWithSpec)).JsNamespace("k8s.apps.v1").JsName("StatefulSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSet)).JsModule("k8s/apps/v1").JsName("StatefulSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSetWithSpec)).JsModule("k8s/apps/v1").JsName("StatefulSet")
 	
-	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSet)).JsNamespace("k8s").JsName("StatefulSet")
-	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSetWithSpec)).JsNamespace("k8s").JsName("StatefulSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSet)).JsModule("k8s").JsName("StatefulSet")
+	jsRuntime.Constructor(reflect.ValueOf(NewStatefulSetWithSpec)).JsModule("k8s").JsName("StatefulSet")
 	
 }
