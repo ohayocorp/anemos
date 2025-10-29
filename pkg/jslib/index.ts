@@ -29,4 +29,5 @@ export * as collectCRDs from "@ohayocorp/anemos/collectCRDs";
 export * as collectNamespaces from "@ohayocorp/anemos/collectNamespaces";
 export * as createReferencedNamespaces from "@ohayocorp/anemos/createReferencedNamespaces";
 export * as setDefaultProvisionerDependencies from "@ohayocorp/anemos/setDefaultProvisionerDependencies";
+export * as setIngressClassName from '@ohayocorp/anemos/setIngressClassName';
 export * as sortFields from "@ohayocorp/anemos/sortFields";
