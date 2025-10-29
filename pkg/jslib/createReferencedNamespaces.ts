@@ -2,11 +2,10 @@ import { Component as AnemosComponent } from "@ohayocorp/anemos/component";
 import { Builder } from "@ohayocorp/anemos/builder";
 import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { DocumentGroup } from "@ohayocorp/anemos/documentGroup";
-import { Document } from "@ohayocorp/anemos/document";
-import { Step } from "@ohayocorp/anemos/step";
+import * as k8s from "@ohayocorp/anemos/k8s";
 import * as steps from "@ohayocorp/anemos/steps";
 
-const existingNamespaces = [
+const systemNamespaces = [
     "kube-system",
     "kube-public",
     "kube-node-lease",
@@ -48,14 +47,19 @@ export class Component extends AnemosComponent {
     generateNamespaces = (context: BuildContext) => {
         const predicate = this.options.predicate;
         const namespaces = new Set<string>();
+        const existingNamespaces = new Set<string>();
 
         for (const document of context.getAllDocuments()) {
+            if (document.isNamespace() && document.metadata?.name) {
+                existingNamespaces.add(document.metadata.name);
+            }
+
             const namespace = document.metadata?.namespace;
             if (!namespace) {
                 continue
             }
 
-            if (existingNamespaces.includes(namespace)) {
+            if (systemNamespaces.includes(namespace)) {
                 continue;
             }
 
@@ -66,6 +70,10 @@ export class Component extends AnemosComponent {
             namespaces.add(namespace);
         }
 
+        for (const namespace of existingNamespaces) {
+            namespaces.delete(namespace);
+        }
+
         if (namespaces.size === 0) {
             return;
         }
@@ -74,14 +82,9 @@ export class Component extends AnemosComponent {
         context.addDocumentGroup(documentGroup);
 
         for (const namespace of namespaces) {
-            documentGroup.addDocument(new Document({
-                path: `${namespace}.yaml`,
-                content: {
-                    apiVersion: "v1",
-                    kind: "Namespace",
-                    metadata: {
-                        name: namespace
-                    }
+            documentGroup.addDocument(new k8s.Namespace({
+                metadata: {
+                    name: namespace
                 }
             }));
         }
