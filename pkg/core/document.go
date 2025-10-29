@@ -191,6 +191,7 @@ func registerDocument(jsRuntime *js.JsRuntime) {
 		js.Method("ToJSON"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewDocument)),
+		js.Constructor(reflect.ValueOf(NewDocumentWithOptions)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithContent)),
 		js.Constructor(reflect.ValueOf(NewDocumentWithYaml)),
 	)
