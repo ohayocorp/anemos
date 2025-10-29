@@ -12,14 +12,14 @@ import (
 
 func NewDeployment(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "Deployment")
 	return document
 }
 
 func NewDeploymentWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "Deployment")
 	return document
 }

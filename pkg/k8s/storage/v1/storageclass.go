@@ -12,14 +12,14 @@ import (
 
 func NewStorageClass(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "storage.k8s.io/v1")
 	document.Set("kind", "StorageClass")
 	return document
 }
 
 func NewStorageClassWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "storage.k8s.io/v1")
 	document.Set("kind", "StorageClass")
 	return document
 }

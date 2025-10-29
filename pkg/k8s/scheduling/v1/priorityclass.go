@@ -12,14 +12,14 @@ import (
 
 func NewPriorityClass(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "scheduling.k8s.io/v1")
 	document.Set("kind", "PriorityClass")
 	return document
 }
 
 func NewPriorityClassWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "scheduling.k8s.io/v1")
 	document.Set("kind", "PriorityClass")
 	return document
 }

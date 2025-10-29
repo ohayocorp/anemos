@@ -12,14 +12,14 @@ import (
 
 func NewPodDisruptionBudget(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "policy/v1")
 	document.Set("kind", "PodDisruptionBudget")
 	return document
 }
 
 func NewPodDisruptionBudgetWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "policy/v1")
 	document.Set("kind", "PodDisruptionBudget")
 	return document
 }

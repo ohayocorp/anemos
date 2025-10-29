@@ -12,14 +12,14 @@ import (
 
 func NewJob(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "batch/v1")
 	document.Set("kind", "Job")
 	return document
 }
 
 func NewJobWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "batch/v1")
 	document.Set("kind", "Job")
 	return document
 }

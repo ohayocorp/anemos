@@ -151,38 +151,45 @@ func generateJsRegistrations() error {
 // getTypeMetaSetter generates code to set apiVersion and kind fields for types
 // that have x-kubernetes-group-version-kind extensions in their schema.
 func (typeInfo *typeInfo) getTypeMetaSetter() string {
-	version, kind := typeInfo.getVersionKind()
+	group, version, kind := typeInfo.getGroupVersionKind()
 	if version == nil || kind == nil {
 		return ""
 	}
 
+	apiVersion := *version
+	if group != nil && *group != "" {
+		apiVersion = fmt.Sprintf("%s/%s", *group, *version)
+	}
+
 	setter := util.ParseTemplate(`
-		document.Set("apiVersion", "{{ .Version }}")
+		document.Set("apiVersion", "{{ .ApiVersion }}")
 		document.Set("kind", "{{ .Kind }}")
 		`,
 		map[string]any{
-			"Version": version,
-			"Kind":    kind,
+			"ApiVersion": apiVersion,
+			"Kind":       kind,
 		})
 
 	return util.IndentTab(setter, 1)
 }
 
-// getVersionKind extracts the API version and kind from a type's OpenAPI schema extensions.
-func (typeInfo *typeInfo) getVersionKind() (*string, *string) {
+// getGroupVersionKind extracts the API version and kind from a type's OpenAPI schema extensions.
+func (typeInfo *typeInfo) getGroupVersionKind() (*string, *string, *string) {
 	gvkExtension := typeInfo.Schema.Extensions["x-kubernetes-group-version-kind"]
 	if gvkExtension == nil {
-		return nil, nil
+		return nil, nil, nil
 	}
 
-	var version, kind *string
+	var group, version, kind *string
 
 	if gvk, ok := gvkExtension.(map[string]any); ok {
+		group = core.Pointer(gvk["group"].(string))
 		version = core.Pointer(gvk["version"].(string))
 		kind = core.Pointer(gvk["kind"].(string))
 	} else if gvks, ok := gvkExtension.([]any); ok && len(gvks) > 0 {
 		gvk := gvks[0].(map[string]any)
 
+		group = core.Pointer(gvk["group"].(string))
 		version = core.Pointer(gvk["version"].(string))
 		kind = core.Pointer(gvk["kind"].(string))
 	}
@@ -191,5 +198,5 @@ func (typeInfo *typeInfo) getVersionKind() (*string, *string) {
 		panic(fmt.Errorf("invalid x-kubernetes-group-version-kind extension format"))
 	}
 
-	return version, kind
+	return group, version, kind
 }

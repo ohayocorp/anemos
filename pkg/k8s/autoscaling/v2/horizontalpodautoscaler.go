@@ -12,14 +12,14 @@ import (
 
 func NewHorizontalPodAutoscaler(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v2")
+	document.Set("apiVersion", "autoscaling/v2")
 	document.Set("kind", "HorizontalPodAutoscaler")
 	return document
 }
 
 func NewHorizontalPodAutoscalerWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v2")
+	document.Set("apiVersion", "autoscaling/v2")
 	document.Set("kind", "HorizontalPodAutoscaler")
 	return document
 }

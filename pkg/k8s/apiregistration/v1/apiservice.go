@@ -12,14 +12,14 @@ import (
 
 func NewAPIService(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apiregistration.k8s.io/v1")
 	document.Set("kind", "APIService")
 	return document
 }
 
 func NewAPIServiceWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apiregistration.k8s.io/v1")
 	document.Set("kind", "APIService")
 	return document
 }

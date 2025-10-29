@@ -12,14 +12,14 @@ import (
 
 func NewReplicaSet(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "ReplicaSet")
 	return document
 }
 
 func NewReplicaSetWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "ReplicaSet")
 	return document
 }

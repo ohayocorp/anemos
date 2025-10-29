@@ -12,14 +12,14 @@ import (
 
 func NewStatefulSet(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "StatefulSet")
 	return document
 }
 
 func NewStatefulSetWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1")
+	document.Set("apiVersion", "apps/v1")
 	document.Set("kind", "StatefulSet")
 	return document
 }

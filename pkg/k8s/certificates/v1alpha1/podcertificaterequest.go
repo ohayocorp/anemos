@@ -12,14 +12,14 @@ import (
 
 func NewPodCertificateRequest(jsRuntime *js.JsRuntime) *core.Document {
 	document := core.NewDocument(jsRuntime)
-	document.Set("apiVersion", "v1alpha1")
+	document.Set("apiVersion", "certificates.k8s.io/v1alpha1")
 	document.Set("kind", "PodCertificateRequest")
 	return document
 }
 
 func NewPodCertificateRequestWithSpec(spec *sobek.Object) *core.Document {
 	document := core.NewDocumentWithContent(spec)
-	document.Set("apiVersion", "v1alpha1")
+	document.Set("apiVersion", "certificates.k8s.io/v1alpha1")
 	document.Set("kind", "PodCertificateRequest")
 	return document
 }
