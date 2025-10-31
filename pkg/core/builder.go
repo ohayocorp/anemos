@@ -342,8 +342,15 @@ func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Bu
 	runtime.Set("__anemos__flags__skipConfirmation", jsRuntime.Flags[JsRuntimeMetadataBuilderSkipConfirmation] == "true")
 
 	_, err = runtime.RunScript("builderDefaults.js", `
+		const __anemos__require = require("@ohayocorp/anemos");
+
+		// Register default native components.
 		__anemos__builder.deleteOutputDirectory();
 		__anemos__builder.writeDocuments();
+
+		// Register default components from the JavaScript libraries.
+		__anemos__require.sortFields.add(__anemos__builder);
+		__anemos__require.setDefaultProvisionerDependencies.add(__anemos__builder);
 
 		if (__anemos__flags__apply) {
 			const applyOptions = {
@@ -354,6 +361,7 @@ func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Bu
 		}
 
 		delete __anemos__builder;
+		delete __anemos__require;
 		`)
 
 	if err != nil {

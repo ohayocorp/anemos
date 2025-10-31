@@ -43,7 +43,7 @@ declare module "@ohayocorp/anemos" {
     export interface Builder {
         /**
          * Sorts the fields of the documents in a way that is consistent with the general Kubernetes
-         * conventions.
+         * conventions. This is added by default when a builder is created.
          */
         sortFields(): Component;
     }

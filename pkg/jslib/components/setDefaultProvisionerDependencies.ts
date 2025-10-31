@@ -1,4 +1,5 @@
 import { Component as AnemosComponent } from "@ohayocorp/anemos/component";
+import { Builder } from "@ohayocorp/anemos/builder";
 import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
@@ -108,4 +109,26 @@ class Resource {
     kind!: string;
     document!: Document;
     checkDependency!: (resource: Resource, document: Document) => boolean;
+}
+
+export function add(builder: Builder): Component {
+    const component = new Component();
+    builder.addComponent(component);
+
+    return component;
+}
+
+declare module "@ohayocorp/anemos" {
+    export interface Builder {
+        /**
+         * Adds dependencies between document groups if a document in one group depends on
+         * namespaces or CRDs in another group. This is added by default when a builder is
+         * created.
+         */
+        setDefaultProvisionerDependencies(): Component;
+    }
+}
+
+Builder.prototype.setDefaultProvisionerDependencies = function (this: Builder): Component {
+    return add(this);
 }
