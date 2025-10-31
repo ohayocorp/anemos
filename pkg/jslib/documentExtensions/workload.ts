@@ -1,6 +1,6 @@
 import { Document } from "@ohayocorp/anemos/document";
-import { Container, PodSpec } from "./k8s/core/v1";
-import { ObjectMeta } from "./k8s/apimachinery/meta/v1";
+import { Container, PodSpec } from "@ohayocorp/anemos/k8s/core/v1";
+import { ObjectMeta } from "@ohayocorp/anemos/k8s/apimachinery/meta/v1";
 
 // Keep the as*/is* keys that are explicitly allowed and all non-prefixed keys by omitting the remaining as*/is* keys.
 type AsOrIsKeys<T> = Extract<keyof T, `as${string}` | `is${string}`>;

@@ -1,12 +1,12 @@
 import { Document } from "@ohayocorp/anemos/document";
-import { Workload } from "./documentExtensionsWorkload";
-import { CustomResourceDefinition } from "./k8s/apiextensions/v1";
-import { DaemonSet, Deployment, ReplicaSet, StatefulSet } from "./k8s/apps/v1";
-import { HorizontalPodAutoscaler } from "./k8s/autoscaling/v2";
-import { CronJob, Job } from "./k8s/batch/v1";
-import { ConfigMap, Namespace, PersistentVolume, PersistentVolumeClaim, Pod, Secret, Service, ServiceAccount } from "./k8s/core/v1";
-import { Ingress } from "./k8s/networking/v1";
-import { ClusterRole, ClusterRoleBinding, Role, RoleBinding } from "./k8s/rbac/v1";
+import { Workload } from "@ohayocorp/anemos/documentExtensions";
+import { CustomResourceDefinition } from "@ohayocorp/anemos/k8s/apiextensions/v1";
+import { DaemonSet, Deployment, ReplicaSet, StatefulSet } from "@ohayocorp/anemos/k8s/apps/v1";
+import { HorizontalPodAutoscaler } from "@ohayocorp/anemos/k8s/autoscaling/v2";
+import { CronJob, Job } from "@ohayocorp/anemos/k8s/batch/v1";
+import { ConfigMap, Namespace, PersistentVolume, PersistentVolumeClaim, Pod, Secret, Service, ServiceAccount } from "@ohayocorp/anemos/k8s/core/v1";
+import { Ingress } from "@ohayocorp/anemos/k8s/networking/v1";
+import { ClusterRole, ClusterRoleBinding, Role, RoleBinding } from "@ohayocorp/anemos/k8s/rbac/v1";
 
 declare module "@ohayocorp/anemos/document" {
     export interface Document {

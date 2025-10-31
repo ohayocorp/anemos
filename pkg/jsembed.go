@@ -11,11 +11,11 @@ var (
 	libNativeDeclarations embed.FS
 	LibNativeDeclarations = mustSub(libNativeDeclarations, "jslib")
 
-	//go:embed jslib/dist/*.d.ts
+	//go:embed jslib/dist/*.d.ts jslib/dist/**/*.d.ts
 	libTypeDeclarations embed.FS
 	LibTypeDeclarations = mustSub(libTypeDeclarations, "jslib/dist")
 
-	//go:embed jslib/dist/*.js
+	//go:embed jslib/dist/*.js jslib/dist/**/*.js
 	libJavaScript embed.FS
 	LibJavaScript = mustSub(libJavaScript, "jslib/dist")
 )

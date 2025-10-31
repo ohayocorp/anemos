@@ -20,19 +20,5 @@ export * as steps from '@ohayocorp/anemos/steps';
 export * from '@ohayocorp/anemos/stringExtensions';
 export * from '@ohayocorp/anemos/writeDocuments';
 
-export * from "@ohayocorp/anemos/documentExtensionsAnnotations";
-export * from "@ohayocorp/anemos/documentExtensionsLabels";
-export * from "@ohayocorp/anemos/documentExtensionsTypes";
-export * from "@ohayocorp/anemos/documentExtensionsWorkload";
-
-export * as addWorkloadHostAliases from '@ohayocorp/anemos/addWorkloadHostAliases';
-export * as addWorkloadImagePullSecretNames from '@ohayocorp/anemos/addWorkloadImagePullSecretNames';
-export * as collectCRDs from "@ohayocorp/anemos/collectCRDs";
-export * as collectNamespaces from "@ohayocorp/anemos/collectNamespaces";
-export * as createReferencedNamespaces from "@ohayocorp/anemos/createReferencedNamespaces";
-export * as overrideEnvironmentVariables from "@ohayocorp/anemos/overrideEnvironmentVariables";
-export * as setAnnotations from "@ohayocorp/anemos/setAnnotations";
-export * as setDefaultProvisionerDependencies from "@ohayocorp/anemos/setDefaultProvisionerDependencies";
-export * as setIngressClassName from '@ohayocorp/anemos/setIngressClassName';
-export * as setLabels from "@ohayocorp/anemos/setLabels";
-export * as sortFields from "@ohayocorp/anemos/sortFields";
+export * from '@ohayocorp/anemos/documentExtensions';
+export * from '@ohayocorp/anemos/components';

@@ -3,7 +3,7 @@ import { Builder } from "@ohayocorp/anemos/builder";
 import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
-import { Workload } from "@ohayocorp/anemos/documentExtensionsWorkload";
+import { Workload } from "@ohayocorp/anemos/documentExtensions";
 
 export const componentType = "add-workload-image-pull-secret-names";
 

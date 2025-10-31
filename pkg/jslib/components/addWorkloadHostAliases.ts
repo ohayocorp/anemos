@@ -4,7 +4,7 @@ import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import { HostAlias } from "@ohayocorp/anemos/k8s/core/v1";
 import * as steps from "@ohayocorp/anemos/steps";
-import { Workload } from "@ohayocorp/anemos/documentExtensionsWorkload";
+import { Workload } from "@ohayocorp/anemos/documentExtensions";
 
 export const componentType = "add-workload-host-aliases";
 
