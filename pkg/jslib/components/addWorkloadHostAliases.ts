@@ -6,6 +6,8 @@ import { HostAlias } from "@ohayocorp/anemos/k8s/core/v1";
 import * as steps from "@ohayocorp/anemos/steps";
 import { Workload } from "@ohayocorp/anemos/documentExtensions";
 
+export type Predicate = (document: Document, context: BuildContext) => boolean;
+
 export const componentType = "add-workload-host-aliases";
 
 export class Options {
@@ -13,9 +15,9 @@ export class Options {
     entries: HostAlias[];
     
     /** Predicate to filter which documents to modify. All workload documents will be modified if not specified. */
-    predicate?: (context: BuildContext, document: Document) => boolean;
+    predicate?: Predicate;
 
-    constructor(entries: HostAlias[], predicate?: (context: BuildContext, document: Document) => boolean) {
+    constructor(entries: HostAlias[], predicate?: Predicate) {
         this.entries = entries;
         this.predicate = predicate;
     }
@@ -41,7 +43,7 @@ export class Component extends AnemosComponent {
                 continue;
             }
 
-            if (this.options.predicate && !this.options.predicate(context, document)) {
+            if (this.options.predicate && !this.options.predicate(document, context)) {
                 continue;
             }
 
@@ -99,15 +101,50 @@ declare module "@ohayocorp/anemos" {
         /**
          * Adds given host aliases to the pod spec of all workload resources.
          */
-        addWorkloadHostAliases(entries: HostAlias[]): Component;
+        addWorkloadHostAliases(entries: HostAlias[], predicate?: Predicate): Component;
+        
+        /**
+         * Adds given host aliases to the pod spec of all workload resources.
+         */
+        addWorkloadHostAliases(ip: string, hostname: string | string[], predicate?: Predicate): Component;
     }
 }
 
-Builder.prototype.addWorkloadHostAliases = function (this: Builder, arg: Options | HostAlias[]): Component {
-    if (Array.isArray(arg)) {
-        return add(this, new Options(arg));
-    } else if (typeof arg === "object") {
-        return add(this, arg as Options);
+Builder.prototype.addWorkloadHostAliases = function (
+    this: Builder,
+    first: Options | HostAlias[] | string,
+    second?: string | string[] | Predicate,
+    third?: Predicate
+): Component {
+    if (typeof first === "object") {
+        return add(this, first as Options);
+    }
+    
+    if (Array.isArray(first)) {
+        if (second && typeof second !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options(first, second as Predicate));
+    }
+    
+    if (typeof first === "string") {
+        if (!second || (typeof second !== "string" && !Array.isArray(second))) {
+            throw new Error("Hostname must be specified when IP address is given");
+        }
+
+        if (third && typeof third !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        const entries = [
+            {
+                ip: first,
+                hostnames: Array.isArray(second) ? second : [second]
+            }
+        ];
+
+        return add(this, new Options(entries, third));
     }
 
     throw new Error("Invalid argument");

@@ -4,6 +4,8 @@ import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 
+export type Predicate = (document: Document, context: BuildContext) => boolean;
+
 export const componentType = "set-ingress-class-name";
 
 export class Options {
@@ -11,9 +13,9 @@ export class Options {
     ingressClassName: string;
     
     /** Predicate to filter which documents to modify. All ingress documents will be modified if not specified. */
-    predicate?: (context: BuildContext, document: Document) => boolean;
+    predicate?: Predicate;
 
-    constructor(ingressClassName: string, predicate?: (context: BuildContext, document: Document) => boolean) {
+    constructor(ingressClassName: string, predicate?: Predicate) {
         this.ingressClassName = ingressClassName;
         this.predicate = predicate;
     }
@@ -46,7 +48,7 @@ export class Component extends AnemosComponent {
                 continue;
             }
 
-            if (this.options.predicate && !this.options.predicate(context, document)) {
+            if (this.options.predicate && !this.options.predicate(document, context)) {
                 continue;
             }
 
@@ -73,13 +75,17 @@ declare module "@ohayocorp/anemos" {
         /**
          * Set the Ingress class name on Ingress resources during the {@link steps.modify} step.
          */
-        setIngressClassName(ingressClassName: String): Component;
+        setIngressClassName(ingressClassName: string, predicate?: Predicate): Component;
     }
 }
 
-Builder.prototype.setIngressClassName = function (this: Builder, arg: Options | String): Component {    
+Builder.prototype.setIngressClassName = function (this: Builder, arg: Options | String, predicate?: Predicate): Component {    
     if (typeof arg === "string") {
-        return add(this, new Options(arg));
+        if (predicate && typeof predicate !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options(arg, predicate));
     } else if (typeof arg === "object") {
         return add(this, arg as Options);
     }

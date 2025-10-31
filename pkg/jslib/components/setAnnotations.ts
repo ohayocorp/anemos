@@ -4,6 +4,8 @@ import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 
+export type Predicate = (document: Document, context: BuildContext) => boolean;
+
 export const componentType = "set-annotations";
 
 export class Options {
@@ -13,12 +15,9 @@ export class Options {
     /**
      * Predicate to filter which documents to modify. All documents will be modified if not specified.
      */
-    predicate?: (document: Document, context: BuildContext) => boolean;
+    predicate?: Predicate;
 
-    constructor(
-        annotations: Record<string, string>,
-        predicate?: (document: Document, context: BuildContext) => boolean
-    ) {
+    constructor(annotations: Record<string, string>, predicate?: Predicate) {
         this.annotations = annotations;
         this.predicate = predicate;
     }
@@ -74,44 +73,45 @@ declare module "@ohayocorp/anemos" {
          * Sets the given annotations in all documents. It is possible to filter which documents to modify
          * by specifying a predicate.
          */
-        setAnnotations(
-            environmentVariables: Record<string, string>,
-            predicate?: (document: Document, context: BuildContext) => boolean
-        ): Component;
+        setAnnotations(annotations: Record<string, string>, predicate?: Predicate): Component;
         
         /**
          * Sets the given annotation in all documents. It is possible to filter which documents to modify
          * by specifying a predicate.
          */
-        setAnnotation(
-            key: string,
-            value: string,
-            predicate?: (document: Document, context: BuildContext) => boolean
-        ): Component;
+        setAnnotations(key: string, value: string, predicate?: Predicate): Component;
     }
 }
 
 Builder.prototype.setAnnotations = function (
     this: Builder,
-    arg: Options | Record<string, string>,
-    predicate?: (document: Document, context: BuildContext) => boolean
+    first: Options | Record<string, string> | string,
+    second?: string | Predicate,
+    third?: Predicate
 ): Component {
-    if (typeof arg !== "object") {
+    if (typeof first === "string") {
+        if (typeof second !== "string") {
+            throw new Error("Invalid argument expected string for value");
+        }
+
+        if (third && typeof third !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options({ [first]: second }, third));
+    }
+
+    if (typeof first !== "object") {
         throw new Error("Invalid argument");
     }
 
-    if (Object.getOwnPropertyNames(arg).every(property => typeof Object.getOwnPropertyDescriptor(arg, property)?.value === "string")) {
-        return add(this, new Options(arg as Record<string, string>, predicate));
+    if (Object.getOwnPropertyNames(first).every(property => typeof Object.getOwnPropertyDescriptor(first, property)?.value === "string")) {
+        if (second && typeof second !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options(first as Record<string, string>, second as Predicate));
     }
 
-    return add(this, arg as Options);
-}
-
-Builder.prototype.setAnnotation = function (
-    this: Builder,
-    key: string,
-    value: string,
-    predicate?: (document: Document, context: BuildContext) => boolean
-): Component {
-    return add(this, new Options({ [key]: value }, predicate));
+    return add(this, first as Options);
 }

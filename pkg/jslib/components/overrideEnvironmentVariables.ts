@@ -5,6 +5,8 @@ import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 import { Container } from "@ohayocorp/anemos/k8s/core/v1";
 
+export type Predicate = (document: Document, container: Container, context: BuildContext) => boolean;
+
 export const componentType = "override-environment-variables";
 
 export class Options {
@@ -15,11 +17,11 @@ export class Options {
      * Predicate to filter which documents and containers to modify. All containers of all workload documents
      * will be modified if not specified.
      */
-    predicate?: (document: Document, container: Container, context: BuildContext) => boolean;
+    predicate?: Predicate;
 
     constructor(
         environmentVariables: Record<string, string>,
-        predicate?: (document: Document, container: Container, context: BuildContext) => boolean
+        predicate?: Predicate
     ) {
         this.environmentVariables = environmentVariables;
         this.predicate = predicate;
@@ -106,18 +108,46 @@ declare module "@ohayocorp/anemos" {
          * environment variable values only if the environment variable already exists in the container spec.
          * It is possible to filter which documents and containers to modify by specifying a predicate in the options.
          */
-        overrideEnvironmentVariables(environmentVariables: Record<string, string>): Component;
+        overrideEnvironmentVariables(environmentVariables: Record<string, string>, predicate?: Predicate): Component;
+        
+        /**
+         * Overrides the environment variables in the container specs of all workload resources. Sets the given
+         * environment variable values only if the environment variable already exists in the container spec.
+         * It is possible to filter which documents and containers to modify by specifying a predicate in the options.
+         */
+        overrideEnvironmentVariables(name: string, value: string, predicate?: Predicate): Component;
     }
 }
 
-Builder.prototype.overrideEnvironmentVariables = function (this: Builder, arg: Options | Record<string, string>): Component {
-    if (typeof arg !== "object") {
+Builder.prototype.overrideEnvironmentVariables = function (
+    this: Builder,
+    first: Options | Record<string, string> | string,
+    second?: string | Predicate,
+    third?: Predicate
+): Component {
+    if (typeof first === "string") {
+        if (typeof second !== "string") {
+            throw new Error("Invalid argument expected string for value");
+        }
+
+        if (third && typeof third !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options({ [first]: second }, third));
+    }
+
+    if (typeof first !== "object") {
         throw new Error("Invalid argument");
     }
 
-    if (Object.getOwnPropertyNames(arg).every(property => typeof Object.getOwnPropertyDescriptor(arg, property)?.value === "string")) {
-        return add(this, new Options(arg as Record<string, string>));
+    if (Object.getOwnPropertyNames(first).every(property => typeof Object.getOwnPropertyDescriptor(first, property)?.value === "string")) {
+        if (second && typeof second !== "function") {
+            throw new Error("Invalid argument expected function for predicate");
+        }
+
+        return add(this, new Options(first as Record<string, string>, second as Predicate));
     }
 
-    return add(this, arg as Options);
+    return add(this, first as Options);
 }

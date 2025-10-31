@@ -5,6 +5,8 @@ import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 import { Workload } from "@ohayocorp/anemos/documentExtensions";
 
+export type Predicate = (document: Document, context: BuildContext) => boolean;
+
 export const componentType = "add-workload-image-pull-secret-names";
 
 export class Options {
@@ -12,9 +14,9 @@ export class Options {
     imagePullSecretNames: string[];
     
     /** Predicate to filter which documents to modify. All workload documents will be modified if not specified. */
-    predicate?: (context: BuildContext, document: Document) => boolean;
+    predicate?: Predicate;
 
-    constructor(imagePullSecretNames: string[], predicate?: (context: BuildContext, document: Document) => boolean) {
+    constructor(imagePullSecretNames: string[], predicate?: Predicate) {
         this.imagePullSecretNames = imagePullSecretNames;
         this.predicate = predicate;
     }
@@ -40,7 +42,7 @@ export class Component extends AnemosComponent {
                 continue;
             }
 
-            if (this.options.predicate && !this.options.predicate(context, document)) {
+            if (this.options.predicate && !this.options.predicate(document, context)) {
                 continue;
             }
 
@@ -89,15 +91,30 @@ declare module "@ohayocorp/anemos" {
         /**
          * Adds given image pull secret names to the pod spec of all workload resources.
          */
-        addWorkloadImagePullSecretNames(imagePullSecretNames: string[]): Component;
+        addWorkloadImagePullSecretNames(imagePullSecretNames: string[], predicate?: Predicate): Component;
+        
+        /**
+         * Adds given image pull secret names to the pod spec of all workload resources.
+         */
+        addWorkloadImagePullSecretNames(imagePullSecretName: string, predicate?: Predicate): Component;
     }
 }
 
-Builder.prototype.addWorkloadImagePullSecretNames = function (this: Builder, arg: Options | string[]): Component {
-    if (Array.isArray(arg)) {
-        return add(this, new Options(arg));
-    } else if (typeof arg === "object") {
+Builder.prototype.addWorkloadImagePullSecretNames = function (this: Builder, arg: Options | string[] | string, predicate?: Predicate): Component {
+    if (typeof arg === "object") {
         return add(this, arg as Options);
+    }
+    
+    if (predicate && typeof predicate !== "function") {
+        throw new Error("Invalid argument expected function for predicate");
+    }
+
+    if (Array.isArray(arg)) {
+        return add(this, new Options(arg, predicate));
+    }
+    
+    if (typeof arg === "string") {
+        return add(this, new Options([arg], predicate));
     }
 
     throw new Error("Invalid argument");
