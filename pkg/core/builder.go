@@ -342,7 +342,7 @@ func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Bu
 	runtime.Set("__anemos__flags__skipConfirmation", jsRuntime.Flags[JsRuntimeMetadataBuilderSkipConfirmation] == "true")
 
 	_, err = runtime.RunScript("builderDefaults.js", `
-		const __anemos__require = require("@ohayocorp/anemos");
+		__anemos__require = require("@ohayocorp/anemos");
 
 		// Register default native components.
 		__anemos__builder.deleteOutputDirectory();
