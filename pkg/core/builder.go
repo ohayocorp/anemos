@@ -91,6 +91,12 @@ func (builder *Builder) AddDocumentWithOptions(jsRuntime *js.JsRuntime, options 
 	})
 }
 
+func (builder *Builder) AddDocumentGroup(documentGroup *DocumentGroup) {
+	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
+		context.AddDocumentGroup(documentGroup)
+	})
+}
+
 func (builder *Builder) AddAdditionalFile(additionalFile *AdditionalFile) {
 	builder.OnStep(StepGenerateResources, func(context *BuildContext) {
 		context.AddAdditionalFile(additionalFile)
@@ -393,6 +399,7 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddDocument"),
 		js.Method("AddDocumentString").JsName("addDocument"),
 		js.Method("AddDocumentWithOptions").JsName("addDocument"),
+		js.Method("AddDocumentGroup"),
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),
 		js.Method("OnStep"),

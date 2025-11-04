@@ -63,6 +63,11 @@ export declare class Builder {
     addDocument(options: NewDocumentOptions): void;
 
     /**
+     * Adds the given {@link DocumentGroup} during the {@link steps.generateResources} step.
+     */
+    addDocumentGroup(documentGroup: DocumentGroup): void;
+
+    /**
      * Adds the given additional file to a {@link DocumentGroup} named "" during the {@link steps.generateResources} step.
      * 
      * Checks for an existing {@link DocumentGroup} with the name "" and adds the document to it if it exists.
