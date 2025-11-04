@@ -22,3 +22,25 @@ export * from '@ohayocorp/anemos/writeDocuments';
 
 export * from '@ohayocorp/anemos/documentExtensions';
 export * from '@ohayocorp/anemos/components';
+
+declare global {
+    interface Console {
+        log(...data: any[]): void;
+    }
+
+    interface Process {
+        argv: string[];
+
+        env: {
+            [key: string]: string | undefined;
+        };
+
+        chdir(directory: string): void;
+        cwd(): string;
+    }
+
+    var console: Console;
+    var process: Process;
+
+    function require(module: string): any;
+}
