@@ -177,6 +177,22 @@ func (document *Document) ToJSON(jsRuntime *js.JsRuntime, dummy string) sobek.Va
 	return jsRuntime.Runtime.ToValue(object)
 }
 
+func jsToNewDocumentOptions(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*NewDocumentOptions, error) {
+	jsObject := jsValue.ToObject(jsRuntime.Runtime)
+	propertyNames := jsObject.GetOwnPropertyNames()
+
+	if !slices.Contains(propertyNames, "content") {
+		return nil, fmt.Errorf("content must be specified")
+	}
+
+	value, err := jsRuntime.MarshalToGo(jsValue, reflect.TypeFor[NewDocumentOptions]())
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal JavaScript value to NewDocumentOptions: %w", err)
+	}
+
+	return value.Interface().(*NewDocumentOptions), nil
+}
+
 func registerDocument(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Document]()).JsModule(
 		"document",
@@ -205,5 +221,7 @@ func registerDocument(jsRuntime *js.JsRuntime) {
 		js.Field("Object").JsName("content"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewNewDocumentOptions)),
+	).TypeConversion(
+		reflect.ValueOf(jsToNewDocumentOptions),
 	)
 }
