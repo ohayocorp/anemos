@@ -26,6 +26,7 @@ export class Component extends AnemosComponent {
 
         this.addAction(steps.sanitize, this.sanitize);
         this.addAction(new Step("Collect CRDs", [...steps.modify.numbers, 1]), this.modify);
+        this.addAction(new Step("Provision CRDs before all", [...steps.specifyProvisionerDependencies.numbers, 1]), this.specifyProvisionerDependencies);
     }
 
     sanitize = (_: BuildContext) => {
@@ -62,6 +63,27 @@ export class Component extends AnemosComponent {
 
         if (crds.documents.length > 0) {
             context.addDocumentGroup(crds);
+        }
+    }
+
+    specifyProvisionerDependencies = (context: BuildContext) => {
+        const documentGroups = context.getDocumentGroups(this);
+        if (documentGroups.length == 0) {
+            return;
+        }
+        
+        if (documentGroups.length != 1) {
+            throw new Error(`Expected exactly one document group for component ${this.getIdentifier()}, but found ${documentGroups.length}.`);
+        }
+
+        const thisDocumentGroup = documentGroups[0];
+
+        for (const documentGroup of context.getDocumentGroups()) {
+            if (documentGroup === thisDocumentGroup) {
+                continue;
+            }
+
+            documentGroup.provisionAfter(thisDocumentGroup);
         }
     }
 }

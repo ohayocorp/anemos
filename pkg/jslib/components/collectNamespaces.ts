@@ -5,6 +5,7 @@ import { DocumentGroup } from "@ohayocorp/anemos/documentGroup";
 import { Document } from "@ohayocorp/anemos/document";
 import { Step } from "@ohayocorp/anemos/step";
 import * as steps from "@ohayocorp/anemos/steps";
+import * as collectCRDs from "./collectCRDs";
 
 export const componentType = "collect-namespaces";
 
@@ -26,6 +27,7 @@ export class Component extends AnemosComponent {
 
         this.addAction(steps.sanitize, this.sanitize);
         this.addAction(new Step("Collect Namespaces", [...steps.modify.numbers, 1]), this.modify);
+        this.addAction(new Step("Provision Namespaces before all", [...steps.specifyProvisionerDependencies.numbers, 2]), this.specifyProvisionerDependencies);
     }
 
     sanitize = (_: BuildContext) => {
@@ -62,6 +64,27 @@ export class Component extends AnemosComponent {
 
         if (namespaces.documents.length > 0) {
             context.addDocumentGroup(namespaces);
+        }
+    }
+
+    specifyProvisionerDependencies = (context: BuildContext) => {
+        const documentGroups = context.getDocumentGroups(this);
+        if (documentGroups.length == 0) {
+            return;
+        }
+        
+        if (documentGroups.length != 1) {
+            throw new Error(`Expected exactly one document group for component ${this.getIdentifier()}, but found ${documentGroups.length}.`);
+        }
+
+        const thisDocumentGroup = documentGroups[0];
+
+        for (const documentGroup of context.getDocumentGroups()) {
+            if (documentGroup === thisDocumentGroup || documentGroup.getComponent()?.getComponentType() === collectCRDs.componentType) {
+                continue;
+            }
+
+            documentGroup.provisionAfter(thisDocumentGroup);
         }
     }
 }

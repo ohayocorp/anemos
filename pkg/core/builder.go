@@ -357,6 +357,8 @@ func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Bu
 		// Register default components from the JavaScript libraries.
 		__anemos__require.sortFields.add(__anemos__builder);
 		__anemos__require.setDefaultProvisionerDependencies.add(__anemos__builder);
+		__anemos__require.collectCRDs.add(__anemos__builder);
+		__anemos__require.collectNamespaces.add(__anemos__builder);
 
 		if (__anemos__flags__apply) {
 			const applyOptions = {
