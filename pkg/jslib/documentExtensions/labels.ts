@@ -115,6 +115,13 @@ class WorkloadSelector extends LabelSetter {
             return undefined;
         }
 
+        // Specifying pod selector for Jobs is not necessary most of the time. If a custom
+        // selector is needed, users can set it manually.
+        // https://kubernetes.io/docs/concepts/workloads/controllers/job/#specifying-your-own-pod-selector
+        if (document.isJob()) {
+            return undefined;
+        }
+
         super.ensureObject(document, ["spec", "selector", "matchLabels"]);
         return document.spec.selector.matchLabels;
     }
