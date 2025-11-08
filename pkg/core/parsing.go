@@ -147,6 +147,42 @@ func tryParseScalar(jsRuntime *js.JsRuntime, node *yaml.Node) sobek.Value {
 	}
 
 	if tag == "!!int" {
+		hasHexadecimalPrefix := strings.HasPrefix(node.Value, "0x") || strings.HasPrefix(node.Value, "0X")
+		hasOctalPrefix := strings.HasPrefix(node.Value, "0o") || strings.HasPrefix(node.Value, "0O")
+		hasBinaryPrefix := strings.HasPrefix(node.Value, "0b") || strings.HasPrefix(node.Value, "0B")
+
+		if hasHexadecimalPrefix {
+			if value, err := strconv.ParseInt(node.Value[2:], 16, 64); err == nil {
+				return jsRuntime.Runtime.ToValue(value)
+			}
+		}
+
+		if hasOctalPrefix {
+			if value, err := strconv.ParseInt(node.Value[2:], 8, 64); err == nil {
+				return jsRuntime.Runtime.ToValue(value)
+			}
+		}
+
+		if hasBinaryPrefix {
+			if value, err := strconv.ParseInt(node.Value[2:], 2, 64); err == nil {
+				return jsRuntime.Runtime.ToValue(value)
+			}
+		}
+
+		isLegacyOctal := strings.HasPrefix(node.Value, "0") && node.Value != "0" && !hasHexadecimalPrefix && !hasOctalPrefix && !hasBinaryPrefix
+		for _, c := range node.Value[1:] {
+			if c < '0' || c > '7' {
+				isLegacyOctal = false
+				break
+			}
+		}
+
+		if isLegacyOctal {
+			if value, err := strconv.ParseInt(node.Value[1:], 8, 64); err == nil {
+				return jsRuntime.Runtime.ToValue(value)
+			}
+		}
+
 		if value, err := strconv.ParseInt(node.Value, 10, 64); err == nil {
 			return jsRuntime.Runtime.ToValue(value)
 		}
