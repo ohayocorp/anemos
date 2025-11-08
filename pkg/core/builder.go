@@ -175,6 +175,11 @@ func (builder *Builder) Build() {
 						continue
 					}
 
+					if !strings.HasPrefix(strings.TrimSpace(line), "at ") {
+						builder.WriteString(fmt.Sprintf("%s\n", line))
+						continue
+					}
+
 					line = strings.TrimSpace(line)
 					line = strings.TrimPrefix(line, "at")
 					line = strings.TrimSpace(line)
