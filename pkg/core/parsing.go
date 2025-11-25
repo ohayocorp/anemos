@@ -194,6 +194,10 @@ func tryParseScalar(jsRuntime *js.JsRuntime, node *yaml.Node) sobek.Value {
 		}
 	}
 
+	if tag == "!!null" {
+		return sobek.Null()
+	}
+
 	return jsRuntime.Runtime.ToValue(node.Value)
 }
 
