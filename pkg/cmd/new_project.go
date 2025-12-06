@@ -148,23 +148,27 @@ func newProject(program *AnemosProgram, args []string, language language, projec
 		return err
 	}
 
-	anemosTypesPath := filepath.Join(output, ".anemos", "types")
+	if language == typescript {
+		anemosTypesPath := filepath.Join(output, ".anemos", "types")
 
-	err = writeDeclarations(program, anemosTypesPath)
-	if err != nil {
-		return fmt.Errorf("failed to write declarations: %w", err)
+		err = writeDeclarations(program, anemosTypesPath)
+		if err != nil {
+			return fmt.Errorf("failed to write declarations: %w", err)
+		}
+
+		slog.Info("Initializing packages in ${directory}", slog.String("directory", output))
+
+		return js.RunBunCommand(js.BunCommand{
+			Description: "Initialize packages",
+			Args:        []string{"install"},
+			Cwd:         &output,
+			Stdout:      os.Stdout,
+			Stderr:      os.Stderr,
+			Stdin:       os.Stdin,
+		})
 	}
 
-	slog.Info("Initializing packages in ${directory}", slog.String("directory", output))
-
-	return js.RunBunCommand(js.BunCommand{
-		Description: "Initialize packages",
-		Args:        []string{"install"},
-		Cwd:         &output,
-		Stdout:      os.Stdout,
-		Stderr:      os.Stderr,
-		Stdin:       os.Stdin,
-	})
+	return nil
 }
 
 func copyFS(dir string, fsys fs.FS, projectName string) error {
