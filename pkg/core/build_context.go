@@ -173,7 +173,12 @@ func (context *BuildContext) GetDocumentGroupWithPath(path string) *DocumentGrou
 }
 
 func (context *BuildContext) GetDocumentGroupsForComponent(component *Component) []*DocumentGroup {
-	return context.documentGroups[component]
+	documentGroups := context.documentGroups[component]
+	if documentGroups == nil {
+		return []*DocumentGroup{}
+	}
+
+	return documentGroups
 }
 
 func (context *BuildContext) GetCurrentComponent() *Component {
