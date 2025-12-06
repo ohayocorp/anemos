@@ -96,7 +96,7 @@ func ResolvePath(path string, mayNotExist bool) (string, error) {
 
 func pathResolver(jsRuntime *JsRuntime, base, path string) string {
 	for _, module := range jsRuntime.EmbeddedModules {
-		if strings.HasPrefix(path, module.ModulePath) {
+		if path == module.ModulePath || strings.HasPrefix(path, module.ModulePath+"/") {
 			// Module will be loaded from embedded modules, base path is ignored.
 			return path
 		}
