@@ -1,21 +1,24 @@
 import * as anemos from "@ohayocorp/anemos";
 
-const builder = new anemos.Builder("1.31", anemos.KubernetesDistribution.Minikube, anemos.EnvironmentType.Development);
+const builder = new anemos.Builder();
+
+const name = "PACKAGE_NAME";
+const namespace = "default";
+const image = "nginx:latest";
 
 builder.addDocument(
-    `pod.yaml`,
     `
     apiVersion: v1
     kind: Pod
     metadata:
-      name: nginx
-      namespace: default
+      name: ${name}
+      namespace: ${namespace}
       labels:
-        app: nginx
+        app: ${name}
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: ${image}
           ports:
             - containerPort: 80
     `);

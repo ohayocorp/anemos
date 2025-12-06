@@ -32,7 +32,6 @@ class Component extends anemos.Component {
      */
     generateResources = (context) => {
         const pod = new anemos.Document(
-            `pod.yaml`,
             `
             apiVersion: "v1"
             kind: "Pod"

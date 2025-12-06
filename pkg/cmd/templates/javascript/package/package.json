@@ -4,11 +4,5 @@
   "files": [
     "lib"
   ],
-  "main": "lib/index.js",
-  "workspaces": [
-    ".anemos/types"
-  ],
-  "devDependencies": {
-    "@ohayocorp/anemos": "workspace:.anemos/types"
-  }
+  "main": "lib/index.js"
 }
