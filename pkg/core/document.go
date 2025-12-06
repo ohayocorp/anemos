@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"path"
 	"reflect"
@@ -185,12 +186,54 @@ func jsToNewDocumentOptions(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*NewD
 		return nil, fmt.Errorf("content must be specified")
 	}
 
-	value, err := jsRuntime.MarshalToGo(jsValue, reflect.TypeFor[NewDocumentOptions]())
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal JavaScript value to NewDocumentOptions: %w", err)
+	var path *string
+	var documentGroup *string
+
+	if slices.Contains(propertyNames, "path") {
+		pathJs := jsObject.Get("path")
+		pathValue, err := jsRuntime.MarshalToGo(pathJs, reflect.TypeFor[*string]())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal JavaScript value to *string: %w", err)
+		}
+
+		path = pathValue.Interface().(*string)
 	}
 
-	return value.Interface().(*NewDocumentOptions), nil
+	if slices.Contains(propertyNames, "documentGroup") {
+		documentGroupJs := jsObject.Get("documentGroup")
+		documentGroupValue, err := jsRuntime.MarshalToGo(documentGroupJs, reflect.TypeFor[*string]())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal JavaScript value to *string: %w", err)
+		}
+
+		documentGroup = documentGroupValue.Interface().(*string)
+	}
+
+	content := jsObject.Get("content")
+
+	yamlContentValue, yamlErr := jsRuntime.MarshalToGo(content, reflect.TypeFor[string]())
+	if yamlErr == nil {
+		yamlContent := yamlContentValue.Interface().(string)
+
+		return &NewDocumentOptions{
+			Yaml:          &yamlContent,
+			Path:          path,
+			DocumentGroup: documentGroup,
+		}, nil
+	}
+
+	objectContentValue, objectErr := jsRuntime.MarshalToGo(content, reflect.TypeFor[*sobek.Object]())
+	if objectErr == nil {
+		object := objectContentValue.Interface().(*sobek.Object)
+
+		return &NewDocumentOptions{
+			Object:        object,
+			Path:          path,
+			DocumentGroup: documentGroup,
+		}, nil
+	}
+
+	return nil, fmt.Errorf("failed to marshal JavaScript value to NewDocumentOptions: %w", errors.Join(yamlErr, objectErr))
 }
 
 func registerDocument(jsRuntime *js.JsRuntime) {
