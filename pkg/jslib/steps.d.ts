@@ -3,6 +3,7 @@ import { Step } from "./step";
 
 /**
  * Built-in steps in execution order:
+ * - {@link configureBuilder}                       -> 0
  * - {@link populateKubernetesResources}            -> 1
  * - {@link sanitize}                               -> 2
  * - {@link generateResources}                      -> 5
@@ -15,6 +16,11 @@ import { Step } from "./step";
  * - {@link apply}                                  -> 100
  */
 
+/**
+ * Use this step to configure components of the builder. For example, you can remove default components
+ * or replace them with your own.
+ */
+export const configureBuilder: Step;
 
 /**
  * Use this step to populate {@link KubernetesResource} resources so that other components can rely on this

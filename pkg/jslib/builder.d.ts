@@ -31,6 +31,18 @@ export declare class Builder {
     removeComponent(component: Component): void;
 
     /**
+     * Removes component with given identifier from the list of components.
+     * @param identifier Component identifier
+     */
+    removeComponent(identifier: string): void;
+
+    /**
+     * Removes all components with given type from the list of components.
+     * @param componentType Component type
+     */
+    removeComponents(componentType: string): void;
+
+    /**
      * Adds a component that creates a document group with the given name during {@link steps.generateResources}.
      * Document group doesn't contain any documents, it serves as a placeholder for provision dependencies.
      * @param name
@@ -85,6 +97,12 @@ export declare class Builder {
 
     /** Creates a new component with the given action and adds it to the list of components. */
     onStep(step: Step, callback: (context: BuildContext) => void): Component;
+
+    /**
+     * Creates a new component with the given action that will be run during {@link steps.configureBuilder}
+     * and adds it to the list of components.
+     */
+    onConfigureBuilder(callback: (context: BuildContext) => void): Component;
 
     /**
      * Creates a new component with the given action that will be run during {@link steps.populateKubernetesResources}

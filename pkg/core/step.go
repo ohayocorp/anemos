@@ -9,6 +9,10 @@ import (
 )
 
 var (
+	// Use this step to configure components of the builder. For example, you can remove default components
+	// or replace them with your own.
+	StepConfigureBuilder = NewStep("Configure builder", 0)
+
 	// Use this step to populate [KubernetesResource] resources so that other components can rely on this
 	// information to modify existing resources or generate extra resources.
 	// E.g. when ServiceMonitor is added on this step, other components can generate ServiceMonitor resources
@@ -104,6 +108,7 @@ func (s *Step) Compare(other Step) int {
 }
 
 func registerStep(jsRuntime *js.JsRuntime) {
+	jsRuntime.Variable("steps", "configureBuilder", reflect.ValueOf(StepConfigureBuilder))
 	jsRuntime.Variable("steps", "populateKubernetesResources", reflect.ValueOf(StepPopulateKubernetesResources))
 	jsRuntime.Variable("steps", "sanitize", reflect.ValueOf(StepSanitize))
 	jsRuntime.Variable("steps", "generateResources", reflect.ValueOf(StepGenerateResources))
