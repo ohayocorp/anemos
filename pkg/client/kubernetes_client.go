@@ -159,12 +159,12 @@ func (client *KubernetesClient) getRestClient(mapping *meta.RESTMapping) (resour
 }
 
 func getApplySetParentName(applySetParentName string) string {
-	return fmt.Sprintf("%s.anemos.sh", applySetParentName)
+	return fmt.Sprintf("sh.anemos.%s", applySetParentName)
 }
 
 func cleanupApplySetParentName(applySetParentName string) string {
-	if strings.HasSuffix(applySetParentName, ".anemos.sh") {
-		return strings.TrimSuffix(applySetParentName, ".anemos.sh")
+	if strings.HasPrefix(applySetParentName, "sh.anemos.") {
+		return strings.TrimPrefix(applySetParentName, "sh.anemos.")
 	}
 	return applySetParentName
 }
