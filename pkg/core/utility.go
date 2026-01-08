@@ -38,7 +38,7 @@ func SortedKeys[TKey cmp.Ordered, TValue any](m map[TKey]TValue) []TKey {
 		keys = append(keys, k)
 	}
 
-	sort.Slice(keys, func(i, j int) bool {
+	sort.SliceStable(keys, func(i, j int) bool {
 		return keys[i] < keys[j]
 	})
 
