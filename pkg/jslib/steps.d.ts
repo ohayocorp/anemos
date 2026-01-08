@@ -9,8 +9,12 @@ import { Step } from "./step";
  * - {@link generateResourcesBasedOnOtherResources} -> 5,1
  * - {@link modify}                                 -> 6
  * - {@link specifyProvisionerDependencies}         -> 7
+ * - {@link diagnose}                               -> 20
+ * - {@link report}                                 -> 30
  * - {@link output}                                 -> 99
+ * - {@link apply}                                  -> 100
  */
+
 
 /**
  * Use this step to populate {@link KubernetesResource} resources so that other components can rely on this
@@ -40,5 +44,14 @@ export const modify: Step;
 /** Specify provisioner dependencies in this step. */
 export const specifyProvisionerDependencies: Step;
 
+/** Diagnose the generated documents and report any issues. */
+export const diagnose: Step;
+
+/** Create reports from manifests and diagnostics. */
+export const report: Step;
+
 /** Write the outputs, e.g. documents and additional files in this step. */
 export const output: Step;
+
+/** Apply the resources to the Kubernetes cluster in this step. */
+export const apply: Step;

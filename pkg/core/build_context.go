@@ -19,6 +19,8 @@ type BuildContext struct {
 
 	builder          *Builder
 	documentGroups   map[*Component][]*DocumentGroup
+	diagnostics      map[*Component][]*Diagnostic
+	reports          map[*Component][]*Report
 	currentComponent *Component
 }
 
@@ -30,6 +32,8 @@ func NewBuildContext(builder *Builder, options *BuilderOptions) *BuildContext {
 		JsRuntime:              builder.jsRuntime,
 		builder:                builder,
 		documentGroups:         map[*Component][]*DocumentGroup{},
+		diagnostics:            map[*Component][]*Diagnostic{},
+		reports:                map[*Component][]*Report{},
 	}
 
 }
@@ -205,6 +209,34 @@ func (context *BuildContext) GetComponentWithIdentifier(identifier string) *Comp
 	return nil
 }
 
+func (context *BuildContext) AddDiagnostic(diagnostic *Diagnostic) {
+	context.diagnostics[context.currentComponent] = append(context.diagnostics[context.currentComponent], diagnostic)
+	diagnostic.component = context.currentComponent
+}
+
+func (context *BuildContext) AddReport(report *Report) {
+	context.reports[context.currentComponent] = append(context.reports[context.currentComponent], report)
+	report.component = context.currentComponent
+}
+
+func (context *BuildContext) GetAllDiagnostics() []*Diagnostic {
+	diagnostics := []*Diagnostic{}
+	for _, d := range context.diagnostics {
+		diagnostics = append(diagnostics, d...)
+	}
+
+	return diagnostics
+}
+
+func (context *BuildContext) GetAllReports() []*Report {
+	reports := []*Report{}
+	for _, r := range context.reports {
+		reports = append(reports, r...)
+	}
+
+	return reports
+}
+
 func (context *BuildContext) IsDevelopment() bool {
 	return context.BuilderOptions.Environment.Type == EnvironmentTypeDevelopment
 }
@@ -233,6 +265,10 @@ func registerBuildContext(jsRuntime *js.JsRuntime) {
 		js.Method("GetDocument"),
 		js.Method("GetDocumentWithPath").JsName("getDocument"),
 		js.Method("RemoveDocumentGroup"),
+		js.Method("AddDiagnostic"),
+		js.Method("AddReport"),
+		js.Method("GetAllDiagnostics"),
+		js.Method("GetAllReports"),
 		js.Method("IsDevelopment"),
 		js.Method("IsProduction"),
 	)

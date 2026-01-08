@@ -1,6 +1,8 @@
 import { Document, NewDocumentOptions } from "./document";
 import { Component } from "./component";
 import { BuilderOptions } from "./builderOptions";
+import { Diagnostic } from "./diagnostic";
+import { Report } from "./report";
 import { KubernetesResourceInfo } from "./kubernetesResourceInfo";
 import { DocumentGroup, AdditionalFile } from "./documentGroup";
 
@@ -71,6 +73,18 @@ export declare class BuildContext {
 
     /** Returns the first document that has the given path. Returns null if no document is found. */
     getDocument(path: string): Document | null;
+
+    /** Adds a diagnostic to the build context. */
+    addDiagnostic(diagnostic: Diagnostic): void;
+
+    /** Adds a report to the build context. */
+    addReport(report: Report): void;
+
+    /** Returns all diagnostics added to the build context. */
+    getAllDiagnostics(): Diagnostic[];
+
+    /** Returns all reports added to the build context. */
+    getAllReports(): Report[];
 
     /** Returns true if the target environment is development. */
     isDevelopment(): boolean;

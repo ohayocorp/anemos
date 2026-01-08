@@ -1,6 +1,5 @@
 import { DocumentGroup } from "./documentGroup";
 
-
 export declare enum ProvisionerType {
     Apply,
     Wait

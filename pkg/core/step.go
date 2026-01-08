@@ -31,6 +31,12 @@ var (
 	// Specify provisioner dependencies in this step.
 	StepSpecifyProvisionerDependencies = NewStep("Specify provisioner dependencies", 7)
 
+	// Diagnose the generated documents and report any issues.
+	StepDiagnose = NewStep("Diagnose", 20)
+
+	// Create reports from manifests and diagnostics.
+	StepReport = NewStep("Report", 30)
+
 	// Write the outputs, e.g. documents and additional files in this step.
 	StepOutput = NewStep("Output", 99)
 
@@ -104,6 +110,8 @@ func registerStep(jsRuntime *js.JsRuntime) {
 	jsRuntime.Variable("steps", "generateResourcesBasedOnOtherResources", reflect.ValueOf(StepGenerateResourcesBasedOnOtherResources))
 	jsRuntime.Variable("steps", "modify", reflect.ValueOf(StepModify))
 	jsRuntime.Variable("steps", "specifyProvisionerDependencies", reflect.ValueOf(StepSpecifyProvisionerDependencies))
+	jsRuntime.Variable("steps", "diagnose", reflect.ValueOf(StepDiagnose))
+	jsRuntime.Variable("steps", "report", reflect.ValueOf(StepReport))
 	jsRuntime.Variable("steps", "output", reflect.ValueOf(StepOutput))
 
 	jsRuntime.Type(reflect.TypeFor[Step]()).JsModule(

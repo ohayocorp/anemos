@@ -4,6 +4,8 @@ export * from '@ohayocorp/anemos/builder';
 export * from '@ohayocorp/anemos/builderOptions';
 export * from '@ohayocorp/anemos/component';
 export * from '@ohayocorp/anemos/deleteOutputDirectory';
+export * from '@ohayocorp/anemos/diagnostic';
+export * as diagnostics from '@ohayocorp/anemos/diagnostics';
 export * from '@ohayocorp/anemos/document';
 export * from '@ohayocorp/anemos/documentGroup';
 export * as environmentType from '@ohayocorp/anemos/environmentType';
@@ -14,6 +16,9 @@ export * as kubernetesDistribution from '@ohayocorp/anemos/kubernetesDistributio
 export * from '@ohayocorp/anemos/kubernetesResourceInfo';
 export * from '@ohayocorp/anemos/parsing';
 export * from '@ohayocorp/anemos/provisioner';
+export * from '@ohayocorp/anemos/quantity';
+export * from '@ohayocorp/anemos/report';
+export * as reports from '@ohayocorp/anemos/reports';
 export * from '@ohayocorp/anemos/serialization';
 export * from '@ohayocorp/anemos/step';
 export * as steps from '@ohayocorp/anemos/steps';
