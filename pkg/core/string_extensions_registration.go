@@ -12,4 +12,6 @@ func registerStringExtensions(jsRuntime *js.JsRuntime) {
 	jsRuntime.Function(reflect.ValueOf(util.Dedent)).JsModule("stringExtensions")
 	jsRuntime.Function(reflect.ValueOf(util.MultilineString)).JsModule("stringExtensions")
 	jsRuntime.Function(reflect.ValueOf(util.ToKubernetesIdentifier)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.Base64Encode)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.Base64Decode)).JsModule("stringExtensions")
 }
