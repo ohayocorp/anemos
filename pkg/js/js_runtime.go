@@ -29,7 +29,7 @@ type JsRuntime struct {
 	MainScriptPath         string
 	Registry               *require.Registry
 	Runtime                *sobek.Runtime
-	Flags                  map[string]string
+	BuilderDefaultsContext *sobek.Object
 	EmbeddedModules        []*EmbeddedModule
 	variableRegistrations  []*VariableRegistration
 	functionRegistrations  []*FunctionRegistration
@@ -41,8 +41,9 @@ type JsRuntime struct {
 }
 
 type JsScript struct {
-	Contents string
-	FilePath string
+	Contents       string
+	FilePath       string
+	MainScriptPath string
 }
 
 type EmbeddedModule struct {
@@ -213,7 +214,7 @@ func NewJsRuntime() *JsRuntime {
 
 	jsRuntime := &JsRuntime{
 		Runtime:                runtime,
-		Flags:                  make(map[string]string),
+		BuilderDefaultsContext: runtime.NewObject(),
 		typeRegistrations:      make(map[reflect.Type]*TypeRegistration),
 		typeConversions:        make(map[reflect.Type][]*TypeConversion),
 		templates:              make(map[reflect.Type]*DynamicObjectTemplate),
@@ -263,7 +264,7 @@ func (jsRuntime *JsRuntime) Run(script *JsScript, args []string) error {
 		return fmt.Errorf("no script provided to run")
 	}
 
-	jsRuntime.MainScriptPath = script.FilePath
+	jsRuntime.MainScriptPath = script.MainScriptPath
 	defer func() {
 		jsRuntime.MainScriptPath = ""
 	}()
@@ -464,25 +465,22 @@ func (jsRuntime *JsRuntime) initializeLib() error {
 	}
 
 	script := util.ParseTemplate(`
-		__anemos_existing_exports = exports;
-        exports = require("@ohayocorp/anemos");
-
-		{{ .IndexJs }}
-
-		exports = __anemos_existing_exports;
-		delete __anemos_existing_exports;
+		(() => {
+		    const exports = require("@ohayocorp/anemos");
+		    {{ .IndexJs }}
+		})();
 		`,
 		map[string]string{
-			"IndexJs": string(libIndexJs),
+			"IndexJs": util.Indent(string(libIndexJs), 4),
 		})
 
 	_, err = jsRuntime.Runtime.RunString(script)
 	if err != nil {
 		if sobekEx, ok := err.(*sobek.Exception); ok {
-			return fmt.Errorf("failed to run lib index.js: %s", sobekEx.String())
+			return fmt.Errorf("failed to run lib index.js: %s\n\n%s", sobekEx.String(), script)
 		}
 
-		return fmt.Errorf("failed to run lib index.js: %w", err)
+		return fmt.Errorf("failed to run lib index.js: %w\n\n%s", err, script)
 	}
 
 	return nil

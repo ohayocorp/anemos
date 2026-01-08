@@ -1,40 +1,44 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/ohayocorp/anemos/pkg/components"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/js"
 	"github.com/ohayocorp/anemos/pkg/k8s"
+	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/spf13/cobra"
+	cmdutil "k8s.io/kubectl/pkg/cmd/util"
 )
 
 func getBuildCommand(program *AnemosProgram) *cobra.Command {
-	var tscDirs []string
-	var apply bool
-	var skipConfirmation bool
-
 	command := &cobra.Command{
-		Use:   "build [js_file]",
+		Use:   "build [js_file|ts_file]",
 		Short: "Builds a project.",
-		RunE: func(ctx *cobra.Command, args []string) error {
-			return build(program, args, tscDirs, apply, skipConfirmation)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return build(cmd, args, program)
 		},
 		Args: cobra.MinimumNArgs(1),
 	}
 
-	command.Flags().StringSliceVar(&tscDirs, "tsc", nil, "Directories to compile with tsc.")
-	command.Flags().BoolVar(&apply, "apply", false, "Apply the generated manifests to the cluster.")
-	command.Flags().BoolVarP(&skipConfirmation, "yes", "y", false, "Skip confirmation prompt and apply changes directly")
+	command.Flags().Bool("apply", false, "Apply the generated manifests to the cluster.")
+	command.Flags().Bool("yes", false, "Skip confirmation prompt and apply changes directly")
+	command.Flags().Bool("force-conflicts", false, "Forcefully apply changes even if there are conflicts")
+	command.Flags().StringArrayP("document-groups", "d", nil, "Document groups to apply, other groups will be skipped")
 
 	return command
 }
 
-func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, skipConfirmation bool) error {
+func build(cmd *cobra.Command, args []string, program *AnemosProgram) error {
+	apply := cmdutil.GetFlagBool(cmd, "apply")
+	skipConfirmation := cmdutil.GetFlagBool(cmd, "yes")
+	forceConflicts := cmdutil.GetFlagBool(cmd, "force-conflicts")
+	documentGroups := cmdutil.GetFlagStringArray(cmd, "document-groups")
+
 	var jsFile string
 	if len(args) > 0 {
 		jsFile = args[0]
@@ -48,34 +52,19 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 		return err
 	}
 
-	err = writeTypeDeclarations(program, filepath.Dir(jsFile))
-	if err != nil {
-		return fmt.Errorf("failed to write type declarations: %w", err)
-	}
+	mainScriptPath := jsFile
 
-	for _, tscDir := range tscDirs {
-		tscDir, err := filepath.Abs(tscDir)
-		if err != nil {
-			return fmt.Errorf("failed to get absolute path: %s, %w", tscDir, err)
-		}
+	if strings.HasSuffix(jsFile, ".ts") {
+		tsFile := jsFile
+		tsFileDir := filepath.Dir(tsFile)
 
-		err = js.RunTsc(tscDir)
+		err = compileTypeScript(program, tsFile)
 		if err != nil {
 			return err
 		}
-	}
 
-	runtime, err := InitializeNewRuntime(program)
-	if err != nil {
-		return err
-	}
-
-	if apply {
-		runtime.Flags[core.JsRuntimeMetadataBuilderApply] = "true"
-	}
-
-	if skipConfirmation {
-		runtime.Flags[core.JsRuntimeMetadataBuilderSkipConfirmation] = "true"
+		compiledJsFile := fmt.Sprintf("%s.js", strings.TrimSuffix(filepath.Base(tsFile), filepath.Ext(tsFile)))
+		jsFile = filepath.Join(tsFileDir, "dist", compiledJsFile)
 	}
 
 	scriptContents, err := os.ReadFile(jsFile)
@@ -83,9 +72,20 @@ func build(program *AnemosProgram, args []string, tscDirs []string, apply bool, 
 		return fmt.Errorf("failed to read file: %s, %w", jsFile, err)
 	}
 
+	runtime, err := InitializeNewRuntime(program)
+	if err != nil {
+		return err
+	}
+
+	runtime.BuilderDefaultsContext.Set("apply", apply)
+	runtime.BuilderDefaultsContext.Set("skipConfirmation", skipConfirmation)
+	runtime.BuilderDefaultsContext.Set("forceConflicts", forceConflicts)
+	runtime.BuilderDefaultsContext.Set("documentGroups", documentGroups)
+
 	script := &js.JsScript{
-		Contents: string(scriptContents),
-		FilePath: jsFile,
+		Contents:       string(scriptContents),
+		FilePath:       jsFile,
+		MainScriptPath: mainScriptPath,
 	}
 
 	return runtime.Run(script, args)
@@ -119,41 +119,8 @@ func InitializeNewRuntime(program *AnemosProgram) (*js.JsRuntime, error) {
 }
 
 func writeTypeDeclarations(program *AnemosProgram, directory string) error {
-	// Find the package.json file in the directory of the jsFile and its parent directories
-	dirAbs, err := filepath.Abs(directory)
-	if err != nil {
-		return fmt.Errorf("failed to get absolute path: %s, %w", directory, err)
-	}
-
-	var packageJsonPath string
-	dir := dirAbs
-
-	for {
-		packageJsonPath = filepath.Join(dir, "package.json")
-		if _, err := os.Stat(packageJsonPath); err == nil {
-			break
-		}
-
-		parentDir := filepath.Dir(dir)
-		if parentDir == dir {
-			// Reached the root directory without finding package.json
-			return nil
-		}
-
-		dir = parentDir
-	}
-
-	packageJson, err := os.ReadFile(packageJsonPath)
-	if err != nil {
-		return fmt.Errorf("failed to read package.json: %s, %w", packageJsonPath, err)
-	}
-
-	if !containsAnemosDependency(packageJson) {
-		return nil
-	}
-
 	// Delete the existing type declarations directory if it exists.
-	typeDeclarationsDir := filepath.Join(dir, ".anemos", "types")
+	typeDeclarationsDir := filepath.Join(directory, ".anemos", "types")
 
 	entries, err := os.ReadDir(typeDeclarationsDir)
 	if err != nil && !os.IsNotExist(err) {
@@ -168,27 +135,74 @@ func writeTypeDeclarations(program *AnemosProgram, directory string) error {
 		}
 	}
 
-	return writeDeclarations(program, filepath.Join(dir, ".anemos", "types"))
+	return writeDeclarations(program, filepath.Join(directory, ".anemos", "types"))
 }
 
-func containsAnemosDependency(packageJson []byte) bool {
-	// Parse the package.json and check for anemos package in dependencies or devDependencies
-	parsedJson := make(map[string]interface{})
-	if err := json.Unmarshal(packageJson, &parsedJson); err != nil {
-		return false
+func compileTypeScript(program *AnemosProgram, tsFile string) error {
+	tempDir, err := os.MkdirTemp("", "anemos-tsc-")
+	if err != nil {
+		return fmt.Errorf("failed to create temporary directory for tsc: %w", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	err = writeTypeDeclarations(program, tempDir)
+	if err != nil {
+		return fmt.Errorf("failed to write type declarations: %w", err)
 	}
 
-	if dependencies, ok := parsedJson["dependencies"].(map[string]interface{}); ok {
-		if _, ok := dependencies[js.PackageName]; ok {
-			return true
-		}
+	tsFileSlash := filepath.ToSlash(tsFile)
+	tsFileDir := filepath.ToSlash(filepath.Dir(tsFileSlash))
+
+	tsconfig := util.ParseTemplate(`
+		{
+		  "compilerOptions": {
+		    "target": "ES2019",
+		    "lib": [
+		        "ES2019"
+		    ],
+		    "moduleResolution": "nodenext",
+		    "module": "NodeNext",
+		    "strict": true,
+		    "declaration": true,
+		    "inlineSourceMap": true,
+		    "outDir": "{{ .tsFileDir }}/dist",
+		    "rootDirs": [
+		      ".",
+		      "{{ .tsFileDir }}"
+		    ],
+		    "typeRoots": [
+		      ".anemos/types"
+		    ],
+		    "baseUrl": ".",
+		    "paths": {
+		      "@ohayocorp/anemos": [
+		        ".anemos/types/index.d.ts"
+		      ],
+		      "@ohayocorp/anemos/*": [
+		        ".anemos/types/*"
+		      ]
+		    }
+		  },
+		  "include": [
+		    "{{ .tsFileSlash }}"
+		  ]
+		}`,
+		map[string]string{
+			"tsFileDir":   tsFileDir,
+			"tsFileSlash": tsFileSlash,
+		},
+	)
+
+	tsconfigPath := filepath.Join(tempDir, "tsconfig.json")
+	err = os.WriteFile(tsconfigPath, []byte(tsconfig), 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write tsconfig.json: %w", err)
 	}
 
-	if devDependencies, ok := parsedJson["devDependencies"].(map[string]interface{}); ok {
-		if _, ok := devDependencies[js.PackageName]; ok {
-			return true
-		}
+	err = js.RunTsc(tempDir)
+	if err != nil {
+		return err
 	}
 
-	return false
+	return nil
 }

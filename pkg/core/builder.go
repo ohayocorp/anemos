@@ -2,6 +2,9 @@ package core
 
 import (
 	"bytes"
+	"crypto/rand"
+	_ "embed"
+	"encoding/hex"
 	"fmt"
 	"log/slog"
 	"path/filepath"
@@ -15,10 +18,8 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
-const (
-	JsRuntimeMetadataBuilderApply            = "builder/apply"
-	JsRuntimeMetadataBuilderSkipConfirmation = "builder/skipConfirmation"
-)
+//go:embed builderDefaults.js
+var builderDefaultsScript string
 
 // Builder is a collection of components.
 type Builder struct {
@@ -53,6 +54,28 @@ func (builder *Builder) RemoveComponent(component *Component) {
 			break
 		}
 	}
+}
+
+// Removes component with given identifier from the list of components.
+func (builder *Builder) RemoveComponentWithIdentifier(identifier string) {
+	for i, c := range builder.Components {
+		if c.GetIdentifier() != nil && *c.GetIdentifier() == identifier {
+			builder.Components = slices.Delete(builder.Components, i, i+1)
+			break
+		}
+	}
+}
+
+// Removes components with given type from the list of components.
+func (builder *Builder) RemoveComponentsWithType(componentType string) {
+	components := builder.Components
+	for i, c := range components {
+		if c.GetComponentType() != nil && *c.GetComponentType() == componentType {
+			components = slices.Delete(components, i, i+1)
+		}
+	}
+
+	builder.Components = components
 }
 
 // Adds a component that creates a document group with the given name during [StepGenerateResources].
@@ -118,6 +141,11 @@ func (builder *Builder) OnStep(step *Step, callback func(context *BuildContext))
 	return component
 }
 
+// Creates a new component with the given action that will be run during [StepConfigureBuilder] and adds it to the list of components.
+func (builder *Builder) OnConfigureBuilder(callback func(context *BuildContext)) *Component {
+	return builder.OnStep(StepConfigureBuilder, callback)
+}
+
 // Creates a new component with the given action that will be run during [StepPopulateKubernetesResources] and adds it to the list of components.
 func (builder *Builder) OnPopulateKubernetesResources(callback func(context *BuildContext)) *Component {
 	return builder.OnStep(StepPopulateKubernetesResources, callback)
@@ -162,7 +190,6 @@ func (builder *Builder) Build() {
 	}
 
 	steps := builder.getSteps()
-	components := builder.Components
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -234,6 +261,7 @@ func (builder *Builder) Build() {
 			slog.String("description", step.Description),
 			slog.String("step", step.String()))
 
+		components := builder.Components
 		for _, component := range components {
 			context.currentComponent = component
 
@@ -341,45 +369,7 @@ func NewBuilderWithOptions(options *BuilderOptions, jsRuntime *js.JsRuntime) *Bu
 	}
 
 	builder.sanitizeBuilderOptions(builder.Options)
-
-	builderJs, err := jsRuntime.MarshalToJs(reflect.ValueOf(builder))
-	if err != nil {
-		panic(fmt.Errorf("failed to marshal builder to JS: %w", err))
-	}
-
-	runtime := jsRuntime.Runtime
-	runtime.Set("__anemos__builder", builderJs)
-	runtime.Set("__anemos__flags__apply", jsRuntime.Flags[JsRuntimeMetadataBuilderApply] == "true")
-	runtime.Set("__anemos__flags__skipConfirmation", jsRuntime.Flags[JsRuntimeMetadataBuilderSkipConfirmation] == "true")
-
-	_, err = runtime.RunScript("builderDefaults.js", `
-		__anemos__require = require("@ohayocorp/anemos");
-
-		// Register default native components.
-		__anemos__builder.deleteOutputDirectory();
-		__anemos__builder.writeDocuments();
-
-		// Register default components from the JavaScript libraries.
-		__anemos__require.sortFields.add(__anemos__builder);
-		__anemos__require.setDefaultProvisionerDependencies.add(__anemos__builder);
-		__anemos__require.collectCRDs.add(__anemos__builder);
-		__anemos__require.collectNamespaces.add(__anemos__builder);
-
-		if (__anemos__flags__apply) {
-			const applyOptions = {
-				skipConfirmation: __anemos__flags__skipConfirmation
-			};
-
-			__anemos__builder.apply(applyOptions);
-		}
-
-		delete __anemos__builder;
-		delete __anemos__require;
-		`)
-
-	if err != nil {
-		panic(fmt.Errorf("failed to initialize builder defaults: %w", err))
-	}
+	initializeBuilderWithDefaults(jsRuntime, builder)
 
 	return builder
 }
@@ -393,6 +383,33 @@ func NewBuilderVersionDistributionEnvironmentType(version *semver.Version, distr
 	return NewBuilderWithOptions(options, jsRuntime)
 }
 
+func initializeBuilderWithDefaults(jsRuntime *js.JsRuntime, builder *Builder) {
+	builderJs, err := jsRuntime.MarshalToJs(reflect.ValueOf(builder))
+	if err != nil {
+		panic(fmt.Errorf("failed to marshal builder to JS: %w", err))
+	}
+
+	bytes := make([]byte, 8)
+	rand.Read(bytes)
+	uniqueString := hex.EncodeToString(bytes)
+	contextObjectIdentifier := fmt.Sprintf("__anemos__context__%s", uniqueString)
+
+	script := strings.ReplaceAll(builderDefaultsScript, "__anemos__context", contextObjectIdentifier)
+
+	runtime := jsRuntime.Runtime
+
+	contextObject := jsRuntime.BuilderDefaultsContext
+	contextObject.Set("builder", builderJs)
+
+	runtime.Set(contextObjectIdentifier, contextObject)
+
+	_, err = runtime.RunScript("builderDefaults.js", script)
+
+	if err != nil {
+		panic(fmt.Errorf("failed to initialize builder defaults: %w", err))
+	}
+}
+
 func registerBuilder(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Builder]()).JsModule(
 		"builder",
@@ -402,6 +419,8 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 	).Methods(
 		js.Method("AddComponent"),
 		js.Method("RemoveComponent"),
+		js.Method("RemoveComponentWithIdentifier").JsName("removeComponent"),
+		js.Method("RemoveComponentsWithType").JsName("removeComponents"),
 		js.Method("AddProvisionCheckpoint"),
 		js.Method("AddDocument"),
 		js.Method("AddDocumentString").JsName("addDocument"),
@@ -410,6 +429,7 @@ func registerBuilder(jsRuntime *js.JsRuntime) {
 		js.Method("AddAdditionalFile"),
 		js.Method("AddAdditionalFileWithGroupPath").JsName("addAdditionalFile"),
 		js.Method("OnStep"),
+		js.Method("OnConfigureBuilder"),
 		js.Method("OnPopulateKubernetesResources"),
 		js.Method("OnSanitize"),
 		js.Method("OnGenerateResources"),
