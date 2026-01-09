@@ -42,6 +42,7 @@ jobs:
           LD_FLAGS="${LD_FLAGS} -s -w"
 
           bash download-bun.sh
+          bash download-ts.sh
           tsc -p pkg/jslib/tsconfig.json
           
           OS_LIST=("linux" "windows" "darwin")

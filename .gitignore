@@ -23,5 +23,7 @@ go.work
 
 # Bun binaries
 bun-*.zip
+# TypeScript compiler binaries
+ts-*.tgz
 
 pkg/jslib/dist

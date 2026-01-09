@@ -173,13 +173,15 @@ func compileTypeScript(program *AnemosProgram, tsFile string) error {
 		    "typeRoots": [
 		      ".anemos/types"
 		    ],
-		    "baseUrl": ".",
 		    "paths": {
+		      "*": [
+		        "./*"
+		      ],
 		      "@ohayocorp/anemos": [
-		        ".anemos/types/index.d.ts"
+		        "./.anemos/types/index.d.ts"
 		      ],
 		      "@ohayocorp/anemos/*": [
-		        ".anemos/types/*"
+		        "./.anemos/types/*"
 		      ]
 		    }
 		  },

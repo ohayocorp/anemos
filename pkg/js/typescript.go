@@ -1,101 +1,132 @@
 package js
 
 import (
-	"archive/zip"
+	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	_ "embed"
 	"fmt"
 	"io"
 	"log/slog"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
-//go:embed ts/typescript-5-9-3.zip
-var TypeScriptPackage []byte
-var typeScriptTargetDirectory = filepath.Join(os.TempDir(), "anemos", "typescript", "5.9.3")
+var tsTargetDirectory = filepath.Join(os.TempDir(), "anemos", "typescript")
+var tsPath = filepath.Join(tsTargetDirectory, "lib", tsFileName)
 
 func RunTsc(tsconfigPath string) error {
-	// Running tsc with Goja requires many more NodeJS module definitions to be implemented. A working implementation
-	// is available in a private branch, but the performance is not acceptable for production use. So, it is not included
-	// in the main branch.
-
-	// Running tsc with Bun is about 10x faster than running it with Goja. Still, it can take seconds to compile
-	// large projects.
-	// When https://github.com/microsoft/typescript-go is released, we can switch to it.
-	return runTscWithBun(tsconfigPath)
+	return runTsGo(tsconfigPath)
 }
 
-func runTscWithBun(directory string) error {
+func runTsGo(directory string) error {
 	if err := extractTypeScriptPackage(); err != nil {
-		return fmt.Errorf("failed to extract typescript package: %w", err)
+		return fmt.Errorf("failed to extract TypeScript package: %w", err)
 	}
 
 	slog.Info(
-		"Running tsc with Bun to compile ${directory}",
+		"Running tsgo to compile ${directory}",
 		slog.String("directory", directory))
 
 	startTime := time.Now()
 
-	err := RunBunCommand(BunCommand{
-		Description: "TypeScript compilation",
-		Args:        []string{"run", filepath.Join(typeScriptTargetDirectory, "bin", "tsc")},
-		Cwd:         &directory,
-		Stdout:      os.Stdout,
-		Stderr:      os.Stderr,
-		Stdin:       os.Stdin,
-	})
+	cmd := exec.Command(tsPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Dir = directory
+
+	err := cmd.Run()
+
+	if err != nil {
+		return fmt.Errorf("TypeScript compilation failed with exit code %d", cmd.ProcessState.ExitCode())
+	}
 
 	endTime := time.Now()
-	slog.Debug("tsc execution time: ${duration}", slog.String("duration", endTime.Sub(startTime).String()))
+	slog.Debug("tsgo execution time: ${duration}", slog.String("duration", endTime.Sub(startTime).String()))
 
-	return err
+	return nil
 }
 
 func extractTypeScriptPackage() error {
-	checkPath := filepath.Join(typeScriptTargetDirectory, "bin", "tsc")
+	checkPath := filepath.Join(tsTargetDirectory, "lib", tsFileName)
 
 	if _, err := os.Stat(checkPath); err == nil {
-		slog.Debug("typescript package already extracted to ${path}", "path", checkPath)
+		slog.Debug("TypeScript package already extracted to ${path}", "path", checkPath)
 		return nil
 	}
 
-	err := os.MkdirAll(typeScriptTargetDirectory, os.ModePerm)
+	err := os.MkdirAll(tsTargetDirectory, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("failed to create target directory %s: %w", bunTargetDirectory, err)
+		return fmt.Errorf("failed to create target directory %s: %w", tsTargetDirectory, err)
 	}
 
-	zipReader, err := zip.NewReader(bytes.NewReader(TypeScriptPackage), int64(len(TypeScriptPackage)))
+	tgzReader, err := gzip.NewReader(bytes.NewReader(tsTgz))
 	if err != nil {
-		return fmt.Errorf("failed to create zip reader: %w", err)
+		return fmt.Errorf("failed to create gzip reader: %w", err)
 	}
 
-	for _, file := range zipReader.File {
-		destPath := filepath.Join(typeScriptTargetDirectory, file.Name)
-		if file.FileInfo().IsDir() {
-			err := os.MkdirAll(destPath, 0755)
-			if err != nil {
-				return fmt.Errorf("failed to create directory %s: %w", destPath, err)
-			}
+	defer tgzReader.Close()
+
+	tarReader := tar.NewReader(tgzReader)
+
+	for {
+		header, err := tarReader.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		name := strings.TrimPrefix(header.Name, "package/")
+		if name == "" {
 			continue
 		}
 
-		srcFile, err := file.Open()
-		if err != nil {
-			return fmt.Errorf("failed to open zip file %s: %w", file.Name, err)
-		}
-		defer srcFile.Close()
+		destPath := filepath.Join(tsTargetDirectory, name)
 
-		destFile, err := os.Create(destPath)
-		if err != nil {
-			return fmt.Errorf("failed to create file %s: %w", destPath, err)
-		}
-		defer destFile.Close()
+		switch header.Typeflag {
 
-		_, err = io.Copy(destFile, srcFile)
-		if err != nil {
-			return fmt.Errorf("failed to extract file %s: %w", file.Name, err)
+		case tar.TypeDir:
+			if err := os.MkdirAll(destPath, os.FileMode(header.Mode)); err != nil {
+				return err
+			}
+
+		case tar.TypeReg:
+			if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
+				return err
+			}
+
+			outFile, err := os.OpenFile(
+				destPath,
+				os.O_CREATE|os.O_RDWR|os.O_TRUNC,
+				os.FileMode(header.Mode),
+			)
+			if err != nil {
+				return err
+			}
+
+			if _, err := io.Copy(outFile, tarReader); err != nil {
+				outFile.Close()
+				return err
+			}
+			outFile.Close()
+
+		case tar.TypeSymlink:
+			if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
+				return err
+			}
+			linkName := strings.TrimPrefix(header.Linkname, "package/")
+			if err := os.Symlink(linkName, destPath); err != nil {
+				return err
+			}
+
+		default:
+			return fmt.Errorf("unknown type flag: %c", header.Typeflag)
 		}
 	}
 
