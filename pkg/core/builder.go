@@ -318,7 +318,7 @@ func (builder *Builder) sanitizeBuilderOptions(options *BuilderOptions) {
 	}
 
 	if options.Environment == nil {
-		options.Environment = NewEnvironment("none", EnvironmentTypeUnknown)
+		options.Environment = NewEnvironment("", EnvironmentTypeUnknown)
 	}
 
 	outputConfiguration := options.OutputConfiguration
