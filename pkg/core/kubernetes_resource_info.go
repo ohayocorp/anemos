@@ -120,12 +120,14 @@ func (info *KubernetesResourceInfo) populateBuiltInResources(version *semver.Ver
 	}
 
 	if version.Major() == DefaultKubernetesVersion.Major() && version.Minor() > DefaultKubernetesVersion.Minor() {
+		defaultVersion := fmt.Sprintf("%d.%d", DefaultKubernetesVersion.Major(), DefaultKubernetesVersion.Minor())
+
 		slog.Warn(
 			"Using Kubernetes version ${version} greater than ${defaultVersion}, Anemos may not support all resources. Using ${defaultVersion} resources as a base.",
 			slog.String("version", version.String()),
-			slog.String("defaultVersion", DefaultKubernetesVersion.String()))
+			slog.String("defaultVersion", defaultVersion))
 
-		funcs[DefaultKubernetesVersion.String()]()
+		funcs[defaultVersion]()
 		return
 	}
 
