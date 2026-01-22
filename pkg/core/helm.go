@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -28,9 +29,10 @@ import (
 
 // Options to create documents using Helm.
 type HelmOptions struct {
-	ReleaseName string
-	Namespace   string
-	Values      string
+	ReleaseName  string
+	Namespace    string
+	ValuesString *string
+	ValuesObject *sobek.Object
 }
 
 func NewHelmOptions(releaseName string, namespace string) *HelmOptions {
@@ -42,9 +44,9 @@ func NewHelmOptions(releaseName string, namespace string) *HelmOptions {
 
 func NewHelmOptionsWithValues(releaseName string, namespace string, values string) *HelmOptions {
 	return &HelmOptions{
-		ReleaseName: releaseName,
-		Namespace:   namespace,
-		Values:      values,
+		ReleaseName:  releaseName,
+		Namespace:    namespace,
+		ValuesString: &values,
 	}
 }
 
@@ -168,7 +170,7 @@ func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmO
 		client.KubeVersion = parsedKubeVersion
 	}
 
-	values := options.getValues()
+	values := options.getValues(context)
 
 	helmRelease, err := client.Run(chart, values)
 	if err != nil {
@@ -209,8 +211,19 @@ func GenerateFromChart(chart *chart.Chart, context *BuildContext, options *HelmO
 	return documentGroup
 }
 
-func (options *HelmOptions) getValues() (values map[string]interface{}) {
-	valuesYaml := util.MultilineString(options.Values)
+func (options *HelmOptions) getValues(context *BuildContext) (values map[string]interface{}) {
+	valuesYaml := ""
+
+	if options.ValuesString != nil {
+		valuesYaml = util.MultilineString(*options.ValuesString)
+	} else if options.ValuesObject != nil {
+		serializedValues, err := SerializeSobekObjectToYaml(context.JsRuntime, options.ValuesObject)
+		if err != nil {
+			js.Throw(fmt.Errorf("can't serialize values object to yaml, %v", err))
+		}
+
+		valuesYaml = serializedValues
+	}
 
 	slog.Debug("Values for helm chart, release name: ${releaseName}, values:\n${values}",
 		slog.String("releaseName", options.ReleaseName),
@@ -379,6 +392,53 @@ func fixNameClashes(group *DocumentGroup) {
 	}
 }
 
+func jsToHelmOptions(jsRuntime *js.JsRuntime, jsValue sobek.Value) (*HelmOptions, error) {
+	jsObject := jsValue.ToObject(jsRuntime.Runtime)
+	propertyNames := jsObject.GetOwnPropertyNames()
+
+	if !slices.Contains(propertyNames, "releaseName") || !slices.Contains(propertyNames, "namespace") {
+		return nil, fmt.Errorf("releaseName and namespace must be specified")
+	}
+
+	releaseNameValue, err := jsRuntime.MarshalToGo(jsObject.Get("releaseName"), reflect.TypeFor[string]())
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal releaseName JavaScript value to string: %w", err)
+	}
+
+	namespaceValue, err := jsRuntime.MarshalToGo(jsObject.Get("namespace"), reflect.TypeFor[string]())
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal namespace JavaScript value to string: %w", err)
+	}
+
+	releaseName := releaseNameValue.Interface().(string)
+	namespace := namespaceValue.Interface().(string)
+
+	options := &HelmOptions{
+		ReleaseName: releaseName,
+		Namespace:   namespace,
+	}
+
+	values := jsObject.Get("values")
+
+	valuesStringValue, yamlErr := jsRuntime.MarshalToGo(values, reflect.TypeFor[string]())
+	if yamlErr == nil {
+		valuesString := valuesStringValue.Interface().(string)
+		options.ValuesString = &valuesString
+
+		return options, nil
+	}
+
+	valuesObjectValue, objectErr := jsRuntime.MarshalToGo(values, reflect.TypeFor[*sobek.Object]())
+	if objectErr == nil {
+		valuesObject := valuesObjectValue.Interface().(*sobek.Object)
+		options.ValuesObject = valuesObject
+
+		return options, nil
+	}
+
+	return nil, fmt.Errorf("failed to marshal JavaScript value to HelmOptions: %w", errors.Join(yamlErr, objectErr))
+}
+
 func registerHelm(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[Builder]()).JsModule(
 		"builder",
@@ -404,9 +464,12 @@ func registerHelm(jsRuntime *js.JsRuntime) {
 	).Fields(
 		js.Field("ReleaseName"),
 		js.Field("Namespace"),
-		js.Field("Values"),
+		js.Field("ValuesString").JsName("values"),
+		js.Field("ValuesObject").JsName("values"),
 	).Constructors(
 		js.Constructor(reflect.ValueOf(NewHelmOptions)),
 		js.Constructor(reflect.ValueOf(NewHelmOptionsWithValues)),
+	).TypeConversion(
+		reflect.ValueOf(jsToHelmOptions),
 	)
 }

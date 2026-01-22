@@ -28,7 +28,7 @@ export class HelmOptions {
     namespace: string;
 
     /** Optional values file to use for the Helm chart. */
-    values?: string;
+    values?: string | object;
 }
 
 /**
