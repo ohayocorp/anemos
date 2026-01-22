@@ -10,7 +10,7 @@ export declare class FlowSchemaSpec {
     constructor();
     constructor(spec: Pick<FlowSchemaSpec, "distinguisherMethod" | "matchingPrecedence" | "priorityLevelConfiguration" | "rules">);
 
-	/**
+    /**
      * `distinguisherMethod` defines how to compute the flow distinguisher for requests that match this schema. `nil` specifies that the distinguisher is disabled and thus will always be the empty string.
      */
     distinguisherMethod?: FlowDistinguisherMethod

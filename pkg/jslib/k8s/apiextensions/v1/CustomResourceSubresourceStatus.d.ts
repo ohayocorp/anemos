@@ -7,7 +7,7 @@ export declare class CustomResourceSubresourceStatus {
     constructor();
     constructor(spec: {});
 
-	/**
+    /**
      * This declaration allows setting and getting custom properties on the document without TypeScript
      * compiler errors.
      */

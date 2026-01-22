@@ -15,7 +15,7 @@ export declare class PersistentVolumeSpec {
     constructor();
     constructor(spec: Pick<PersistentVolumeSpec, "accessModes" | "capacity" | "csi" | "fc" | "hostPath" | "iscsi" | "local" | "mountOptions" | "nfs" | "nodeAffinity" | "persistentVolumeReclaimPolicy" | "storageClassName" | "volumeAttributesClassName" | "volumeMode">);
 
-	/**
+    /**
      * AccessModes contains all ways the volume can be mounted. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes
      */
     accessModes?: Array<string>

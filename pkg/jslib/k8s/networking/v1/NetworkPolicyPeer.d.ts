@@ -9,7 +9,7 @@ export declare class NetworkPolicyPeer {
     constructor();
     constructor(spec: Pick<NetworkPolicyPeer, "ipBlock" | "namespaceSelector" | "podSelector">);
 
-	/**
+    /**
      * IpBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
      */
     ipBlock?: IPBlock

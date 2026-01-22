@@ -9,7 +9,7 @@ export declare class DownwardAPIVolumeFile {
     constructor();
     constructor(spec: Pick<DownwardAPIVolumeFile, "fieldRef" | "mode" | "path" | "resourceFieldRef">);
 
-	/**
+    /**
      * Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
      */
     fieldRef?: ObjectFieldSelector

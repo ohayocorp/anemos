@@ -7,7 +7,7 @@ export declare class TopologySelectorLabelRequirement {
     constructor();
     constructor(spec: Pick<TopologySelectorLabelRequirement, "key" | "values">);
 
-	/**
+    /**
      * The label key that the selector applies to.
      */
     key: string

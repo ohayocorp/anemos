@@ -8,7 +8,7 @@ export declare class ParamRef {
     constructor();
     constructor(spec: Pick<ParamRef, "name" | "namespace" | "parameterNotFoundAction" | "selector">);
 
-	/**
+    /**
      * Name is the name of the resource being referenced.
     
      * One of `name` or `selector` must be set, but `name` and `selector` are mutually exclusive properties. If one is set, the other must be unset.

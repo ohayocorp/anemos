@@ -10,7 +10,7 @@ export declare class ObjectMetricSource {
     constructor();
     constructor(spec: Pick<ObjectMetricSource, "describedObject" | "metric" | "target">);
 
-	/**
+    /**
      * DescribedObject specifies the descriptions of a object,such as kind,name apiVersion
      */
     describedObject: CrossVersionObjectReference

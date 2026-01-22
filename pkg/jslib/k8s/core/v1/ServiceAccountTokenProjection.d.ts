@@ -7,7 +7,7 @@ export declare class ServiceAccountTokenProjection {
     constructor();
     constructor(spec: Pick<ServiceAccountTokenProjection, "audience" | "expirationSeconds" | "path">);
 
-	/**
+    /**
      * Audience is the intended audience of the token. A recipient of a token must identify itself with an identifier specified in the audience of the token, and otherwise should reject the token. The audience defaults to the identifier of the apiserver.
      */
     audience?: string

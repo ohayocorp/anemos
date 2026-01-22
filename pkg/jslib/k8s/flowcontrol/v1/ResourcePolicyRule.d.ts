@@ -7,7 +7,7 @@ export declare class ResourcePolicyRule {
     constructor();
     constructor(spec: Pick<ResourcePolicyRule, "apiGroups" | "clusterScope" | "namespaces" | "resources" | "verbs">);
 
-	/**
+    /**
      * `apiGroups` is a list of matching API groups and may not be empty. "*" matches all API groups and, if present, must be the only entry. Required.
      */
     apiGroups: Array<string>

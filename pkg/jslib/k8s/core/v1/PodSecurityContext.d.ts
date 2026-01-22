@@ -12,7 +12,7 @@ export declare class PodSecurityContext {
     constructor();
     constructor(spec: Pick<PodSecurityContext, "appArmorProfile" | "fsGroup" | "fsGroupChangePolicy" | "runAsGroup" | "runAsNonRoot" | "runAsUser" | "seLinuxChangePolicy" | "seLinuxOptions" | "seccompProfile" | "supplementalGroups" | "supplementalGroupsPolicy" | "sysctls" | "windowsOptions">);
 
-	/**
+    /**
      * AppArmorProfile is the AppArmor options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows.
      */
     appArmorProfile?: AppArmorProfile

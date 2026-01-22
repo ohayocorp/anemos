@@ -11,7 +11,7 @@ export declare class Probe {
     constructor();
     constructor(spec: Pick<Probe, "exec" | "failureThreshold" | "grpc" | "httpGet" | "initialDelaySeconds" | "periodSeconds" | "successThreshold" | "tcpSocket" | "terminationGracePeriodSeconds" | "timeoutSeconds">);
 
-	/**
+    /**
      * Exec specifies a command to execute in the container.
      */
     exec?: ExecAction

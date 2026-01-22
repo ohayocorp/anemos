@@ -9,7 +9,7 @@ export declare class EnvFromSource {
     constructor();
     constructor(spec: Pick<EnvFromSource, "configMapRef" | "prefix" | "secretRef">);
 
-	/**
+    /**
      * The ConfigMap to select from
      */
     configMapRef?: ConfigMapEnvSource

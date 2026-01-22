@@ -7,7 +7,7 @@ export declare class FCVolumeSource {
     constructor();
     constructor(spec: Pick<FCVolumeSource, "fsType" | "lun" | "readOnly" | "targetWWNs" | "wwids">);
 
-	/**
+    /**
      * FsType is the filesystem type to mount. Must be a filesystem type supported by the host operating system. Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
      */
     fsType?: string

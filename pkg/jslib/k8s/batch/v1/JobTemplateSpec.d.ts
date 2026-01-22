@@ -9,7 +9,7 @@ export declare class JobTemplateSpec {
     constructor();
     constructor(spec: Pick<JobTemplateSpec, "metadata" | "spec">);
 
-	/**
+    /**
      * Standard object's metadata of the jobs created from this template. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
     metadata?: ObjectMeta

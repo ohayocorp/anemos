@@ -10,7 +10,7 @@ export declare class HorizontalPodAutoscalerSpec {
     constructor();
     constructor(spec: Pick<HorizontalPodAutoscalerSpec, "behavior" | "maxReplicas" | "metrics" | "minReplicas" | "scaleTargetRef">);
 
-	/**
+    /**
      * Behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.
      */
     behavior?: HorizontalPodAutoscalerBehavior

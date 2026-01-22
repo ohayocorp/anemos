@@ -21,7 +21,7 @@ export declare class PodSpec {
     constructor();
     constructor(spec: Pick<PodSpec, "activeDeadlineSeconds" | "affinity" | "automountServiceAccountToken" | "containers" | "dnsConfig" | "dnsPolicy" | "enableServiceLinks" | "hostAliases" | "hostIPC" | "hostNetwork" | "hostPID" | "hostUsers" | "hostname" | "hostnameOverride" | "imagePullSecrets" | "initContainers" | "nodeName" | "nodeSelector" | "os" | "preemptionPolicy" | "priority" | "priorityClassName" | "readinessGates" | "resourceClaims" | "resources" | "restartPolicy" | "runtimeClassName" | "schedulerName" | "schedulingGates" | "securityContext" | "serviceAccount" | "serviceAccountName" | "setHostnameAsFQDN" | "shareProcessNamespace" | "subdomain" | "terminationGracePeriodSeconds" | "tolerations" | "topologySpreadConstraints" | "volumes">);
 
-	/**
+    /**
      * Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
      */
     activeDeadlineSeconds?: number

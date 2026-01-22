@@ -11,7 +11,7 @@ export declare class LifecycleHandler {
     constructor();
     constructor(spec: Pick<LifecycleHandler, "exec" | "httpGet" | "sleep" | "tcpSocket">);
 
-	/**
+    /**
      * Exec specifies a command to execute in the container.
      */
     exec?: ExecAction

@@ -11,7 +11,7 @@ export declare class ClusterRole extends Document {
     constructor();
     constructor(spec: Pick<ClusterRole, "aggregationRule" | "metadata" | "rules">);
 
-	/**
+    /**
      * AggregationRule is an optional field that describes how to build the Rules for this ClusterRole. If AggregationRule is set, then the Rules are controller managed and direct changes to Rules will be stomped by the controller.
      */
     aggregationRule?: AggregationRule

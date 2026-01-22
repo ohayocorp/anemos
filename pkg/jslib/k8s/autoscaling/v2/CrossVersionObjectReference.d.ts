@@ -7,7 +7,7 @@ export declare class CrossVersionObjectReference {
     constructor();
     constructor(spec: Pick<CrossVersionObjectReference, "name">);
 
-	/**
+    /**
      * ApiVersion is the API version of the referent
      */
     apiVersion?: string

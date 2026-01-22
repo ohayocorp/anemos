@@ -8,7 +8,7 @@ export declare class ClusterTrustBundleProjection {
     constructor();
     constructor(spec: Pick<ClusterTrustBundleProjection, "labelSelector" | "name" | "optional" | "path" | "signerName">);
 
-	/**
+    /**
      * Select all ClusterTrustBundles that match this label selector.  Only has effect if signerName is set.  Mutually-exclusive with name.  If unset, interpreted as "match nothing".  If set but empty, interpreted as "match everything".
      */
     labelSelector?: LabelSelector

@@ -8,7 +8,7 @@ export declare class ContainerResourceMetricSource {
     constructor();
     constructor(spec: Pick<ContainerResourceMetricSource, "container" | "name" | "target">);
 
-	/**
+    /**
      * Container is the name of the container in the pods of the scaling target
      */
     container: string

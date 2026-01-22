@@ -7,7 +7,7 @@ export declare class Capabilities {
     constructor();
     constructor(spec: Pick<Capabilities, "add" | "drop">);
 
-	/**
+    /**
      * Added capabilities
      */
     add?: Array<string>

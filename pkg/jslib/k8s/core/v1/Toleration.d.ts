@@ -7,7 +7,7 @@ export declare class Toleration {
     constructor();
     constructor(spec: Pick<Toleration, "effect" | "key" | "operator" | "tolerationSeconds" | "value">);
 
-	/**
+    /**
      * Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
      */
     effect?: string

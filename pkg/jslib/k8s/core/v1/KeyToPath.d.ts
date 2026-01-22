@@ -7,7 +7,7 @@ export declare class KeyToPath {
     constructor();
     constructor(spec: Pick<KeyToPath, "key" | "mode" | "path">);
 
-	/**
+    /**
      * Key is the key to project.
      */
     key: string

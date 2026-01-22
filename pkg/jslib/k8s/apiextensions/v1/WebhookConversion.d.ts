@@ -8,7 +8,7 @@ export declare class WebhookConversion {
     constructor();
     constructor(spec: Pick<WebhookConversion, "clientConfig" | "conversionReviewVersions">);
 
-	/**
+    /**
      * ClientConfig is the instructions for how to call the webhook if strategy is `Webhook`.
      */
     clientConfig?: WebhookClientConfig

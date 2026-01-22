@@ -11,7 +11,7 @@ export declare class PersistentVolumeClaimSpec {
     constructor();
     constructor(spec: Pick<PersistentVolumeClaimSpec, "accessModes" | "dataSource" | "dataSourceRef" | "resources" | "selector" | "storageClassName" | "volumeAttributesClassName" | "volumeMode" | "volumeName">);
 
-	/**
+    /**
      * AccessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
      */
     accessModes?: Array<string>

@@ -7,7 +7,7 @@ export declare class ForZone {
     constructor();
     constructor(spec: Pick<ForZone, "name">);
 
-	/**
+    /**
      * Name represents the name of the zone.
      */
     name: string

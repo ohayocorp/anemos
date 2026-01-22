@@ -7,7 +7,7 @@ export declare class HTTPHeader {
     constructor();
     constructor(spec: Pick<HTTPHeader, "name" | "value">);
 
-	/**
+    /**
      * The header field name. This will be canonicalized upon output, so case-variant names will be understood as the same header.
      */
     name: string

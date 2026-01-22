@@ -70,7 +70,7 @@ function checkNamespace(resource: Resource, document: Document): boolean {
         return false;
     }
 
-	return resource.document.metadata?.name === namespace
+    return resource.document.metadata?.name === namespace
 }
 
 function checkCRD(resource: Resource, document: Document): boolean {

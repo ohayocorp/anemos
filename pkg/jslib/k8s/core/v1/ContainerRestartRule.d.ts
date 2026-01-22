@@ -8,7 +8,7 @@ export declare class ContainerRestartRule {
     constructor();
     constructor(spec: Pick<ContainerRestartRule, "action" | "exitCodes">);
 
-	/**
+    /**
      * Specifies the action taken on a container exit if the requirements are satisfied. The only possible value is "Restart" to restart the container.
      */
     action: string

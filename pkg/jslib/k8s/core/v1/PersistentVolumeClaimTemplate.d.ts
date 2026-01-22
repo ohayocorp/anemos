@@ -9,7 +9,7 @@ export declare class PersistentVolumeClaimTemplate {
     constructor();
     constructor(spec: Pick<PersistentVolumeClaimTemplate, "metadata" | "spec">);
 
-	/**
+    /**
      * May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
      */
     metadata?: ObjectMeta

@@ -7,7 +7,7 @@ export declare class VolumeDevice {
     constructor();
     constructor(spec: Pick<VolumeDevice, "devicePath" | "name">);
 
-	/**
+    /**
      * DevicePath is the path inside of the container that the device will be mapped to.
      */
     devicePath: string

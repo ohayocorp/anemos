@@ -7,7 +7,7 @@ export declare class ServicePort {
     constructor();
     constructor(spec: Pick<ServicePort, "appProtocol" | "name" | "nodePort" | "port" | "protocol" | "targetPort">);
 
-	/**
+    /**
      * The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either:
     
      * * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names).

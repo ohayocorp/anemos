@@ -7,7 +7,7 @@ export declare class ConfigMapKeySelector {
     constructor();
     constructor(spec: Pick<ConfigMapKeySelector, "key" | "name" | "optional">);
 
-	/**
+    /**
      * The key to select.
      */
     key: string

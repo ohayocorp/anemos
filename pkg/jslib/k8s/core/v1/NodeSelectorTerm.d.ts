@@ -8,7 +8,7 @@ export declare class NodeSelectorTerm {
     constructor();
     constructor(spec: Pick<NodeSelectorTerm, "matchExpressions" | "matchFields">);
 
-	/**
+    /**
      * A list of node selector requirements by node's labels.
      */
     matchExpressions?: Array<NodeSelectorRequirement>

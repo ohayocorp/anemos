@@ -7,7 +7,7 @@ export declare class ResourceClaim {
     constructor();
     constructor(spec: Pick<ResourceClaim, "name" | "request">);
 
-	/**
+    /**
      * Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
      */
     name: string

@@ -8,7 +8,7 @@ export declare class ResourceMetricSource {
     constructor();
     constructor(spec: Pick<ResourceMetricSource, "name" | "target">);
 
-	/**
+    /**
      * Name is the name of the resource in question.
      */
     name: string

@@ -7,7 +7,7 @@ export declare class FileKeySelector {
     constructor();
     constructor(spec: Pick<FileKeySelector, "key" | "optional" | "path" | "volumeName">);
 
-	/**
+    /**
      * The key within the env file. An invalid key will prevent the pod from starting. The keys defined within a source may consist of any printable ASCII characters except '='. During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
      */
     key: string

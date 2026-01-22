@@ -7,7 +7,7 @@ export declare class HostAlias {
     constructor();
     constructor(spec: Pick<HostAlias, "hostnames" | "ip">);
 
-	/**
+    /**
      * Hostnames for the above IP address.
      */
     hostnames?: Array<string>

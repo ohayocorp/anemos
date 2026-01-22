@@ -7,7 +7,7 @@ export declare class HostPathVolumeSource {
     constructor();
     constructor(spec: Pick<HostPathVolumeSource, "path" | "type">);
 
-	/**
+    /**
      * Path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
      */
     path: string

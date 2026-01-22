@@ -7,7 +7,7 @@ export declare class AuditAnnotation {
     constructor();
     constructor(spec: Pick<AuditAnnotation, "key" | "valueExpression">);
 
-	/**
+    /**
      * Key specifies the audit annotation key. The audit annotation keys of a ValidatingAdmissionPolicy must be unique. The key must be a qualified name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
     
      * The key is combined with the resource name of the ValidatingAdmissionPolicy to construct an audit annotation key: "{ValidatingAdmissionPolicy name}/{key}".

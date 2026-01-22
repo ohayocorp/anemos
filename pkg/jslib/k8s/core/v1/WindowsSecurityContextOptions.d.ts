@@ -7,7 +7,7 @@ export declare class WindowsSecurityContextOptions {
     constructor();
     constructor(spec: Pick<WindowsSecurityContextOptions, "gmsaCredentialSpec" | "gmsaCredentialSpecName" | "hostProcess" | "runAsUserName">);
 
-	/**
+    /**
      * GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
      */
     gmsaCredentialSpec?: string

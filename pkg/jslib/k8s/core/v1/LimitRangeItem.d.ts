@@ -7,7 +7,7 @@ export declare class LimitRangeItem {
     constructor();
     constructor(spec: Pick<LimitRangeItem, "default" | "defaultRequest" | "max" | "maxLimitRequestRatio" | "min" | "type">);
 
-	/**
+    /**
      * Default resource requirement limit value by resource name if resource limit is omitted.
      */
     default?: Record<string, number | string>

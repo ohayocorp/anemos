@@ -7,7 +7,7 @@ export declare class ServiceAccountSubject {
     constructor();
     constructor(spec: Pick<ServiceAccountSubject, "name" | "namespace">);
 
-	/**
+    /**
      * `name` is the name of matching ServiceAccount objects, or "*" to match regardless of name. Required.
      */
     name: string

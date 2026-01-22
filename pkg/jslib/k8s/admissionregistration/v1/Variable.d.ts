@@ -7,7 +7,7 @@ export declare class Variable {
     constructor();
     constructor(spec: Pick<Variable, "expression" | "name">);
 
-	/**
+    /**
      * Expression is the expression that will be evaluated as the value of the variable. The CEL expression has access to the same identifiers as the CEL expressions in Validation.
      */
     expression: string

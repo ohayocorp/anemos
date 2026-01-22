@@ -7,7 +7,7 @@ export declare class FlowDistinguisherMethod {
     constructor();
     constructor(spec: Pick<FlowDistinguisherMethod, "type">);
 
-	/**
+    /**
      * `type` is the type of flow distinguisher method The supported types are "ByUser" and "ByNamespace". Required.
      */
     type: string

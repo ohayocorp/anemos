@@ -7,7 +7,7 @@ export declare class LabelSelectorRequirement {
     constructor();
     constructor(spec: Pick<LabelSelectorRequirement, "key" | "operator" | "values">);
 
-	/**
+    /**
      * Key is the label key that the selector applies to.
      */
     key: string

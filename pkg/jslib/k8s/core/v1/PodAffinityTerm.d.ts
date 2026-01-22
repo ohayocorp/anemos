@@ -8,7 +8,7 @@ export declare class PodAffinityTerm {
     constructor();
     constructor(spec: Pick<PodAffinityTerm, "labelSelector" | "matchLabelKeys" | "mismatchLabelKeys" | "namespaceSelector" | "namespaces" | "topologyKey">);
 
-	/**
+    /**
      * A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
      */
     labelSelector?: LabelSelector

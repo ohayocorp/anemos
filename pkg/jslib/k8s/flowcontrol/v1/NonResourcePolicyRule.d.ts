@@ -7,7 +7,7 @@ export declare class NonResourcePolicyRule {
     constructor();
     constructor(spec: Pick<NonResourcePolicyRule, "nonResourceURLs" | "verbs">);
 
-	/**
+    /**
      * `nonResourceURLs` is a set of url prefixes that a user should have access to and may not be empty. For example:
     
      *   - "/healthz" is legal

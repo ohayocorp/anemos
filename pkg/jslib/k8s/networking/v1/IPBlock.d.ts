@@ -7,7 +7,7 @@ export declare class IPBlock {
     constructor();
     constructor(spec: Pick<IPBlock, "cidr" | "except">);
 
-	/**
+    /**
      * Cidr is a string representing the IPBlock Valid examples are "192.168.1.0/24" or "2001:db8::/64"
      */
     cidr: string

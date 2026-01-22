@@ -9,7 +9,7 @@ export declare class CustomResourceSubresources {
     constructor();
     constructor(spec: Pick<CustomResourceSubresources, "scale" | "status">);
 
-	/**
+    /**
      * Scale indicates the custom resource should serve a `/scale` subresource that returns an `autoscaling/v1` Scale object.
      */
     scale?: CustomResourceSubresourceScale

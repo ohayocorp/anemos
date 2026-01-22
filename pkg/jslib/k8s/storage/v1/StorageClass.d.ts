@@ -12,7 +12,7 @@ export declare class StorageClass extends Document {
     constructor();
     constructor(spec: Pick<StorageClass, "allowVolumeExpansion" | "allowedTopologies" | "metadata" | "mountOptions" | "parameters" | "provisioner" | "reclaimPolicy" | "volumeBindingMode">);
 
-	/**
+    /**
      * AllowVolumeExpansion shows whether the storage class allow volume expand.
      */
     allowVolumeExpansion?: boolean

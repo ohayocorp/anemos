@@ -8,7 +8,7 @@ export declare class DeploymentStrategy {
     constructor();
     constructor(spec: Pick<DeploymentStrategy, "rollingUpdate" | "type">);
 
-	/**
+    /**
      * Rolling update config params. Present only if DeploymentStrategyType = RollingUpdate.
      */
     rollingUpdate?: RollingUpdateDeployment

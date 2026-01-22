@@ -7,7 +7,7 @@ export declare class ContainerResizePolicy {
     constructor();
     constructor(spec: Pick<ContainerResizePolicy, "resourceName" | "restartPolicy">);
 
-	/**
+    /**
      * Name of the resource to which this resource resize policy applies. Supported values: cpu, memory.
      */
     resourceName: string

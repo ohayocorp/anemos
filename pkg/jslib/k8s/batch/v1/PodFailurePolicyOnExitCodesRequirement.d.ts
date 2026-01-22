@@ -7,7 +7,7 @@ export declare class PodFailurePolicyOnExitCodesRequirement {
     constructor();
     constructor(spec: Pick<PodFailurePolicyOnExitCodesRequirement, "containerName" | "operator" | "values">);
 
-	/**
+    /**
      * Restricts the check for exit codes to the container with the specified name. When null, the rule applies to all containers. When specified, it should match one the container or initContainer names in the pod template.
      */
     containerName?: string

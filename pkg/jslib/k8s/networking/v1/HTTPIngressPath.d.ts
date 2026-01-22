@@ -8,7 +8,7 @@ export declare class HTTPIngressPath {
     constructor();
     constructor(spec: Pick<HTTPIngressPath, "backend" | "path" | "pathType">);
 
-	/**
+    /**
      * Backend defines the referenced service endpoint to which the traffic will be forwarded to.
      */
     backend: IngressBackend

@@ -7,7 +7,7 @@ export declare class VolumeMount {
     constructor();
     constructor(spec: Pick<VolumeMount, "mountPath" | "mountPropagation" | "name" | "readOnly" | "recursiveReadOnly" | "subPath" | "subPathExpr">);
 
-	/**
+    /**
      * Path within the container at which the volume should be mounted.  Must not contain ':'.
      */
     mountPath: string

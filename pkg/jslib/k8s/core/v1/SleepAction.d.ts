@@ -7,7 +7,7 @@ export declare class SleepAction {
     constructor();
     constructor(spec: Pick<SleepAction, "seconds">);
 
-	/**
+    /**
      * Seconds is the number of seconds to sleep.
      */
     seconds: number

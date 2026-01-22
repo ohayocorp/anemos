@@ -7,7 +7,7 @@ export declare class PodCertificateProjection {
     constructor();
     constructor(spec: Pick<PodCertificateProjection, "certificateChainPath" | "credentialBundlePath" | "keyPath" | "keyType" | "maxExpirationSeconds" | "signerName">);
 
-	/**
+    /**
      * Write the certificate chain at this path in the projected volume.
     
      * Most applications should use credentialBundlePath.  When using keyPath and certificateChainPath, your application needs to check that the key and leaf certificate are consistent, because it is possible to read the files mid-rotation.

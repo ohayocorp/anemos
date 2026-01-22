@@ -8,7 +8,7 @@ export declare class ISCSIPersistentVolumeSource {
     constructor();
     constructor(spec: Pick<ISCSIPersistentVolumeSource, "chapAuthDiscovery" | "chapAuthSession" | "fsType" | "initiatorName" | "iqn" | "iscsiInterface" | "lun" | "portals" | "readOnly" | "secretRef" | "targetPortal">);
 
-	/**
+    /**
      * ChapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
      */
     chapAuthDiscovery?: boolean

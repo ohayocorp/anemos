@@ -7,7 +7,7 @@ export declare class RuleWithOperations {
     constructor();
     constructor(spec: Pick<RuleWithOperations, "apiGroups" | "apiVersions" | "operations" | "resources" | "scope">);
 
-	/**
+    /**
      * APIGroups is the API groups the resources belong to. '*' is all groups. If '*' is present, the length of the slice must be one. Required.
      */
     apiGroups?: Array<string>

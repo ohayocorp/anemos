@@ -20,7 +20,7 @@ export declare class Volume {
     constructor();
     constructor(spec: Pick<Volume, "configMap" | "csi" | "downwardAPI" | "emptyDir" | "ephemeral" | "fc" | "hostPath" | "image" | "iscsi" | "name" | "nfs" | "persistentVolumeClaim" | "projected" | "secret">);
 
-	/**
+    /**
      * ConfigMap represents a configMap that should populate this volume
      */
     configMap?: ConfigMapVolumeSource

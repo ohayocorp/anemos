@@ -7,7 +7,7 @@ export declare class ResourceFieldSelector {
     constructor();
     constructor(spec: Pick<ResourceFieldSelector, "containerName" | "divisor" | "resource">);
 
-	/**
+    /**
      * Container name: required for volumes, optional for env vars
      */
     containerName?: string

@@ -13,7 +13,7 @@ export declare class VolumeProjection {
     constructor();
     constructor(spec: Pick<VolumeProjection, "clusterTrustBundle" | "configMap" | "downwardAPI" | "podCertificate" | "secret" | "serviceAccountToken">);
 
-	/**
+    /**
      * ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file.
     
      * Alpha, gated by the ClusterTrustBundleProjection feature gate.

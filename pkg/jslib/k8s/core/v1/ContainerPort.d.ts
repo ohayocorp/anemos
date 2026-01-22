@@ -7,7 +7,7 @@ export declare class ContainerPort {
     constructor();
     constructor(spec: Pick<ContainerPort, "containerPort" | "hostIP" | "hostPort" | "name" | "protocol">);
 
-	/**
+    /**
      * Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.
      */
     containerPort: number

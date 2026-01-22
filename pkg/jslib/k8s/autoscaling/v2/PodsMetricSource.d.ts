@@ -9,7 +9,7 @@ export declare class PodsMetricSource {
     constructor();
     constructor(spec: Pick<PodsMetricSource, "metric" | "target">);
 
-	/**
+    /**
      * Metric identifies the target metric by name and selector
      */
     metric: MetricIdentifier

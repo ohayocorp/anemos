@@ -8,7 +8,7 @@ export declare class ScopeSelector {
     constructor();
     constructor(spec: Pick<ScopeSelector, "matchExpressions">);
 
-	/**
+    /**
      * A list of scope selector requirements by scope of the resources.
      */
     matchExpressions?: Array<ScopedResourceSelectorRequirement>

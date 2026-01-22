@@ -7,7 +7,7 @@ export declare class PodReadinessGate {
     constructor();
     constructor(spec: Pick<PodReadinessGate, "conditionType">);
 
-	/**
+    /**
      * ConditionType refers to a condition in the pod's condition list with matching type.
      */
     conditionType: string

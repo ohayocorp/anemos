@@ -9,7 +9,7 @@ export declare class PodResourceClaim {
     constructor();
     constructor(spec: Pick<PodResourceClaim, "name" | "resourceClaimName" | "resourceClaimTemplateName">);
 
-	/**
+    /**
      * Name uniquely identifies this resource claim inside the pod. This must be a DNS_LABEL.
      */
     name: string

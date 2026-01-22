@@ -8,7 +8,7 @@ export declare class VolumeNodeAffinity {
     constructor();
     constructor(spec: Pick<VolumeNodeAffinity, "required">);
 
-	/**
+    /**
      * Required specifies hard node constraints that must be met.
      */
     required?: NodeSelector

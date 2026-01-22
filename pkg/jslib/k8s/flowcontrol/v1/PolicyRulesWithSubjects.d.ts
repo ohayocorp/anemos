@@ -10,7 +10,7 @@ export declare class PolicyRulesWithSubjects {
     constructor();
     constructor(spec: Pick<PolicyRulesWithSubjects, "nonResourceRules" | "resourceRules" | "subjects">);
 
-	/**
+    /**
      * `nonResourceRules` is a list of NonResourcePolicyRules that identify matching requests according to their verb and the target non-resource URL.
      */
     nonResourceRules?: Array<NonResourcePolicyRule>

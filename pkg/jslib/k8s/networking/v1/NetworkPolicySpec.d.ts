@@ -10,7 +10,7 @@ export declare class NetworkPolicySpec {
     constructor();
     constructor(spec: Pick<NetworkPolicySpec, "egress" | "ingress" | "podSelector" | "policyTypes">);
 
-	/**
+    /**
      * Egress is a list of egress rules to be applied to the selected pods. Outgoing traffic is allowed if there are no NetworkPolicies selecting the pod (and cluster policy otherwise allows the traffic), OR if the traffic matches at least one egress rule across all of the NetworkPolicy objects whose podSelector matches the pod. If this field is empty then this NetworkPolicy limits all outgoing traffic (and serves solely to ensure that the pods it selects are isolated by default). This field is beta-level in 1.8
      */
     egress?: Array<NetworkPolicyEgressRule>

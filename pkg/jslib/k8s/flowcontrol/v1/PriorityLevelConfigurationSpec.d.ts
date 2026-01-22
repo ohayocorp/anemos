@@ -9,7 +9,7 @@ export declare class PriorityLevelConfigurationSpec {
     constructor();
     constructor(spec: Pick<PriorityLevelConfigurationSpec, "exempt" | "limited" | "type">);
 
-	/**
+    /**
      * `exempt` specifies how requests are handled for an exempt priority level. This field MUST be empty if `type` is `"Limited"`. This field MAY be non-empty if `type` is `"Exempt"`. If empty and `type` is `"Exempt"` then the default values for `ExemptPriorityLevelConfiguration` apply.
      */
     exempt?: ExemptPriorityLevelConfiguration

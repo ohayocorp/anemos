@@ -8,7 +8,7 @@ export declare class PreferredSchedulingTerm {
     constructor();
     constructor(spec: Pick<PreferredSchedulingTerm, "preference" | "weight">);
 
-	/**
+    /**
      * A node selector term, associated with the corresponding weight.
      */
     preference: NodeSelectorTerm

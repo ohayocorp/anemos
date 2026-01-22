@@ -7,7 +7,7 @@ export declare class PodCertificateRequestSpec {
     constructor();
     constructor(spec: Pick<PodCertificateRequestSpec, "maxExpirationSeconds" | "nodeName" | "nodeUID" | "pkixPublicKey" | "podName" | "podUID" | "proofOfPossession" | "serviceAccountName" | "serviceAccountUID" | "signerName">);
 
-	/**
+    /**
      * MaxExpirationSeconds is the maximum lifetime permitted for the certificate.
     
      * If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver will reject values shorter than 3600 (1 hour).  The maximum allowable value is 7862400 (91 days).

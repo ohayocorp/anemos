@@ -7,7 +7,7 @@ export declare class NodeSelectorRequirement {
     constructor();
     constructor(spec: Pick<NodeSelectorRequirement, "key" | "operator" | "values">);
 
-	/**
+    /**
      * The label key that the selector applies to.
      */
     key: string

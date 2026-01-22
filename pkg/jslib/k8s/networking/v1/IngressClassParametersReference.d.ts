@@ -7,7 +7,7 @@ export declare class IngressClassParametersReference {
     constructor();
     constructor(spec: Pick<IngressClassParametersReference, "apiGroup" | "name" | "namespace" | "scope">);
 
-	/**
+    /**
      * ApiGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
      */
     apiGroup?: string

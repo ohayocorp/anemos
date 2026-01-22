@@ -8,7 +8,7 @@ export declare class WebhookClientConfig {
     constructor();
     constructor(spec: Pick<WebhookClientConfig, "caBundle" | "service" | "url">);
 
-	/**
+    /**
      * `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate. If unspecified, system trust roots on the apiserver are used.
      */
     caBundle?: string

@@ -8,7 +8,7 @@ export declare class CustomResourceValidation {
     constructor();
     constructor(spec: Pick<CustomResourceValidation, "openAPIV3Schema">);
 
-	/**
+    /**
      * OpenAPIV3Schema is the OpenAPI v3 schema to use for validation and pruning.
      */
     openAPIV3Schema?: JSONSchemaProps

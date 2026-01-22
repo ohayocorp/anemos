@@ -7,7 +7,7 @@ export declare class PodFailurePolicyOnPodConditionsPattern {
     constructor();
     constructor(spec: Pick<PodFailurePolicyOnPodConditionsPattern, "status" | "type">);
 
-	/**
+    /**
      * Specifies the required Pod condition status. To match a pod condition it is required that the specified status equals the pod condition status. Defaults to True.
      */
     status: string

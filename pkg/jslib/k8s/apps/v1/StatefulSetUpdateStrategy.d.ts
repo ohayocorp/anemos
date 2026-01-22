@@ -8,7 +8,7 @@ export declare class StatefulSetUpdateStrategy {
     constructor();
     constructor(spec: Pick<StatefulSetUpdateStrategy, "rollingUpdate" | "type">);
 
-	/**
+    /**
      * RollingUpdate is used to communicate parameters when Type is RollingUpdateStatefulSetStrategyType.
      */
     rollingUpdate?: RollingUpdateStatefulSetStrategy

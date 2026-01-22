@@ -7,7 +7,7 @@ export declare class VolumeResourceRequirements {
     constructor();
     constructor(spec: Pick<VolumeResourceRequirements, "limits" | "requests">);
 
-	/**
+    /**
      * Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
      */
     limits?: Record<string, number | string>

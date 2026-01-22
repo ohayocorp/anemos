@@ -8,7 +8,7 @@ export declare class TopologySelectorTerm {
     constructor();
     constructor(spec: Pick<TopologySelectorTerm, "matchLabelExpressions">);
 
-	/**
+    /**
      * A list of topology selector requirements by labels.
      */
     matchLabelExpressions?: Array<TopologySelectorLabelRequirement>

@@ -8,7 +8,7 @@ export declare class DownwardAPIProjection {
     constructor();
     constructor(spec: Pick<DownwardAPIProjection, "items">);
 
-	/**
+    /**
      * Items is a list of DownwardAPIVolume file
      */
     items?: Array<DownwardAPIVolumeFile>

@@ -8,7 +8,7 @@ export declare class HTTPIngressRuleValue {
     constructor();
     constructor(spec: Pick<HTTPIngressRuleValue, "paths">);
 
-	/**
+    /**
      * Paths is a collection of paths that map requests to backends.
      */
     paths: Array<HTTPIngressPath>

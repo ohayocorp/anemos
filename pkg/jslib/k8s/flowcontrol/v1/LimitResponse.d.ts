@@ -8,7 +8,7 @@ export declare class LimitResponse {
     constructor();
     constructor(spec: Pick<LimitResponse, "queuing" | "type">);
 
-	/**
+    /**
      * `queuing` holds the configuration parameters for queuing. This field may be non-empty only if `type` is `"Queue"`.
      */
     queuing?: QueuingConfiguration

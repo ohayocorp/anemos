@@ -7,7 +7,7 @@ export declare class SuccessPolicyRule {
     constructor();
     constructor(spec: Pick<SuccessPolicyRule, "succeededCount" | "succeededIndexes">);
 
-	/**
+    /**
      * SucceededCount specifies the minimal required size of the actual set of the succeeded indexes for the Job. When succeededCount is used along with succeededIndexes, the check is constrained only to the set of indexes specified by succeededIndexes. For example, given that succeededIndexes is "1-4", succeededCount is "3", and completed indexes are "1", "3", and "5", the Job isn't declared as succeeded because only "1" and "3" indexes are considered in that rules. When this field is null, this doesn't default to any value and is never evaluated at any time. When specified it needs to be a positive integer.
      */
     succeededCount?: number

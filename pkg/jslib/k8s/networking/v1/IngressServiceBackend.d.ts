@@ -8,7 +8,7 @@ export declare class IngressServiceBackend {
     constructor();
     constructor(spec: Pick<IngressServiceBackend, "name" | "port">);
 
-	/**
+    /**
      * Name is the referenced service. The service must exist in the same namespace as the Ingress object.
      */
     name: string

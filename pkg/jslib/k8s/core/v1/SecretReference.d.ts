@@ -7,7 +7,7 @@ export declare class SecretReference {
     constructor();
     constructor(spec: Pick<SecretReference, "name" | "namespace">);
 
-	/**
+    /**
      * Name is unique within a namespace to reference a secret resource.
      */
     name?: string

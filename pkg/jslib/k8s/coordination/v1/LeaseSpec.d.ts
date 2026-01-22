@@ -7,7 +7,7 @@ export declare class LeaseSpec {
     constructor();
     constructor(spec: Pick<LeaseSpec, "holderIdentity" | "leaseDurationSeconds" | "leaseTransitions" | "preferredHolder" | "strategy">);
 
-	/**
+    /**
      * HolderIdentity contains the identity of the holder of a current lease. If Coordinated Leader Election is used, the holder identity must be equal to the elected LeaseCandidate.metadata.name field.
      */
     holderIdentity?: string

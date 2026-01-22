@@ -11,7 +11,7 @@ export declare class JobSpec {
     constructor();
     constructor(spec: Pick<JobSpec, "activeDeadlineSeconds" | "backoffLimit" | "backoffLimitPerIndex" | "completionMode" | "completions" | "managedBy" | "manualSelector" | "maxFailedIndexes" | "parallelism" | "podFailurePolicy" | "podReplacementPolicy" | "selector" | "successPolicy" | "suspend" | "template" | "ttlSecondsAfterFinished">);
 
-	/**
+    /**
      * Specifies the duration in seconds relative to the startTime that the job may be continuously active before the system tries to terminate it; value must be positive integer. If a Job is suspended (at creation or through an update), this timer will effectively be stopped and reset when the Job is resumed again.
      */
     activeDeadlineSeconds?: number

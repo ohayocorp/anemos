@@ -7,7 +7,7 @@ export declare class Sysctl {
     constructor();
     constructor(spec: Pick<Sysctl, "name" | "value">);
 
-	/**
+    /**
      * Name of a property to set
      */
     name: string

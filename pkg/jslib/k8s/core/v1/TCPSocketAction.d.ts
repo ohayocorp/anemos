@@ -7,7 +7,7 @@ export declare class TCPSocketAction {
     constructor();
     constructor(spec: Pick<TCPSocketAction, "host" | "port">);
 
-	/**
+    /**
      * Optional: Host name to connect to, defaults to the pod IP.
      */
     host?: string

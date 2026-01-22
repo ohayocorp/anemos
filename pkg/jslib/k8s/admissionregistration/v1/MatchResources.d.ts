@@ -9,7 +9,7 @@ export declare class MatchResources {
     constructor();
     constructor(spec: Pick<MatchResources, "excludeResourceRules" | "matchPolicy" | "namespaceSelector" | "objectSelector" | "resourceRules">);
 
-	/**
+    /**
      * ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about. The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
      */
     excludeResourceRules?: Array<NamedRuleWithOperations>

@@ -8,7 +8,7 @@ export declare class DaemonSetUpdateStrategy {
     constructor();
     constructor(spec: Pick<DaemonSetUpdateStrategy, "rollingUpdate" | "type">);
 
-	/**
+    /**
      * Rolling update config params. Present only if type = "RollingUpdate".
      */
     rollingUpdate?: RollingUpdateDaemonSet

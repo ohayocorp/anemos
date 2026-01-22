@@ -8,7 +8,7 @@ export declare class MetricIdentifier {
     constructor();
     constructor(spec: Pick<MetricIdentifier, "name" | "selector">);
 
-	/**
+    /**
      * Name is the name of the given metric
      */
     name: string

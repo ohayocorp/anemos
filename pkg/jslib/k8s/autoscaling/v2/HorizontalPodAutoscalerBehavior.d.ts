@@ -8,7 +8,7 @@ export declare class HorizontalPodAutoscalerBehavior {
     constructor();
     constructor(spec: Pick<HorizontalPodAutoscalerBehavior, "scaleDown" | "scaleUp">);
 
-	/**
+    /**
      * ScaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).
      */
     scaleDown?: HPAScalingRules

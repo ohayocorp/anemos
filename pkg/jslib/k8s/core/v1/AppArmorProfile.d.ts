@@ -7,7 +7,7 @@ export declare class AppArmorProfile {
     constructor();
     constructor(spec: Pick<AppArmorProfile, "localhostProfile" | "type">);
 
-	/**
+    /**
      * LocalhostProfile indicates a profile loaded on the node that should be used. The profile must be preconfigured on the node to work. Must match the loaded name of the profile. Must be set if and only if type is "Localhost".
      */
     localhostProfile?: string

@@ -9,7 +9,7 @@ export declare class ServiceSpec {
     constructor();
     constructor(spec: Pick<ServiceSpec, "allocateLoadBalancerNodePorts" | "clusterIP" | "clusterIPs" | "externalIPs" | "externalName" | "externalTrafficPolicy" | "healthCheckNodePort" | "internalTrafficPolicy" | "ipFamilies" | "ipFamilyPolicy" | "loadBalancerClass" | "loadBalancerIP" | "loadBalancerSourceRanges" | "ports" | "publishNotReadyAddresses" | "selector" | "sessionAffinity" | "sessionAffinityConfig" | "trafficDistribution" | "type">);
 
-	/**
+    /**
      * AllocateLoadBalancerNodePorts defines if NodePorts will be automatically allocated for services with type LoadBalancer.  Default is "true". It may be set to "false" if the cluster load-balancer does not rely on NodePorts.  If the caller requests specific NodePorts (by specifying a value), those requests will be respected, regardless of this field. This field may only be set for services with type LoadBalancer and will be cleared if the type is changed to any other type.
      */
     allocateLoadBalancerNodePorts?: boolean

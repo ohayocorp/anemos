@@ -9,7 +9,7 @@ export declare class ValidatingAdmissionPolicyBindingSpec {
     constructor();
     constructor(spec: Pick<ValidatingAdmissionPolicyBindingSpec, "matchResources" | "paramRef" | "policyName" | "validationActions">);
 
-	/**
+    /**
      * MatchResources declares what resources match this binding and will be validated by it. Note that this is intersected with the policy's matchConstraints, so only requests that are matched by the policy can be selected by this. If this is unset, all resources matched by the policy are validated by this binding When resourceRules is unset, it does not constrain resource matching. If a resource is matched by the other fields of this object, it will be validated. Note that this is differs from ValidatingAdmissionPolicy matchConstraints, where resourceRules are required.
      */
     matchResources?: MatchResources

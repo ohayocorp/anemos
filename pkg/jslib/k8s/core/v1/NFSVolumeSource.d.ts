@@ -7,7 +7,7 @@ export declare class NFSVolumeSource {
     constructor();
     constructor(spec: Pick<NFSVolumeSource, "path" | "readOnly" | "server">);
 
-	/**
+    /**
      * Path that is exported by the NFS server. More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
      */
     path: string

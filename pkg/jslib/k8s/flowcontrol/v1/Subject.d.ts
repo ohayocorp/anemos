@@ -10,7 +10,7 @@ export declare class Subject {
     constructor();
     constructor(spec: Pick<Subject, "group" | "serviceAccount" | "user">);
 
-	/**
+    /**
      * `group` matches based on user group name.
      */
     group?: GroupSubject

@@ -7,7 +7,7 @@ export declare class ForNode {
     constructor();
     constructor(spec: Pick<ForNode, "name">);
 
-	/**
+    /**
      * Name represents the name of the node.
      */
     name: string

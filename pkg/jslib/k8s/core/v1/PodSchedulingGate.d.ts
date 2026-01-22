@@ -7,7 +7,7 @@ export declare class PodSchedulingGate {
     constructor();
     constructor(spec: Pick<PodSchedulingGate, "name">);
 
-	/**
+    /**
      * Name of the scheduling gate. Each scheduling gate must have a unique name field.
      */
     name: string

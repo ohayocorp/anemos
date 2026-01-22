@@ -10,7 +10,7 @@ export declare class CustomResourceDefinitionSpec {
     constructor();
     constructor(spec: Pick<CustomResourceDefinitionSpec, "conversion" | "group" | "names" | "preserveUnknownFields" | "scope" | "versions">);
 
-	/**
+    /**
      * Conversion defines conversion settings for the CRD.
      */
     conversion?: CustomResourceConversion

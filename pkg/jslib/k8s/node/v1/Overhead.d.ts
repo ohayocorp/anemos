@@ -7,7 +7,7 @@ export declare class Overhead {
     constructor();
     constructor(spec: Pick<Overhead, "podFixed">);
 
-	/**
+    /**
      * PodFixed represents the fixed resource overhead associated with running a pod.
      */
     podFixed?: Record<string, number | string>

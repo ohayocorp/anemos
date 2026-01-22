@@ -7,7 +7,7 @@ export declare class RoleRef {
     constructor();
     constructor(spec: Pick<RoleRef, "apiGroup" | "name">);
 
-	/**
+    /**
      * APIGroup is the group for the resource being referenced
      */
     apiGroup: string

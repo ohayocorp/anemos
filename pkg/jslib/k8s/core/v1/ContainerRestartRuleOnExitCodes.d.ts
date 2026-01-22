@@ -7,7 +7,7 @@ export declare class ContainerRestartRuleOnExitCodes {
     constructor();
     constructor(spec: Pick<ContainerRestartRuleOnExitCodes, "operator" | "values">);
 
-	/**
+    /**
      * Represents the relationship between the container exit code(s) and the specified values. Possible values are: - In: the requirement is satisfied if the container exit code is in the
     
      *   set of specified values.

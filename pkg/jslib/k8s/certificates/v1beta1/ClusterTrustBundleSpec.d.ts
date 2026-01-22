@@ -7,7 +7,7 @@ export declare class ClusterTrustBundleSpec {
     constructor();
     constructor(spec: Pick<ClusterTrustBundleSpec, "signerName" | "trustBundle">);
 
-	/**
+    /**
      * SignerName indicates the associated signer, if any.
     
      * In order to create or update a ClusterTrustBundle that sets signerName, you must have the following cluster-scoped permission: group=certificates.k8s.io resource=signers resourceName=<the signer name> verb=attest.

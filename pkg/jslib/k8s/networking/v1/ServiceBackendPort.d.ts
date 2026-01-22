@@ -7,7 +7,7 @@ export declare class ServiceBackendPort {
     constructor();
     constructor(spec: Pick<ServiceBackendPort, "name" | "number">);
 
-	/**
+    /**
      * Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
      */
     name?: string

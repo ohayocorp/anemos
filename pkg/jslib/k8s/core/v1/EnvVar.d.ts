@@ -8,7 +8,7 @@ export declare class EnvVar {
     constructor();
     constructor(spec: Pick<EnvVar, "name" | "value" | "valueFrom">);
 
-	/**
+    /**
      * Name of the environment variable. May consist of any printable ASCII characters except '='.
      */
     name: string

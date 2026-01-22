@@ -9,7 +9,7 @@ export declare class PodTemplateSpec {
     constructor();
     constructor(spec: Pick<PodTemplateSpec, "metadata" | "spec">);
 
-	/**
+    /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
     metadata?: ObjectMeta

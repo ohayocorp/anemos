@@ -7,7 +7,7 @@ export declare class ObjectFieldSelector {
     constructor();
     constructor(spec: Pick<ObjectFieldSelector, "fieldPath">);
 
-	/**
+    /**
      * Version of the schema the FieldPath is written in terms of, defaults to "v1".
      */
     apiVersion?: string

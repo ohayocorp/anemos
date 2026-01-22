@@ -8,7 +8,7 @@ export declare class CSIVolumeSource {
     constructor();
     constructor(spec: Pick<CSIVolumeSource, "driver" | "fsType" | "nodePublishSecretRef" | "readOnly" | "volumeAttributes">);
 
-	/**
+    /**
      * Driver is the name of the CSI driver that handles this volume. Consult with your admin for the correct name as registered in the cluster.
      */
     driver: string

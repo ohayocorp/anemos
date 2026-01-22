@@ -8,7 +8,7 @@ export declare class HTTPGetAction {
     constructor();
     constructor(spec: Pick<HTTPGetAction, "host" | "httpHeaders" | "path" | "port" | "scheme">);
 
-	/**
+    /**
      * Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.
      */
     host?: string

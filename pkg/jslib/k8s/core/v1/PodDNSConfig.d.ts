@@ -8,7 +8,7 @@ export declare class PodDNSConfig {
     constructor();
     constructor(spec: Pick<PodDNSConfig, "nameservers" | "options" | "searches">);
 
-	/**
+    /**
      * A list of DNS name server IP addresses. This will be appended to the base nameservers generated from DNSPolicy. Duplicated nameservers will be removed.
      */
     nameservers?: Array<string>

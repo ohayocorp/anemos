@@ -7,7 +7,7 @@ export declare class ObjectReference {
     constructor();
     constructor(spec: Pick<ObjectReference, "fieldPath" | "name" | "namespace" | "resourceVersion" | "uid">);
 
-	/**
+    /**
      * API version of the referent.
      */
     apiVersion?: string

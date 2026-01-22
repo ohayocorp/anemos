@@ -25,7 +25,7 @@ export declare class EndpointSubset {
     constructor();
     constructor(spec: Pick<EndpointSubset, "addresses" | "notReadyAddresses" | "ports">);
 
-	/**
+    /**
      * IP addresses which offer the related ports that are marked as ready. These endpoints should be considered safe for load balancers and clients to utilize.
      */
     addresses?: Array<EndpointAddress>

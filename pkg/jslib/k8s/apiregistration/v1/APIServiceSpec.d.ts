@@ -8,7 +8,7 @@ export declare class APIServiceSpec {
     constructor();
     constructor(spec: Pick<APIServiceSpec, "caBundle" | "group" | "groupPriorityMinimum" | "insecureSkipTLSVerify" | "service" | "version" | "versionPriority">);
 
-	/**
+    /**
      * CABundle is a PEM encoded CA bundle which will be used to validate an API server's serving certificate. If unspecified, system trust roots on the apiserver are used.
      */
     caBundle?: string

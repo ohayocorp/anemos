@@ -12,7 +12,7 @@ export declare class EnvVarSource {
     constructor();
     constructor(spec: Pick<EnvVarSource, "configMapKeyRef" | "fieldRef" | "fileKeyRef" | "resourceFieldRef" | "secretKeyRef">);
 
-	/**
+    /**
      * Selects a key of a ConfigMap.
      */
     configMapKeyRef?: ConfigMapKeySelector

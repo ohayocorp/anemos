@@ -7,7 +7,7 @@ export declare class PersistentVolumeClaimVolumeSource {
     constructor();
     constructor(spec: Pick<PersistentVolumeClaimVolumeSource, "claimName" | "readOnly">);
 
-	/**
+    /**
      * ClaimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
      */
     claimName: string

@@ -7,7 +7,7 @@ export declare class PolicyRule {
     constructor();
     constructor(spec: Pick<PolicyRule, "apiGroups" | "nonResourceURLs" | "resourceNames" | "resources" | "verbs">);
 
-	/**
+    /**
      * APIGroups is the name of the APIGroup that contains the resources.  If multiple API groups are specified, any action requested against one of the enumerated resources in any API group will be allowed. "" represents the core API group and "*" represents all API groups.
      */
     apiGroups?: Array<string>

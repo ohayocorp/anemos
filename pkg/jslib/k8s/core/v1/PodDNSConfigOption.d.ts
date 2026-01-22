@@ -7,7 +7,7 @@ export declare class PodDNSConfigOption {
     constructor();
     constructor(spec: Pick<PodDNSConfigOption, "name" | "value">);
 
-	/**
+    /**
      * Name is this DNS resolver option's name. Required.
      */
     name?: string

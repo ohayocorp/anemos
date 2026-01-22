@@ -8,7 +8,7 @@ export declare class LabelSelector {
     constructor();
     constructor(spec: Pick<LabelSelector, "matchExpressions" | "matchLabels">);
 
-	/**
+    /**
      * MatchExpressions is a list of label selector requirements. The requirements are ANDed.
      */
     matchExpressions?: Array<LabelSelectorRequirement>

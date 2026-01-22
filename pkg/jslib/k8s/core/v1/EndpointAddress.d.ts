@@ -8,7 +8,7 @@ export declare class EndpointAddress {
     constructor();
     constructor(spec: Pick<EndpointAddress, "hostname" | "ip" | "nodeName" | "targetRef">);
 
-	/**
+    /**
      * The Hostname of this endpoint
      */
     hostname?: string

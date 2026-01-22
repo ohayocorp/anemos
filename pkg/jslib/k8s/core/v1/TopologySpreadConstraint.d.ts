@@ -8,7 +8,7 @@ export declare class TopologySpreadConstraint {
     constructor();
     constructor(spec: Pick<TopologySpreadConstraint, "labelSelector" | "matchLabelKeys" | "maxSkew" | "minDomains" | "nodeAffinityPolicy" | "nodeTaintsPolicy" | "topologyKey" | "whenUnsatisfiable">);
 
-	/**
+    /**
      * LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain.
      */
     labelSelector?: LabelSelector

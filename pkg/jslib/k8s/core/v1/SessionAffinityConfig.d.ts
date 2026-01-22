@@ -8,7 +8,7 @@ export declare class SessionAffinityConfig {
     constructor();
     constructor(spec: Pick<SessionAffinityConfig, "clientIP">);
 
-	/**
+    /**
      * ClientIP contains the configurations of Client IP based session affinity.
      */
     clientIP?: ClientIPConfig

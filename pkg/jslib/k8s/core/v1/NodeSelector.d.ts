@@ -8,7 +8,7 @@ export declare class NodeSelector {
     constructor();
     constructor(spec: Pick<NodeSelector, "nodeSelectorTerms">);
 
-	/**
+    /**
      * Required. A list of node selector terms. The terms are ORed.
      */
     nodeSelectorTerms: Array<NodeSelectorTerm>

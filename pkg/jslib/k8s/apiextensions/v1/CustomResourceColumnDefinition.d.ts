@@ -7,7 +7,7 @@ export declare class CustomResourceColumnDefinition {
     constructor();
     constructor(spec: Pick<CustomResourceColumnDefinition, "description" | "format" | "jsonPath" | "name" | "priority" | "type">);
 
-	/**
+    /**
      * Description is a human readable description of this column.
      */
     description?: string

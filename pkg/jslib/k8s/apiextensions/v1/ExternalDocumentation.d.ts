@@ -7,7 +7,7 @@ export declare class ExternalDocumentation {
     constructor();
     constructor(spec: Pick<ExternalDocumentation, "description" | "url">);
 
-	/**
+    /**
      */
     description?: string
 

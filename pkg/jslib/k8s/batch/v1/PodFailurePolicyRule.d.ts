@@ -9,7 +9,7 @@ export declare class PodFailurePolicyRule {
     constructor();
     constructor(spec: Pick<PodFailurePolicyRule, "action" | "onExitCodes" | "onPodConditions">);
 
-	/**
+    /**
      * Specifies the action taken on a pod failure when the requirements are satisfied. Possible values are:
     
      * - FailJob: indicates that the pod's job is marked as Failed and all

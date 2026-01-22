@@ -7,7 +7,7 @@ export declare class SELinuxOptions {
     constructor();
     constructor(spec: Pick<SELinuxOptions, "level" | "role" | "type" | "user">);
 
-	/**
+    /**
      * Level is SELinux level label that applies to the container.
      */
     level?: string

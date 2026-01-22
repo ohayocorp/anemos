@@ -8,7 +8,7 @@ export declare class CSIDriverSpec {
     constructor();
     constructor(spec: Pick<CSIDriverSpec, "attachRequired" | "fsGroupPolicy" | "nodeAllocatableUpdatePeriodSeconds" | "podInfoOnMount" | "requiresRepublish" | "seLinuxMount" | "storageCapacity" | "tokenRequests" | "volumeLifecycleModes">);
 
-	/**
+    /**
      * AttachRequired indicates this CSI volume driver requires an attach operation (because it implements the CSI ControllerPublishVolume() method), and that the Kubernetes attach detach controller should call the attach volume interface which checks the volumeattachment status and waits until the volume is attached before proceeding to mounting. The CSI external-attacher coordinates with CSI volume driver and updates the volumeattachment status when the attach operation is complete. If the value is specified to false, the attach operation will be skipped. Otherwise the attach operation will be called.
     
      * This field is immutable.

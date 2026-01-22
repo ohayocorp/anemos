@@ -7,7 +7,7 @@ export declare class ScopedResourceSelectorRequirement {
     constructor();
     constructor(spec: Pick<ScopedResourceSelectorRequirement, "operator" | "scopeName" | "values">);
 
-	/**
+    /**
      * Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.
      */
     operator: string

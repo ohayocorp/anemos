@@ -7,7 +7,7 @@ export declare class IngressTLS {
     constructor();
     constructor(spec: Pick<IngressTLS, "hosts" | "secretName">);
 
-	/**
+    /**
      * Hosts is a list of hosts included in the TLS certificate. The values in this list must match the name/s used in the tlsSecret. Defaults to the wildcard host setting for the loadbalancer controller fulfilling this Ingress, if left unspecified.
      */
     hosts?: Array<string>

@@ -7,7 +7,7 @@ export declare class SecretKeySelector {
     constructor();
     constructor(spec: Pick<SecretKeySelector, "key" | "name" | "optional">);
 
-	/**
+    /**
      * The key of the secret to select from.  Must be a valid secret key.
      */
     key: string

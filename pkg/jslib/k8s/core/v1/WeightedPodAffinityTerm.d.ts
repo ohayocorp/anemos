@@ -8,7 +8,7 @@ export declare class WeightedPodAffinityTerm {
     constructor();
     constructor(spec: Pick<WeightedPodAffinityTerm, "podAffinityTerm" | "weight">);
 
-	/**
+    /**
      * Required. A pod affinity term, associated with the corresponding weight.
      */
     podAffinityTerm: PodAffinityTerm

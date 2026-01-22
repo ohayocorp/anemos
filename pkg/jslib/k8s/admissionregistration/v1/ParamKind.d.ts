@@ -7,7 +7,7 @@ export declare class ParamKind {
     constructor();
     constructor(spec: {});
 
-	/**
+    /**
      * APIVersion is the API group version the resources belong to. In format of "group/version". Required.
      */
     apiVersion?: string

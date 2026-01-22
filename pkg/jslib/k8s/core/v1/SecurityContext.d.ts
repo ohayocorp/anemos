@@ -12,7 +12,7 @@ export declare class SecurityContext {
     constructor();
     constructor(spec: Pick<SecurityContext, "allowPrivilegeEscalation" | "appArmorProfile" | "capabilities" | "privileged" | "procMount" | "readOnlyRootFilesystem" | "runAsGroup" | "runAsNonRoot" | "runAsUser" | "seLinuxOptions" | "seccompProfile" | "windowsOptions">);
 
-	/**
+    /**
      * AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
      */
     allowPrivilegeEscalation?: boolean

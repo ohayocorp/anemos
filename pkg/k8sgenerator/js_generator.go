@@ -47,7 +47,7 @@ func (typeInfo *typeInfo) writeJsContents(fields []string) error {
 		    constructor();
 		    constructor(spec: {{ .SpecTypeName }});
 
-			{{ .Fields }}
+		    {{ .Fields }}
 		}
 		`)
 

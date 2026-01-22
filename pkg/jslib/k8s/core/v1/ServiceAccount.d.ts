@@ -11,7 +11,7 @@ export declare class ServiceAccount extends Document {
     constructor();
     constructor(spec: Pick<ServiceAccount, "automountServiceAccountToken" | "imagePullSecrets" | "metadata" | "secrets">);
 
-	/**
+    /**
      * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
      */
     apiVersion?: string

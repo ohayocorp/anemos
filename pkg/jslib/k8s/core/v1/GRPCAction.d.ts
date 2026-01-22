@@ -7,7 +7,7 @@ export declare class GRPCAction {
     constructor();
     constructor(spec: Pick<GRPCAction, "port" | "service">);
 
-	/**
+    /**
      * Port number of the gRPC service. Number must be in the range 1 to 65535.
      */
     port: number

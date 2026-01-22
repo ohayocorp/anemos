@@ -8,7 +8,7 @@ export declare class LimitRangeSpec {
     constructor();
     constructor(spec: Pick<LimitRangeSpec, "limits">);
 
-	/**
+    /**
      * Limits is the list of LimitRangeItem objects that are enforced.
      */
     limits: Array<LimitRangeItem>

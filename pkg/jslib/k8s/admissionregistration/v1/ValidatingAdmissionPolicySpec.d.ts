@@ -13,7 +13,7 @@ export declare class ValidatingAdmissionPolicySpec {
     constructor();
     constructor(spec: Pick<ValidatingAdmissionPolicySpec, "auditAnnotations" | "failurePolicy" | "matchConditions" | "matchConstraints" | "paramKind" | "validations" | "variables">);
 
-	/**
+    /**
      * AuditAnnotations contains CEL expressions which are used to produce audit annotations for the audit event of the API request. validations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is required.
      */
     auditAnnotations?: Array<AuditAnnotation>

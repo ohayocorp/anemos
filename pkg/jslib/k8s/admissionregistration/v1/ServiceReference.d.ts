@@ -7,7 +7,7 @@ export declare class ServiceReference {
     constructor();
     constructor(spec: Pick<ServiceReference, "name" | "namespace" | "path" | "port">);
 
-	/**
+    /**
      * `name` is the name of the service. Required
      */
     name: string

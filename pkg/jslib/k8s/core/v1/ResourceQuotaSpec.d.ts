@@ -8,7 +8,7 @@ export declare class ResourceQuotaSpec {
     constructor();
     constructor(spec: Pick<ResourceQuotaSpec, "hard" | "scopeSelector" | "scopes">);
 
-	/**
+    /**
      * Hard is the set of desired hard limits for each named resource. More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
      */
     hard?: Record<string, number | string>

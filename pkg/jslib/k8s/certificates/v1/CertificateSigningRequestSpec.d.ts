@@ -7,7 +7,7 @@ export declare class CertificateSigningRequestSpec {
     constructor();
     constructor(spec: Pick<CertificateSigningRequestSpec, "expirationSeconds" | "extra" | "groups" | "request" | "signerName" | "uid" | "usages" | "username">);
 
-	/**
+    /**
      * ExpirationSeconds is the requested duration of validity of the issued certificate. The certificate signer may issue a certificate with a different validity duration so a client must check the delta between the notBefore and and notAfter fields in the issued certificate to determine the actual duration.
     
      * The v1.22+ in-tree implementations of the well-known Kubernetes signers will honor this field as long as the requested duration is not greater than the maximum duration they will honor per the --cluster-signing-duration CLI flag to the Kubernetes controller manager.

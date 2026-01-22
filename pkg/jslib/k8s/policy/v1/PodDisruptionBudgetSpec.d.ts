@@ -8,7 +8,7 @@ export declare class PodDisruptionBudgetSpec {
     constructor();
     constructor(spec: Pick<PodDisruptionBudgetSpec, "maxUnavailable" | "minAvailable" | "selector" | "unhealthyPodEvictionPolicy">);
 
-	/**
+    /**
      * An eviction is allowed if at most "maxUnavailable" pods selected by "selector" are unavailable after the eviction, i.e. even in absence of the evicted pod. For example, one can prevent all voluntary evictions by specifying 0. This is a mutually exclusive setting with "minAvailable".
      */
     maxUnavailable?: number | string

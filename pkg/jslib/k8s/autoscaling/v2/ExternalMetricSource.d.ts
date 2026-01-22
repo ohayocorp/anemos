@@ -9,7 +9,7 @@ export declare class ExternalMetricSource {
     constructor();
     constructor(spec: Pick<ExternalMetricSource, "metric" | "target">);
 
-	/**
+    /**
      * Metric identifies the target metric by name and selector
      */
     metric: MetricIdentifier

@@ -7,7 +7,7 @@ export declare class PriorityLevelConfigurationReference {
     constructor();
     constructor(spec: Pick<PriorityLevelConfigurationReference, "name">);
 
-	/**
+    /**
      * `name` is the name of the priority level configuration being referenced Required.
      */
     name: string

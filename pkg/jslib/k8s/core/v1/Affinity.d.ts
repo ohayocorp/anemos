@@ -10,7 +10,7 @@ export declare class Affinity {
     constructor();
     constructor(spec: Pick<Affinity, "nodeAffinity" | "podAffinity" | "podAntiAffinity">);
 
-	/**
+    /**
      * Describes node affinity scheduling rules for the pod.
      */
     nodeAffinity?: NodeAffinity

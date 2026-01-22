@@ -7,7 +7,7 @@ export declare class TokenRequest {
     constructor();
     constructor(spec: Pick<TokenRequest, "audience" | "expirationSeconds">);
 
-	/**
+    /**
      * Audience is the intended audience of the token in "TokenRequestSpec". It will default to the audiences of kube apiserver.
      */
     audience: string
