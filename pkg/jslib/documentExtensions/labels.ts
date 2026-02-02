@@ -19,14 +19,19 @@ export enum LabelNode {
 
 declare module "@ohayocorp/anemos/document" {
     export interface Document {
-        /**
-         * Sets a label on the document.
-         */
+        /** Gets a label from the document metadata. */
+        getLabel(key: string): string | undefined;
+
+        /** Sets a label on the document metadata. */
         setLabel(key: string, value: string): void;
 
         /** Sets the given key value pairs to the specified nodes on the document. */
         setLabels(labels: { [key: string]: string }, nodes?: LabelNode[]): void;
     }
+}
+
+Document.prototype.getLabel = function (this: Document, key: string): string | undefined {
+    return this.metadata?.labels ? this.metadata.labels[key] : undefined;
 }
 
 Document.prototype.setLabel = function (this: Document, key: string, value: string): void {
