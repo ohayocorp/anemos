@@ -516,4 +516,24 @@ func (jsRuntime *JsRuntime) initializeStringExtensions() {
 
 		return runtime.ToValue(result)
 	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("removePrefix", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.RemovePrefix(call.This.String(), call.Argument(0).String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("removeSuffix", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.RemoveSuffix(call.This.String(), call.Argument(0).String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("trimCharacters", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.TrimCharacters(call.This.String(), call.Argument(0).String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("trimCharactersStart", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.TrimCharactersStart(call.This.String(), call.Argument(0).String()))
+	})
+
+	runtime.Get("String").ToObject(runtime).Get("prototype").ToObject(runtime).Set("trimCharactersEnd", func(call sobek.FunctionCall) sobek.Value {
+		return runtime.ToValue(util.TrimCharactersEnd(call.This.String(), call.Argument(0).String()))
+	})
 }

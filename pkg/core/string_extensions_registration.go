@@ -14,4 +14,9 @@ func registerStringExtensions(jsRuntime *js.JsRuntime) {
 	jsRuntime.Function(reflect.ValueOf(util.ToKubernetesIdentifier)).JsModule("stringExtensions")
 	jsRuntime.Function(reflect.ValueOf(util.Base64Encode)).JsModule("stringExtensions")
 	jsRuntime.Function(reflect.ValueOf(util.Base64Decode)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.RemovePrefix)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.RemoveSuffix)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.TrimCharacters)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.TrimCharactersStart)).JsModule("stringExtensions")
+	jsRuntime.Function(reflect.ValueOf(util.TrimCharactersEnd)).JsModule("stringExtensions")
 }

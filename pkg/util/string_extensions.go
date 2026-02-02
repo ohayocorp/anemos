@@ -21,6 +21,26 @@ func Base64Decode(text string) (string, error) {
 	return string(data), nil
 }
 
+func RemovePrefix(text string, prefix string) string {
+	return strings.TrimPrefix(text, prefix)
+}
+
+func RemoveSuffix(text string, suffix string) string {
+	return strings.TrimSuffix(text, suffix)
+}
+
+func TrimCharacters(text string, characterSet string) string {
+	return strings.Trim(text, characterSet)
+}
+
+func TrimCharactersStart(text string, characterSet string) string {
+	return strings.TrimLeft(text, characterSet)
+}
+
+func TrimCharactersEnd(text string, characterSet string) string {
+	return strings.TrimRight(text, characterSet)
+}
+
 // Indents the each line with given number of spaces except the first line.
 func Indent(text string, numberOfSpaces int) string {
 	return indent(text, numberOfSpaces, " ")

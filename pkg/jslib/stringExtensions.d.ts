@@ -16,6 +16,21 @@ export declare function base64Encode(text: string): string;
 /** Base64 decodes the string. */
 export declare function base64Decode(text: string): string;
 
+/** Removes prefix from the string. */
+export declare function removePrefix(text: string, prefix: string): string;
+
+/** Removes suffix from the string. */
+export declare function removeSuffix(text: string, suffix: string): string;
+
+/** Trims leading and trailing characters from the string. */
+export declare function trimCharacters(text: string, characterSet: string): string;
+
+/** Trims leading characters from the string. */
+export declare function trimCharactersStart(text: string, characterSet: string): string;
+
+/** Trims trailing characters from the string. */
+export declare function trimCharactersEnd(text: string, characterSet: string): string;
+
 declare global {
     interface String {
         /** Indents the string with the given number of spaces. Note that the first line is not indented. */
@@ -35,5 +50,20 @@ declare global {
 
         /** Base64 decodes the string. */
         base64Decode(): string;
+
+        /** Removes prefix from the string. */
+        removePrefix(prefix: string): string;
+
+        /** Removes suffix from the string. */
+        removeSuffix(suffix: string): string;
+
+        /** Trims leading and trailing characters from the string. */
+        trimCharacters(characterSet: string): string;
+
+        /** Trims leading characters from the string. */
+        trimCharactersStart(characterSet: string): string;
+
+        /** Trims trailing characters from the string. */
+        trimCharactersEnd(characterSet: string): string;
     }
 }
