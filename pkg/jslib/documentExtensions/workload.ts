@@ -18,7 +18,7 @@ type WorkloadRelatedAsIs = Extract<keyof Document,
     | 'asStatefulSet' | 'isStatefulSet'
 >;
 
-export declare class Workload implements ExcludeAsIsExcept<Document, WorkloadRelatedAsIs> {
+export declare class Workload extends Document implements ExcludeAsIsExcept<Document, WorkloadRelatedAsIs> {
     getWorkloadSpec(): PodSpec | undefined;
     ensureWorkloadSpec(): PodSpec;
 
