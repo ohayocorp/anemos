@@ -22,6 +22,9 @@ export declare class KubernetesResource {
 export declare class KubernetesResourceInfo {
     private constructor();
 
+    /** Returns all the API resources defined in the target cluster. */
+    allResources(): KubernetesResource[];
+
     /** Adds the given API resource to the available resources list. */
     addResource(resource: KubernetesResource): void;
 

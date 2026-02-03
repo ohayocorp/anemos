@@ -628,6 +628,7 @@ func registerKubernetesResourceInfo(jsRuntime *js.JsRuntime) {
 	jsRuntime.Type(reflect.TypeFor[KubernetesResourceInfo]()).JsModule(
 		"kubernetesResourceInfo",
 	).Methods(
+		js.Method("AllResources"),
 		js.Method("AddKubernetesResource").JsName("addResource"),
 		js.Method("Contains"),
 		js.Method("ContainsKind"),
