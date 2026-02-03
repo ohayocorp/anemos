@@ -153,7 +153,7 @@ class ServiceMonitorSelector extends LabelSetter {
             return undefined;
         }
 
-        super.ensureObject(document, ["spec", "selector"]);
-        return document.spec.selector;
+        super.ensureObject(document, ["spec", "selector", "matchLabels"]);
+        return document.spec.selector.matchLabels;
     }
 }
