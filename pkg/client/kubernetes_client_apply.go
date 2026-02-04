@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	goerrors "errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -15,12 +16,14 @@ import (
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/util"
 	"github.com/sergi/go-diff/diffmatchpatch"
-	"k8s.io/apimachinery/pkg/api/errors"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/cli-runtime/pkg/resource"
@@ -195,6 +198,7 @@ func (client *KubernetesClient) preprocess(
 	applyOptions *apply.ApplyOptions,
 	skipConfirmation bool,
 ) error {
+	jobsToRecreate := newApplyJobRecreateSet()
 	visitedUids := sets.New[types.UID]()
 	diffs := []Diff{}
 
@@ -210,7 +214,7 @@ func (client *KubernetesClient) preprocess(
 		// Instead, we use the helper to get the live object.
 		live, err := helper.Get(info.Namespace, info.Name)
 		if err != nil {
-			if !errors.IsNotFound(err) {
+			if !apierrors.IsNotFound(err) {
 				return err
 			}
 
@@ -237,7 +241,19 @@ func (client *KubernetesClient) preprocess(
 			&options,
 		)
 		if err != nil {
-			return err
+			if isJobResourceInfo(info) && isImmutableFieldError(err) {
+				if isJobRecreateOnImmutableEnabled(info) {
+					jobsToRecreate.Add(info)
+					// If we're going to recreate the Job, treat the local object as the merged object
+					// for diff/confirmation purposes.
+					merged = local
+				} else {
+					// Only Jobs can be recreated, and only when explicitly enabled.
+					return err
+				}
+			} else {
+				return err
+			}
 		}
 
 		uid := getUID(live)
@@ -368,7 +384,138 @@ func (client *KubernetesClient) preprocess(
 		}
 	}
 
+	if err := client.recreateJobsIfNeeded(context.TODO(), jobsToRecreate, applyOptions.DeleteOptions.Timeout); err != nil {
+		return err
+	}
+
 	return nil
+}
+
+const (
+	JobRecreateOnImmutableFieldsAnnotation = "anemos.sh/recreate-on-immutable-fields-change"
+)
+
+type applyJobRecreateKey struct {
+	gvr       schema.GroupVersionResource
+	name      string
+	namespace string
+}
+
+type applyJobRecreateSet struct {
+	items map[applyJobRecreateKey]struct{}
+}
+
+func newApplyJobRecreateSet() *applyJobRecreateSet {
+	return &applyJobRecreateSet{items: map[applyJobRecreateKey]struct{}{}}
+}
+
+func (s *applyJobRecreateSet) Add(info *resource.Info) {
+	if info == nil || info.Mapping == nil {
+		return
+	}
+
+	key := applyJobRecreateKey{
+		gvr:       info.Mapping.Resource,
+		name:      info.Name,
+		namespace: info.Namespace,
+	}
+	if key.name == "" {
+		return
+	}
+
+	s.items[key] = struct{}{}
+}
+
+func (s *applyJobRecreateSet) Len() int {
+	return len(s.items)
+}
+
+func isJobResourceInfo(info *resource.Info) bool {
+	if info == nil || info.Mapping == nil {
+		return false
+	}
+
+	gvk := info.Mapping.GroupVersionKind
+	if gvk.Kind != "Job" {
+		return false
+	}
+
+	// Jobs are in the "batch" group (batch/v1).
+	return gvk.Group == "batch"
+}
+
+func isJobRecreateOnImmutableEnabled(info *resource.Info) bool {
+	u, ok := info.Object.(*unstructured.Unstructured)
+	if !ok || u == nil {
+		return false
+	}
+
+	annotations := u.GetAnnotations()
+	if annotations == nil {
+		return false
+	}
+
+	value := strings.TrimSpace(strings.ToLower(annotations[JobRecreateOnImmutableFieldsAnnotation]))
+	return value == "true"
+}
+
+func isImmutableFieldError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	var statusErr *apierrors.StatusError
+	if goerrors.As(err, &statusErr) {
+		msg := strings.ToLower(statusErr.ErrStatus.Message)
+		return strings.Contains(msg, "field is immutable")
+	}
+
+	return strings.Contains(strings.ToLower(err.Error()), "field is immutable")
+}
+
+func (client *KubernetesClient) recreateJobsIfNeeded(ctx context.Context, jobsToRecreate *applyJobRecreateSet, timeout time.Duration) error {
+	if jobsToRecreate == nil || jobsToRecreate.Len() == 0 {
+		return nil
+	}
+
+	for key := range jobsToRecreate.items {
+		slog.Warn(
+			`Recreating Job due to immutable field change: "${namespace}/${name}" since annotation "${annotation}" is set to true`,
+			slog.String("namespace", key.namespace),
+			slog.String("name", key.name),
+			slog.String("annotation", JobRecreateOnImmutableFieldsAnnotation),
+		)
+
+		if err := client.deleteAndWaitForResourceGone(ctx, key.gvr, key.namespace, key.name, timeout); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (client *KubernetesClient) deleteAndWaitForResourceGone(
+	ctx context.Context,
+	gvr schema.GroupVersionResource,
+	namespace string,
+	name string,
+	timeout time.Duration,
+) error {
+	propagation := metav1.DeletePropagationForeground
+	deleteOptions := metav1.DeleteOptions{PropagationPolicy: &propagation}
+
+	err := client.DynamicClient.Resource(gvr).Namespace(namespace).Delete(ctx, name, deleteOptions)
+	if err != nil && !apierrors.IsNotFound(err) {
+		return err
+	}
+
+	return wait.PollUntilContextTimeout(ctx, 1*time.Second, timeout, true, func(ctx context.Context) (bool, error) {
+		_, getErr := client.DynamicClient.Resource(gvr).Namespace(namespace).Get(ctx, name, metav1.GetOptions{})
+		if apierrors.IsNotFound(getErr) {
+			return true, nil
+		}
+		return false, getErr
+	})
 }
 
 func printChanges(diffs []Diff) {
