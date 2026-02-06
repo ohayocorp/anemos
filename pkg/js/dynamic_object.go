@@ -30,11 +30,6 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 		backingObject = backingObject.Elem()
 	}
 
-	jsObject := getSobekObject(d.backingObject)
-	if jsObject != nil {
-		return jsObject.Get(originalKey)
-	}
-
 	mappedKeys, ok := template.jsToGoNameMappings[originalKey]
 	if !ok {
 		mappedKeys = []string{originalKey}
@@ -65,6 +60,11 @@ func (d *DynamicObject) Get(originalKey string) sobek.Value {
 				return value
 			}
 		}
+	}
+
+	jsObject := getSobekObject(d.backingObject)
+	if jsObject != nil {
+		return jsObject.Get(originalKey)
 	}
 
 	if len(marshalErrors) == len(mappedKeys) {
