@@ -4,7 +4,7 @@ import { BuildContext } from "@ohayocorp/anemos/buildContext";
 import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 
-export type Predicate = (document: Document, context: BuildContext) => boolean;
+export type Predicate = (context: BuildContext, document: Document) => boolean;
 
 export const componentType = "set-labels";
 
@@ -45,7 +45,7 @@ export class Component extends AnemosComponent {
         }
 
         for (const document of context.getAllDocuments()) {
-            if (this.options.predicate && !this.options.predicate(document, context)) {
+            if (this.options.predicate && !this.options.predicate(context, document)) {
                 continue;
             }
 

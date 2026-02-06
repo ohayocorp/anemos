@@ -5,7 +5,7 @@ import { Document } from "@ohayocorp/anemos/document";
 import * as steps from "@ohayocorp/anemos/steps";
 import { Container } from "@ohayocorp/anemos/k8s/core/v1";
 
-export type Predicate = (document: Document, container: Container, context: BuildContext) => boolean;
+export type Predicate = (context: BuildContext, document: Document, container?: Container) => boolean;
 
 export const componentType = "override-environment-variables";
 
@@ -58,7 +58,7 @@ export class Component extends AnemosComponent {
             ];
 
             for (const container of containers) {
-                if (this.options.predicate && !this.options.predicate(document, container, context)) {
+                if (this.options.predicate && !this.options.predicate(context, document, container)) {
                     continue;
                 }
 
