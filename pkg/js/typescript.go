@@ -15,15 +15,15 @@ import (
 	"time"
 )
 
-var tsTargetDirectory = filepath.Join(os.TempDir(), "anemos", "typescript")
-var tsPath = filepath.Join(tsTargetDirectory, "lib", tsFileName)
-
 func RunTsc(tsconfigPath string) error {
 	return runTsGo(tsconfigPath)
 }
 
 func runTsGo(directory string) error {
-	if err := extractTypeScriptPackage(); err != nil {
+	tsTargetDirectory := filepath.Join(directory, "tsgo")
+	tsPath := filepath.Join(tsTargetDirectory, "lib", tsFileName)
+
+	if err := extractTypeScriptPackage(tsTargetDirectory); err != nil {
 		return fmt.Errorf("failed to extract TypeScript package: %w", err)
 	}
 
@@ -51,14 +51,7 @@ func runTsGo(directory string) error {
 	return nil
 }
 
-func extractTypeScriptPackage() error {
-	checkPath := filepath.Join(tsTargetDirectory, "lib", tsFileName)
-
-	if _, err := os.Stat(checkPath); err == nil {
-		slog.Debug("TypeScript package already extracted to ${path}", "path", checkPath)
-		return nil
-	}
-
+func extractTypeScriptPackage(tsTargetDirectory string) error {
 	err := os.MkdirAll(tsTargetDirectory, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("failed to create target directory %s: %w", tsTargetDirectory, err)
