@@ -8,7 +8,7 @@ declare module "./builder" {
          * Creates a document group from the Helm chart using the given values on
          * {@link steps.generateResources} step. Chart identifier can be a local path or a URL.
          */
-        addHelmChart(chartIdentifier: string, releaseName: string, values?: string): void;
+        addHelmChart(chartIdentifier: string, releaseName: string, values?: string | object): void;
     }
 }
 
@@ -19,7 +19,7 @@ declare module "./builder" {
  * @param values Optional values file to use for the Helm chart.
  */
 export class HelmOptions {
-    constructor(releaseName: string, namespace: string, values?: string);
+    constructor(releaseName: string, namespace: string, values?: string | object);
 
     /** The name of the Helm release. */
     releaseName: string;
