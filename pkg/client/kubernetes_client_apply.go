@@ -13,9 +13,10 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"github.com/hexops/gotextdiff"
+	"github.com/hexops/gotextdiff/myers"
 	"github.com/ohayocorp/anemos/pkg/core"
 	"github.com/ohayocorp/anemos/pkg/util"
-	"github.com/sergi/go-diff/diffmatchpatch"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -317,7 +318,11 @@ func (client *KubernetesClient) preprocess(
 		}
 
 		// Get the diff text between the live and merged objects.
-		diff := getDiffText(liveYamlString, mergedYamlString)
+		diff, err := getDiffText(liveYamlString, mergedYamlString)
+		if err != nil {
+			return fmt.Errorf("failed to compute diff for %s/%s: %w", info.Namespace, info.Name, err)
+		}
+
 		if diff == "" {
 			slog.Info(fmt.Sprintf(
 				"No changes for %s",
@@ -357,7 +362,11 @@ func (client *KubernetesClient) preprocess(
 		}
 
 		// We don't show the diff for deleted objects, same as for new objects.
-		diff := getDiffText(string(objectYaml), "")
+		diff, err := getDiffText(string(objectYaml), "")
+		if err != nil {
+			return fmt.Errorf("failed to compute diff for %s/%s: %w", object.Namespace, object.Name, err)
+		}
+
 		diffs = append(diffs, Diff{
 			Resource:  fmt.Sprintf("%s/%s", object.Mapping.Resource.Resource, object.Name),
 			Namespace: object.Namespace,
@@ -601,87 +610,68 @@ func getDiffColored(text string, diffType DiffType) string {
 	}
 }
 
-func getDiffText(left, right string) string {
-	differ := diffmatchpatch.New()
+func getDiffText(left, right string) (string, error) {
+	edits := myers.ComputeEdits("", left, right)
+	edits = gotextdiff.LineEdits(left, edits)
+	unified := gotextdiff.ToUnified("original", "modified", left, edits)
 
-	// Compute a line by line diff.
-	// https://github.com/sergi/go-diff/issues/69#issuecomment-688602689
-	leftChars, rightChars, lines := differ.DiffLinesToChars(left, right)
-	diffs := differ.DiffMain(leftChars, rightChars, false)
-	diffs = differ.DiffCharsToLines(diffs, lines)
-	diffs = differ.DiffCleanupSemantic(diffs)
-
-	if len(diffs) == 0 || (len(diffs) == 1 && diffs[0].Type == diffmatchpatch.DiffEqual) {
-		return ""
+	if len(unified.Hunks) == 0 {
+		return "", nil
 	}
 
-	return diffPrettyText(diffs)
-}
-
-func diffPrettyText(diffs []diffmatchpatch.Diff) string {
 	var buff bytes.Buffer
-	for _, diff := range diffs {
-		text := diff.Text
 
-		switch diff.Type {
-		case diffmatchpatch.DiffInsert:
-			lines := strings.Split(text, "\n")
-			for i, line := range lines {
-				_, _ = buff.WriteString("\x1b[32m")
-				_, _ = buff.WriteString(line)
-				if i < len(lines)-1 {
-					_, _ = buff.WriteString("\x1b[0m\n")
-				} else {
-					_, _ = buff.WriteString("\x1b[0m")
-				}
+	write := func(format string, args ...interface{}) {
+		_, _ = buff.WriteString(fmt.Sprintf(format, args...))
+	}
+
+	for _, hunk := range unified.Hunks {
+		fromCount, toCount := 0, 0
+		for _, l := range hunk.Lines {
+			switch l.Kind {
+			case gotextdiff.Delete:
+				fromCount++
+			case gotextdiff.Insert:
+				toCount++
+			default:
+				fromCount++
+				toCount++
 			}
+		}
 
-		case diffmatchpatch.DiffDelete:
-			lines := strings.Split(text, "\n")
-			for i, line := range lines {
-				_, _ = buff.WriteString("\x1b[31m")
-				_, _ = buff.WriteString(line)
-				if i < len(lines)-1 {
-					_, _ = buff.WriteString("\x1b[0m\n")
-				} else {
-					_, _ = buff.WriteString("\x1b[0m")
-				}
+		red := "\x1b[31m"
+		green := "\x1b[32m"
+		reset := "\x1b[0m"
+
+		write("%s%s", reset, "@@")
+
+		if fromCount > 1 {
+			write("%s -%d,%d", red, hunk.FromLine, fromCount)
+		} else {
+			write("%s -%d", red, hunk.FromLine)
+		}
+
+		if toCount > 1 {
+			write("%s +%d,%d", green, hunk.ToLine, toCount)
+		} else {
+			write("%s +%d", green, hunk.ToLine)
+		}
+
+		write("%s @@\n", reset)
+
+		for _, l := range hunk.Lines {
+			switch l.Kind {
+			case gotextdiff.Delete:
+				write("%s-%s", red, l.Content)
+			case gotextdiff.Insert:
+				write("%s+%s", green, l.Content)
+			default:
+				write("%s %s", reset, l.Content)
 			}
-		case diffmatchpatch.DiffEqual:
-			shortenEqualDiffText(&diff, 0, len(diffs))
-			_, _ = buff.WriteString(diff.Text)
 		}
 	}
 
-	return buff.String()
-}
-
-func shortenEqualDiffText(diff *diffmatchpatch.Diff, index int, length int) {
-	// Limit the length of equal text to 3 lines to avoid flooding the output.
-	contextLines := 3
-
-	lines := strings.Split(diff.Text, "\n")
-	if len(lines) <= contextLines {
-		return
-	}
-
-	switch index {
-	case 0:
-		if len(lines) > contextLines {
-			// Take the last n lines of the equal text if there is no change before this one.
-			diff.Text = "...\n" + strings.Join(lines[len(lines)-contextLines-1:], "\n")
-		}
-	case length - 1:
-		if len(lines) > contextLines {
-			// Take the first n lines of the equal text if there is no change after this one.
-			diff.Text = strings.Join(lines[:contextLines+1], "\n") + "\n...\n"
-		}
-	default:
-		if len(lines) > contextLines*2 {
-			// Take the first n and last n lines of the equal text if there are changes in between.
-			diff.Text = strings.Join(lines[:contextLines+1], "\n") + "\n...\n" + strings.Join(lines[len(lines)-contextLines-1:], "\n")
-		}
-	}
+	return buff.String(), nil
 }
 
 func updateApplySetParentLabels(

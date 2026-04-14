@@ -14,8 +14,8 @@ require (
 	github.com/go-openapi/spec v0.21.0
 	github.com/gomarkdown/markdown v0.0.0-20250810172220-2e2c11897d1a
 	github.com/grafana/sobek v0.0.0-20260121195222-d8d9202018c5
+	github.com/hexops/gotextdiff v1.0.3
 	github.com/ohayocorp/sobek_nodejs v0.0.0-20250711162509-e11a98f75dcf
-	github.com/sergi/go-diff v1.4.0
 	github.com/spf13/cobra v1.9.1
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.18.4
@@ -110,6 +110,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rubenv/sql-migrate v1.8.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/cast v1.9.2 // indirect
