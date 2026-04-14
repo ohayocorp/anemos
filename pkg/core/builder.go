@@ -236,7 +236,7 @@ func (builder *Builder) Build() {
 					"Component registration stack trace:",
 					cleanupStackTrace(context.currentComponent.stackTrace))
 			} else {
-				// This is not an expected error, panic with the error so that the users can report it.
+				// This is an unexpected error, panic with the error so that the users can report it.
 				// Using a JS exception here since a Golang panic will pollute the stack trace with Sobek
 				// runtime internals and occasionally cause an invalid memory access error which hides the real error.
 				err = fmt.Errorf("unexpected error: %v\n%s", r, string(debug.Stack()))
@@ -261,7 +261,9 @@ func (builder *Builder) Build() {
 			slog.String("description", step.Description),
 			slog.String("step", step.String()))
 
-		components := builder.Components
+		// Cloning the components slice to avoid issues with components being added or removed during the loop.
+		components := slices.Clone(builder.Components)
+
 		for _, component := range components {
 			context.currentComponent = component
 
