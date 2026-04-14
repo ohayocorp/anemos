@@ -13,6 +13,8 @@ declare module "./builder" {
 }
 
 export declare namespace writeDocuments {
+    export const componentType: string;
+    
     export class Options {
     }
 }

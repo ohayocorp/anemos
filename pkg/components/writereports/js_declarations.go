@@ -8,6 +8,8 @@ import (
 )
 
 func RegisterJsDeclarations(jsRuntime *js.JsRuntime) {
+	jsRuntime.Variable("writeReports", "componentType", reflect.ValueOf(componentType))
+
 	jsRuntime.Variable("writeReports", "Html", reflect.ValueOf(ReportOutputTypeHtml))
 	jsRuntime.Variable("writeReports", "Markdown", reflect.ValueOf(ReportOutputTypeMarkdown))
 

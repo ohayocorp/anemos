@@ -9,6 +9,8 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
+const componentType = "delete-output-directory"
+
 type component struct {
 	*core.Component
 	options *Options
@@ -24,6 +26,9 @@ func NewComponent(options *Options) *core.Component {
 	// This component should be run just before the output step otherwise all output files will be lost.
 	component.AddAction(core.NewStep("Delete outputs", append(core.StepOutput.Numbers, -1)...), component.output)
 
+	component.SetComponentType(componentType)
+	component.SetIdentifier(componentType)
+
 	return component.Component
 }
 
@@ -34,8 +39,6 @@ func (component *component) sanitizeOptions(context *core.BuildContext) {
 		options = &Options{}
 		component.options = options
 	}
-
-	component.SetIdentifier("delete-output-directory")
 }
 
 func (component *component) output(context *core.BuildContext) {

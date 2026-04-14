@@ -8,6 +8,8 @@ import (
 )
 
 func RegisterJsDeclarations(jsRuntime *js.JsRuntime) {
+	jsRuntime.Variable("apply", "componentType", reflect.ValueOf(componentType))
+
 	jsRuntime.Type(reflect.TypeFor[Options]()).JsModule(
 		"apply",
 	).Fields(

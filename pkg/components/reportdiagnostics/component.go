@@ -21,10 +21,11 @@ func NewComponent(options *Options) *core.Component {
 		options:   options,
 	}
 
-	component.SetComponentType(componentType)
-
 	component.AddAction(core.StepSanitize, component.sanitizeOptions)
 	component.AddAction(core.StepReport, component.report)
+
+	component.SetComponentType(componentType)
+	component.SetIdentifier(componentType)
 
 	return component.Component
 }

@@ -18,6 +18,8 @@ export const markdown: ReportOutputType;
 export const html: ReportOutputType;
 
 export declare namespace writeReports {
+    export const componentType: string;
+    
     export class Options {
         outputTypes?: ReportOutputType[];
     }

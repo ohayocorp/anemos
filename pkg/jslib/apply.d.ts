@@ -12,6 +12,8 @@ declare module "./builder" {
 }
 
 export declare namespace apply {
+    export const componentType: string;
+
     export class Options {
         constructor();
 

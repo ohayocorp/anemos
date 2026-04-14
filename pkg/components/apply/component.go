@@ -17,6 +17,8 @@ import (
 	"sigs.k8s.io/cli-utils/pkg/kstatus/status"
 )
 
+const componentType = "apply"
+
 type component struct {
 	*core.Component
 	options *Options
@@ -31,8 +33,8 @@ func NewComponent(options *Options) *core.Component {
 	component.AddAction(core.StepSanitize, component.sanitizeOptions)
 	component.AddAction(core.StepApply, component.apply)
 
-	component.SetComponentType("apply")
-	component.SetIdentifier("apply")
+	component.SetComponentType(componentType)
+	component.SetIdentifier(componentType)
 
 	return component.Component
 }

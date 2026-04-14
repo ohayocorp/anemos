@@ -18,6 +18,8 @@ import (
 	"github.com/ohayocorp/anemos/pkg/util"
 )
 
+const componentType = "write-reports"
+
 //go:embed css/github-markdown.css
 var CssGithubMarkdown string
 
@@ -34,6 +36,9 @@ func NewComponent(options *Options) *core.Component {
 
 	component.AddAction(core.StepSanitize, component.sanitizeOptions)
 	component.AddAction(core.StepOutput, component.output)
+
+	component.SetComponentType(componentType)
+	component.SetIdentifier(componentType)
 
 	return component.Component
 }

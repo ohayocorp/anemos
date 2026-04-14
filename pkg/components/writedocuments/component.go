@@ -12,6 +12,8 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 )
 
+const componentType = "write-documents"
+
 type component struct {
 	*core.Component
 	options *Options
@@ -26,6 +28,9 @@ func NewComponent(options *Options) *core.Component {
 	component.AddAction(core.StepSanitize, component.sanitizeOptions)
 	component.AddAction(core.StepOutput, component.output)
 
+	component.SetComponentType(componentType)
+	component.SetIdentifier(componentType)
+
 	return component.Component
 }
 
@@ -36,8 +41,6 @@ func (component *component) sanitizeOptions(context *core.BuildContext) {
 		options = &Options{}
 		component.options = options
 	}
-
-	component.SetIdentifier("write-documents")
 }
 
 func (component *component) output(context *core.BuildContext) {

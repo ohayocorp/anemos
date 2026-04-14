@@ -14,6 +14,8 @@ declare module "./builder" {
 }
 
 export declare namespace deleteOutputDirectory {
+    export const componentType: string;
+    
     export class Options {
     }
 }

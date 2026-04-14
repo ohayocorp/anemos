@@ -18,12 +18,14 @@ export * from '@ohayocorp/anemos/parsing';
 export * from '@ohayocorp/anemos/provisioner';
 export * from '@ohayocorp/anemos/quantity';
 export * from '@ohayocorp/anemos/report';
+export * from '@ohayocorp/anemos/reportDiagnostics';
 export * as reports from '@ohayocorp/anemos/reports';
 export * from '@ohayocorp/anemos/serialization';
 export * from '@ohayocorp/anemos/step';
 export * as steps from '@ohayocorp/anemos/steps';
 export * from '@ohayocorp/anemos/stringExtensions';
 export * from '@ohayocorp/anemos/writeDocuments';
+export * from '@ohayocorp/anemos/writeReports';
 
 export * from '@ohayocorp/anemos/documentExtensions';
 export * from '@ohayocorp/anemos/components';
