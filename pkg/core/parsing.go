@@ -10,6 +10,7 @@ import (
 	"github.com/ohayocorp/anemos/pkg/js"
 	"github.com/ohayocorp/anemos/pkg/util"
 	"gopkg.in/yaml.v3"
+	"helm.sh/helm/v3/pkg/releaseutil"
 )
 
 // Deserializes given string into an object of given type. Dedents the data using [Dedent] so that the
@@ -38,6 +39,34 @@ func ParseDocument(jsRuntime *js.JsRuntime, yaml string) (*Document, error) {
 	}
 
 	return NewDocumentWithContent(object), nil
+}
+
+// Parses given text as a [Document] slice.
+func ParseDocuments(jsRuntime *js.JsRuntime, manifests string) ([]*Document, error) {
+	var documents []*Document
+	var splitManifests map[string]string
+
+	numberOfDocuments := len(yamlDocumentSeparator.FindAllString(manifests, -1))
+
+	if numberOfDocuments > 1 {
+		splitManifests = releaseutil.SplitManifests(manifests)
+	} else {
+		splitManifests = map[string]string{
+			"manifest-0": manifests,
+		}
+	}
+
+	for _, manifest := range splitManifests {
+		doc, err := ParseDocument(jsRuntime, manifest)
+		if err != nil {
+			return nil, err
+		}
+		if doc != nil {
+			documents = append(documents, doc)
+		}
+	}
+
+	return documents, nil
 }
 
 func Parse(jsRuntime *js.JsRuntime, yamlText string) (*sobek.Object, error) {
@@ -204,4 +233,5 @@ func tryParseScalar(jsRuntime *js.JsRuntime, node *yaml.Node) sobek.Value {
 func registerYamlParsing(jsRuntime *js.JsRuntime) {
 	jsRuntime.Function(reflect.ValueOf(Parse)).JsModule("parsing")
 	jsRuntime.Function(reflect.ValueOf(ParseDocument)).JsModule("parsing")
+	jsRuntime.Function(reflect.ValueOf(ParseDocuments)).JsModule("parsing")
 }
