@@ -378,6 +378,7 @@ func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 
 	// Register the main module so that require("@ohayocorp/anemos") works.
 	require.RegisterNativeModule(PackageName, func(runtime *sobek.Runtime, jsModule *sobek.Object) {
+		preventInteropWrapper(runtime, jsModule)
 	})
 
 	for _, module := range moduleNamesSlice {
@@ -387,7 +388,7 @@ func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 		}
 
 		require.RegisterNativeModule(moduleName, func(runtime *sobek.Runtime, jsModule *sobek.Object) {
-			exports := jsModule.Get("exports").(*sobek.Object)
+			exports := preventInteropWrapper(runtime, jsModule)
 
 			for _, variable := range variables[module] {
 				value := variable.value
@@ -451,6 +452,22 @@ func (jsRuntime *JsRuntime) InitializeNativeLibraries() error {
 	jsRuntime.initializeStringExtensions()
 
 	return jsRuntime.initializeLib()
+}
+
+func preventInteropWrapper(runtime *sobek.Runtime, jsModule *sobek.Object) *sobek.Object {
+	exports := jsModule.Get("exports").(*sobek.Object)
+	err := exports.DefineDataProperty(
+		"__esModule",
+		runtime.ToValue(true),
+		sobek.FLAG_FALSE,
+		sobek.FLAG_FALSE,
+		sobek.FLAG_FALSE,
+	)
+	if err != nil {
+		panic(fmt.Errorf("failed to mark native module as an ES module: %w", err))
+	}
+
+	return exports
 }
 
 func (jsRuntime *JsRuntime) initializeLib() error {
