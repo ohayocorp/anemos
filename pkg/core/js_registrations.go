@@ -18,6 +18,7 @@ func RegisterCore(jsRuntime *js.JsRuntime) {
 	registerReport(jsRuntime)
 	registerStep(jsRuntime)
 	registerStringExtensions(jsRuntime)
+	registerUUID(jsRuntime)
 	registerYamlParsing(jsRuntime)
 	registerYamlSerialization(jsRuntime)
 }

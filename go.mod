@@ -13,6 +13,7 @@ require (
 	github.com/go-logr/logr v1.4.3
 	github.com/go-openapi/spec v0.21.0
 	github.com/gomarkdown/markdown v0.0.0-20250810172220-2e2c11897d1a
+	github.com/google/uuid v1.6.0
 	github.com/grafana/sobek v0.0.0-20260121195222-d8d9202018c5
 	github.com/hexops/gotextdiff v1.0.3
 	github.com/ohayocorp/sobek_nodejs v0.0.0-20250711162509-e11a98f75dcf
@@ -68,7 +69,6 @@ require (
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/pprof v0.0.0-20250630185457-6e76a2b096b5 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/gosuri/uitable v0.0.4 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect

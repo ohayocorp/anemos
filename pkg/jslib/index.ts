@@ -24,6 +24,7 @@ export * from '@ohayocorp/anemos/serialization';
 export * from '@ohayocorp/anemos/step';
 export * as steps from '@ohayocorp/anemos/steps';
 export * from '@ohayocorp/anemos/stringExtensions';
+export * from '@ohayocorp/anemos/uuid';
 export * from '@ohayocorp/anemos/writeDocuments';
 export * from '@ohayocorp/anemos/writeReports';
 
